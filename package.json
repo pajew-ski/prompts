@@ -1,0 +1,21 @@
+{
+  "name": "prompts",
+  "module": "index.ts",
+  "type": "module",
+  "scripts": {
+    "start": "bun run index.ts help",
+    "build": "bun run index.ts build",
+    "serve": "bun run index.ts serve",
+    "test": "bun run index.ts test"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/js-yaml": "^4.0.9",
+    "@types/marked": "^6.0.0",
+    "js-yaml": "^4.1.1",
+    "marked": "^17.0.1"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  }
+}
