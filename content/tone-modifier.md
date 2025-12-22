@@ -14,10 +14,10 @@ Modelle tendieren zu einem langweiligen Durchschnittsstil. Zwinge sie zu Extreme
 **Prompt:**
 ```text
 Schreibe diese E-Mail um.
-```>
-> Version 1: Extrem höflich und viktorianisch.
-> Version 2: Wie ein cooler Gen-Z Teenager auf TikTok.
-> Version 3: Kurz, knapp, militärisch.
+Version 1: Extrem höflich und viktorianisch.
+Version 2: Wie ein cooler Gen-Z Teenager auf TikTok.
+Version 3: Kurz, knapp, militärisch.
+```
 
 ## Strategie
 

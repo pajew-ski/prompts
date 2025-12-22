@@ -14,16 +14,16 @@ LLMs verstehen XML-ähnliche Strukturen sehr gut. Nutze Tags, um Teile des Promp
 **Prompt:**
 ```text
 Ich gebe dir zwei Dokumente.
-```>
-> <dokument_a>
-> [Text A]
-> </dokument_a>
->
-> <dokument_b>
-> [Text B]
-> </dokument_b>
->
-> Vergleiche die Argumente in <dokument_a> mit denen in <dokument_b>. Gib das Ergebnis in <analyse>-Tags aus.
+<dokument_a>
+[Text A]
+</dokument_a>
+
+<dokument_b>
+[Text B]
+</dokument_b>
+
+Vergleiche die Argumente in <dokument_a> mit denen in <dokument_b>. Gib das Ergebnis in <analyse>-Tags aus.
+```
 
 ## Strategie
 

@@ -15,9 +15,9 @@ Natürliche Sprache ist mehrdeutig. Code ist eindeutig.
 ```text
 Beschreibe den Prozess der Photosynthese.
 Tu dies aber nicht als Text, sondern als Pseudocode-Funktion.
-```>
-> `function photosynthese(licht, wasser, co2):`
-> ...
+`function photosynthese(licht, wasser, co2):`
+...
+```
 
 ## Strategie
 

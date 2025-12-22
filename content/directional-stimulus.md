@@ -14,10 +14,10 @@ Anstatt das Modell nur mit "Fasse zusammen" loszuschicken, gibst du ihm "Richtun
 **Prompt:**
 ```text
 Artikel: [Langer Text über KI-Sicherheit]
-```>
-> Hinweise: Ausrichtungsproblem, Black Box, interpretierbar.
->
-> Aufgabe: Fasse den Artikel basierend auf den obigen Hinweisen in 2 Sätzen zusammen.
+Hinweise: Ausrichtungsproblem, Black Box, interpretierbar.
+
+Aufgabe: Fasse den Artikel basierend auf den obigen Hinweisen in 2 Sätzen zusammen.
+```
 
 ## Strategie
 

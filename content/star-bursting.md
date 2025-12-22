@@ -14,15 +14,15 @@ Antworten hemmen die Diskussion. Fragen öffnen sie.
 **Prompt:**
 ```text
 Thema: Neues Produkt X.
-```>
-> Gib keine Lösungen.
-> Generiere stattdessen für jeden Zacken des Sterns 10 Fragen:
-> - Wer?
-> - Was?
-> - Wo?
-> - Wann?
-> - Warum?
-> - Wie?
+Gib keine Lösungen.
+Generiere stattdessen für jeden Zacken des Sterns 10 Fragen:
+- Wer?
+- Was?
+- Wo?
+- Wann?
+- Warum?
+- Wie?
+```
 
 ## Strategie
 

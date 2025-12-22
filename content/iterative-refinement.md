@@ -15,14 +15,14 @@ Gib dich nicht mit dem ersten Entwurf zufrieden. Instruiere das Modell, seinen e
 ```text
 Schreibe einen Artikel über X.
 [Output]
-```>
-> Mache ihn prägnanter.
-> [Output]
->
-> Füge mehr Beispiele hinzu.
-> [Output]
->
-> Poliere den Stil für ein professionelles Publikum.
+Mache ihn prägnanter.
+[Output]
+
+Füge mehr Beispiele hinzu.
+[Output]
+
+Poliere den Stil für ein professionelles Publikum.
+```
 
 ## Strategie
 

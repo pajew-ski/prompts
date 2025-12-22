@@ -14,9 +14,9 @@ Vermeidet den "Tunnelblick" auf die erstbeste Lösung.
 **Prompt:**
 ```text
 Beobachtung: Der Umsatz ist letzten Monat um 20% eingebrochen.
-```>
-> Generiere 5 unterschiedliche, plausible Hypothesen, woran das liegen könnte (von Marketing bis Technik).
-> Bewerte danach die Wahrscheinlichkeit jeder Hypothese basierend auf allgemeinen Markttrends.
+Generiere 5 unterschiedliche, plausible Hypothesen, woran das liegen könnte (von Marketing bis Technik).
+Bewerte danach die Wahrscheinlichkeit jeder Hypothese basierend auf allgemeinen Markttrends.
+```
 
 ## Strategie
 

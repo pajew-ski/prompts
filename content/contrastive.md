@@ -14,12 +14,12 @@ Oft hilft es dem Modell mehr zu sehen, was *falsch* ist, als nur zu sehen, was *
 **Prompt:**
 ```text
 Schreibe einen Produkttext für Kopfhörer.
-```>
-> Negatives Beispiel (So NICHT): "Diese Kopfhörer sind gut und laut. Kaufen Sie sie."
->
-> Positives Beispiel (So bitte JA): "Tauchen Sie ein in eine Welt aus kristallklarem Sound. Unsere neuen Pro-Headphones bieten..."
->
-> Aufgabe: Schreibe einen Text für eine Kaffeemaschine.
+Negatives Beispiel (So NICHT): "Diese Kopfhörer sind gut und laut. Kaufen Sie sie."
+
+Positives Beispiel (So bitte JA): "Tauchen Sie ein in eine Welt aus kristallklarem Sound. Unsere neuen Pro-Headphones bieten..."
+
+Aufgabe: Schreibe einen Text für eine Kaffeemaschine.
+```
 
 ## Strategie
 

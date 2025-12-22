@@ -14,14 +14,14 @@ difficulty: "Fortgeschritten"
 **Prompt:**
 ```text
 Thema: Einführung der 4-Tage-Woche.
-```>
-> Analysiere das thema nacheinander mit diesen Hüten:
-> ⚪️ Weiß (Fakten, Zahlen)
-> 🔴 Rot (Gefühle, Intuition)
-> ⚫️ Schwarz (Risiken, Vorsicht)
-> 🟡 Gelb (Chancen, Optimismus)
-> 🟢 Grün (Kreativität, neue Ideen)
-> 🔵 Blau (Prozess, Überblick)
+Analysiere das thema nacheinander mit diesen Hüten:
+⚪️ Weiß (Fakten, Zahlen)
+🔴 Rot (Gefühle, Intuition)
+⚫️ Schwarz (Risiken, Vorsicht)
+🟡 Gelb (Chancen, Optimismus)
+🟢 Grün (Kreativität, neue Ideen)
+🔵 Blau (Prozess, Überblick)
+```
 
 ## Strategie
 

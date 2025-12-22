@@ -15,10 +15,10 @@ difficulty: "Mittel"
 ```text
 [Kopiere 3 Absätze aus einem Wikipedia-Artikel über Quantenphysik]
 [Kopiere 3 Zitate von berühmten Physikern]
-```>
-> (Das Modell ist jetzt im "Physik-Modus")
->
-> Erkläre mir nun: Was ist Verschränkung?
+(Das Modell ist jetzt im "Physik-Modus")
+
+Erkläre mir nun: Was ist Verschränkung?
+```
 
 ## Strategie
 

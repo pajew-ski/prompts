@@ -14,12 +14,12 @@ Das menschliche Gehirn arbeitet nicht linear. GoT erlaubt es, Gedanken zu kombin
 **Prompt:**
 ```text
 Aufgabe: Schreibe einen Roman.
-```>
-> 1. Generiere 3 Ideen für Charaktere (Knoten A, B, C).
-> 2. Generiere 3 Ideen für den Plot (Knoten D, E, F).
-> 3. Kombiniere A mit E (Kante AE).
-> 4. Kombiniere C mit D (Kante CD).
-> 5. Bewerte AE und CD. Nimm den besseren und verfeinere ihn.
+1. Generiere 3 Ideen für Charaktere (Knoten A, B, C).
+2. Generiere 3 Ideen für den Plot (Knoten D, E, F).
+3. Kombiniere A mit E (Kante AE).
+4. Kombiniere C mit D (Kante CD).
+5. Bewerte AE und CD. Nimm den besseren und verfeinere ihn.
+```
 
 ## Strategie
 

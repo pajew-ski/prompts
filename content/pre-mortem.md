@@ -14,8 +14,8 @@ Die meisten Leute machen Post-Mortems (Leichenschau). Pre-Mortem ist besser.
 **Prompt:**
 ```text
 Wir sind im Jahr 2030. Unser Projekt ist grandios gescheitert.
-```>
-> Schreib einen Zeitungsartikel, der analysiert, woran es lag. Sei brutal ehrlich über unsere aktuellen Schwachstellen.
+Schreib einen Zeitungsartikel, der analysiert, woran es lag. Sei brutal ehrlich über unsere aktuellen Schwachstellen.
+```
 
 ## Strategie
 

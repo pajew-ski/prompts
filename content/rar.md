@@ -14,9 +14,9 @@ Oft ist der User-Prompt schlecht formuliert. RaR lässt das Modell den Prompt se
 **Prompt:**
 ```text
 Frage: "Hund beißt, was tun?"
-```>
-> 1. Formuliere diese Frage um, damit sie präziser und umfassender ist.
-> 2. Beantworte die umformulierte Frage.
+1. Formuliere diese Frage um, damit sie präziser und umfassender ist.
+2. Beantworte die umformulierte Frage.
+```
 
 ## Strategie
 

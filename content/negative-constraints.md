@@ -14,12 +14,12 @@ Oft ist es leichter zu sagen, was man nicht will.
 **Prompt:**
 ```text
 Erstelle einen Reiseplan für Paris.
-```>
-> Negative Constraints:
-> - Keine Museen.
-> - Kein Eiffelturm.
-> - Nicht teurer als 50€ pro Tag.
-> - Keine typischen Touristenfallen.
+Negative Constraints:
+- Keine Museen.
+- Kein Eiffelturm.
+- Nicht teurer als 50€ pro Tag.
+- Keine typischen Touristenfallen.
+```
 
 ## Strategie
 

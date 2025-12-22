@@ -14,13 +14,13 @@ Elon Musks Lieblings-Mentalmodell. Nicht per Analogie ("wie die anderen"), sonde
 **Prompt:**
 ```text
 Frage: Warum sind E-Autos teuer?
-```>
-> Analysiere das nicht durch Marktvergleich.
-> Zerlege das Problem in First Principles:
-> - Was sind die Materialkosten?
-> - Was wiegen die Atome?
-> - Was kostet Energie?
-> Baue von diesem fundamentalen Boden eine "Bottom-Up" Kostenkalkulation auf.
+Analysiere das nicht durch Marktvergleich.
+Zerlege das Problem in First Principles:
+- Was sind die Materialkosten?
+- Was wiegen die Atome?
+- Was kostet Energie?
+Baue von diesem fundamentalen Boden eine "Bottom-Up" Kostenkalkulation auf.
+```
 
 ## Strategie
 

@@ -14,14 +14,14 @@ difficulty: "Fortgeschritten"
 **Prompt:**
 ```text
 Frage: Wie viele Schritte sind nötig, um einen Turm von Hanoi mit 4 Scheiben zu lösen?
-```>
-> Antwort: Lassen Sie uns das Problem in einfachere Probleme zerlegen:
-> 1. Wie viele Schritte für 1 Scheibe?
-> 2. Wie viele Schritte für 2 Scheiben?
-> 3. Wie viele Schritte für 3 Scheiben?
-> 4. Schlussfolgerung für 4 Scheiben.
->
-> Löse nun Schritt für Schritt.
+Antwort: Lassen Sie uns das Problem in einfachere Probleme zerlegen:
+1. Wie viele Schritte für 1 Scheibe?
+2. Wie viele Schritte für 2 Scheiben?
+3. Wie viele Schritte für 3 Scheiben?
+4. Schlussfolgerung für 4 Scheiben.
+
+Löse nun Schritt für Schritt.
+```
 
 ## Strategie
 

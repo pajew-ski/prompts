@@ -14,14 +14,14 @@ Moderne Modelle (wie Claude) lieben XML-Tags, um zu verstehen, was was ist.
 **Prompt:**
 ```text
 Ich werde dir einen Text geben und dazu Instruktionen.
-```>
-> <text>
-> Hier steht der Text, der analysiert werden soll.
-> </text>
->
-> <instructions>
-> Fasse den Text zusammen.
-> </instructions>
+<text>
+Hier steht der Text, der analysiert werden soll.
+</text>
+
+<instructions>
+Fasse den Text zusammen.
+</instructions>
+```
 
 ## Strategie
 

@@ -14,8 +14,8 @@ Wenn du mit Context-Limits kämpfst, kannst du Prompts komprimieren.
 **Prompt:**
 ```text
 Komprimiere den folgenden Text so, dass du (als AI) ihn immer noch verstehst, aber er so wenige Tokens wie möglich verbraucht. Nutze Abkürzungen und Symbolsrpache.
-```>
-> Text: [Lange Instruktion]
+Text: [Lange Instruktion]
+```
 
 ## Strategie
 

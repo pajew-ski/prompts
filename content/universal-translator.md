@@ -15,8 +15,8 @@ Standard-Übersetzung verliert oft den Kontext. Gib dem Modell Kontext mit.
 ```text
 Übersetze den folgenden Satz ins Englische.
 Kontext: Ich sage das zu meinem Chef in einem sehr formellen Meeting, nachdem ich einen Fehler gemacht habe.
-```>
-> Satz: "Das wird nicht wieder vorkommen."
+Satz: "Das wird nicht wieder vorkommen."
+```
 
 ## Strategie
 

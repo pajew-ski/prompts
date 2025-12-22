@@ -15,8 +15,8 @@ Innovation ist oft nur die Kombination existierender Dinge.
 ```text
 Konzept 1: Kaffeemaschine.
 Konzept 2: Wecker.
-```>
-> Verschmelze diese beiden Produkte zu einem neuen, kohärenten Produkt. Beschreibe Design, Funktion und Marketing-Slogan.
+Verschmelze diese beiden Produkte zu einem neuen, kohärenten Produkt. Beschreibe Design, Funktion und Marketing-Slogan.
+```
 
 ## Strategie
 
