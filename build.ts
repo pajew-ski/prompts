@@ -51,23 +51,32 @@ async function build() {
         const htmlContent = await marked.parse(rawBody);
 
         // Smart Extraction Logic
-        let bodyText = rawBody; // Default fallbock
+        let bodyText = rawBody; // Default fallback
 
-        // 1. Try to find a code block named "text", "markdown", or just generic fences
-        const codeBlockMatch = rawBody.match(/```(?:text|markdown|)\n([\s\S]+?)\n```/);
+        // Try to find the "**Prompt:**" section and extract everything until the next section
+        const promptStartMatch = rawBody.match(/\*\*Prompt:\*\*\s*\n/);
 
-        // 2. Try to find the "Prompt:" blockquote section (standard in current files)
-        const blockquoteMatch = rawBody.match(/\*\*Prompt:\*\*\s*\n((?:> .*\n?)+)/);
+        if (promptStartMatch) {
+            const startIndex = promptStartMatch.index! + promptStartMatch[0].length;
+            let remainder = rawBody.substring(startIndex);
 
-        if (codeBlockMatch && codeBlockMatch[1]) {
-            bodyText = codeBlockMatch[1];
-        } else if (blockquoteMatch && blockquoteMatch[1]) {
-            // Clean up blockquote indentation
-            bodyText = blockquoteMatch[1]
-                .split('\n')
-                .map(line => line.replace(/^>\s?/, ''))
-                .join('\n')
+            // Find end of section (next **Header** or ## Header)
+            const nextSectionMatch = remainder.match(/\n(?:\*\*|##|# )/);
+            if (nextSectionMatch) {
+                remainder = remainder.substring(0, nextSectionMatch.index);
+            }
+
+            // Cleanup
+            bodyText = remainder
+                .replace(/```(?:text|markdown)?/g, "") // Remove code fences
+                .replace(/^>\s?/gm, "") // Remove blockquote markers
                 .trim();
+        } else {
+            // Fallback: Try code block if no "**Prompt:**" header found
+            const codeBlockMatch = rawBody.match(/```(?:text|markdown|)\n([\s\S]+?)\n```/);
+            if (codeBlockMatch && codeBlockMatch[1]) {
+                bodyText = codeBlockMatch[1];
+            }
         }
 
         prompts.push({
