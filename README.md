@@ -6,15 +6,15 @@ The project is built as a static site generator using **Bun**, ensuring fast bui
 
 ## Features
 
-- **🇩🇪 German Language Content**: All prompts and strategies are written in German, catering specifically to the DACH region and German-speaking AI enthusiasts.
-- **📚 Extensive Library**: Contains 100+ distinct prompting strategies, range from basic techniques to advanced methods like *Chain-of-Thought*, *ReAct*, and *Tree of Thoughts*.
-- **⚡ Fast Static Generation**: Powered by [Bun](https://bun.com), the build process parses Markdown content and generates a static HTML website instantly.
-- **🕸️ Semantic Data**: Automatically generates RDF (Resource Description Framework) data, exporting the collection as Turtle `.ttl` and JSON-LD, making the strategies machine-readable and semantically linked.
-- **🔍 Search & Discovery**:
+- ** German Language Content**: All prompts and strategies are written in German, catering specifically to the DACH region and German-speaking AI enthusiasts.
+- ** Extensive Library**: Contains 100+ distinct prompting strategies, range from basic techniques to advanced methods like *Chain-of-Thought*, *ReAct*, and *Tree of Thoughts*.
+- ** Fast Static Generation**: Powered by [Bun](https://bun.com), the build process parses Markdown content and generates a static HTML website instantly.
+- ** Semantic Data**: Automatically generates RDF (Resource Description Framework) data, exporting the collection as Turtle `.ttl` and JSON-LD, making the strategies machine-readable and semantically linked.
+- ** Search & Discovery**:
     - **Search**: Real-time search by title and tags.
     - **Filtering**: Filter strategies by difficulty (Beginner, Intermediate, Advanced).
     - **Related Strategies**: Automatically suggests related prompts based on tag overlap.
-- **🎨 Modern Frontend**:
+- ** Modern Frontend**:
     - Minimalist, distraction-free design.
     - Dark/Light mode support.
     - Tag-based navigation.
