@@ -5,8 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{TITLE}}</title>
-    <link rel="icon"
-        href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌱</text></svg>">
+    <link rel="icon" href="icon.svg" type="image/svg+xml">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#fafafa">
     <meta name="description" content="Eine Sovereign Tech Sammlung von AI Prompts und Strategien.">
     <link rel="stylesheet" href="style.css">
     <link rel="alternate" type="text/turtle" title="RDF Graph" href="graph.ttl">
@@ -57,6 +58,13 @@
     </footer>
 
     <script src="script.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js')
+                .then(reg => console.log('SW registered', reg))
+                .catch(err => console.error('SW failed', err));
+        }
+    </script>
 </body>
 
 </html>
