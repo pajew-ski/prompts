@@ -14,9 +14,9 @@ Unser Gehirn lernt durch "Was wäre wenn". Modelle auch.
 **Prompt:**
 ```text
 Analyse: Der erste Weltkrieg.
-```>
-> Counterfactual: Stell dir vor, das Attentat von Sarajevo wäre gescheitert.
-> Wie hätte sich das Jahr 1914 entwickelt? Welche Bündnisse hätten gehalten?
+Counterfactual: Stell dir vor, das Attentat von Sarajevo wäre gescheitert.
+Wie hätte sich das Jahr 1914 entwickelt? Welche Bündnisse hätten gehalten?
+```
 
 ## Strategie
 

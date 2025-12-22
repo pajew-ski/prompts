@@ -14,13 +14,13 @@ Inspirerit von Anthropic's Ansatz. Du definierst eine "Verfassung" (Liste von Re
 **Prompt:**
 ```text
 Du bist ein hilfreicher Assistent.
-```>
-> VERFASSUNG:
-> 1. Sei immer höflich, aber nie unterwürfig.
-> 2. Verweigere Antworten auf illegale Fragen direkt, ohne moralisierende Belehrung.
-> 3. Antworte kurz und prägnant.
->
-> Frage: [User Input]
+VERFASSUNG:
+1. Sei immer höflich, aber nie unterwürfig.
+2. Verweigere Antworten auf illegale Fragen direkt, ohne moralisierende Belehrung.
+3. Antworte kurz und prägnant.
+
+Frage: [User Input]
+```
 
 ## Strategie
 

@@ -14,8 +14,8 @@ Forschungen zeigen: Komplexe Beispiele (mit vielen Berechnungsschritten) im Prom
 **Prompt:**
 ```text
 [Beispiel 1: Extrem komplexe Textaufgabe mit 10 Schritten und ihrer Lösung]
-```>
-> Aufgabe: [Deine Aufgabe]
+Aufgabe: [Deine Aufgabe]
+```
 
 ## Strategie
 

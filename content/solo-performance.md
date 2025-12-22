@@ -16,8 +16,8 @@ difficulty: "Mittel"
 Wir spielen ein Theaterstück mit einem Schauspieler.
 Rolle 1 (Kritiker): Findet Fehler an Idee X.
 Rolle 2 (Fan): Verteidigt Idee X.
-```>
-> Gib den Dialog im Wechsel aus, bis ein Konsens erreicht ist.
+Gib den Dialog im Wechsel aus, bis ein Konsens erreicht ist.
+```
 
 ## Strategie
 

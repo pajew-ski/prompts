@@ -14,11 +14,11 @@ Ziel ist eine Zusammenfassung, die kurz ist, aber *keine* Details verliert. Man 
 **Prompt:**
 ```text
 Artikel: [Text]
-```>
-> Schritt 1: Schreibe eine Zusammenfassung (max 5 Sätze).
-> Schritt 2: Identifiziere 3 wichtige Entitäten aus dem Originaltext, die in der Zusammenfassung fehlen.
-> Schritt 3: Schreibe die Zusammenfassung neu, gleiche Länge, aber integriere die fehlenden Entitäten.
-> Wiederhole dies 3 mal.
+Schritt 1: Schreibe eine Zusammenfassung (max 5 Sätze).
+Schritt 2: Identifiziere 3 wichtige Entitäten aus dem Originaltext, die in der Zusammenfassung fehlen.
+Schritt 3: Schreibe die Zusammenfassung neu, gleiche Länge, aber integriere die fehlenden Entitäten.
+Wiederhole dies 3 mal.
+```
 
 ## Strategie
 

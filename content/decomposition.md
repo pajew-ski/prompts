@@ -14,10 +14,10 @@ Der wichtigste Skill im Software-Engineering, angewandt auf Prompts.
 **Prompt:**
 ```text
 Frage: Wie baue ich ein Haus?
-```>
-> Zerlege dieses massive Problem in 5 Hauptkategorien.
-> Zerlege jede Kategorie in 3 Unterschritte.
-> Gib erst dann eine Zusammenfassung.
+Zerlege dieses massive Problem in 5 Hauptkategorien.
+Zerlege jede Kategorie in 3 Unterschritte.
+Gib erst dann eine Zusammenfassung.
+```
 
 ## Strategie
 

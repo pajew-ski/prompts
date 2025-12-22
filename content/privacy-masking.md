@@ -15,8 +15,8 @@ Schicke niemals echte Kundendaten an eine öffentliche API.
 ```text
 Analysiere diesen Brief.
 Ich habe Namen durch [NAME] und IBANs durch [IBAN] ersetzt.
-```>
-> Text: "Hallo [NAME], ihre Rechnung für [IBAN] ist fällig."
+Text: "Hallo [NAME], ihre Rechnung für [IBAN] ist fällig."
+```
 
 ## Strategie
 

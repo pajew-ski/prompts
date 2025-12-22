@@ -14,9 +14,9 @@ Ersatz für "Let's think step by step" mit Fokus auf Planung. Du forderst das Mo
 **Prompt:**
 ```text
 Frage: [Komplexe Matheaufgabe]
-```>
-> Entwickle zuerst einen Plan, wie du die Aufgabe lösen willst, ohne zu rechnen.
-> Führe danach den Plan aus, um die Lösung zu finden.
+Entwickle zuerst einen Plan, wie du die Aufgabe lösen willst, ohne zu rechnen.
+Führe danach den Plan aus, um die Lösung zu finden.
+```
 
 ## Strategie
 

@@ -15,9 +15,9 @@ Sprachmodelle sind oft westlich/US-zentriert. Man muss sie zwingen, die kulturel
 ```text
 Schreibe eine Marketing-Mail für unser Produkt.
 Produkt: Eine App für Zeitmanagement.
-```>
-> Version A: Zielmarkt USA (Fokus auf "Hustle", Erfolg, Geld).
-> Version B: Zielmarkt Skandinavien (Fokus auf Work-Life-Balance, Familie, Hygge).
+Version A: Zielmarkt USA (Fokus auf "Hustle", Erfolg, Geld).
+Version B: Zielmarkt Skandinavien (Fokus auf Work-Life-Balance, Familie, Hygge).
+```
 
 ## Strategie
 

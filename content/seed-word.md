@@ -14,10 +14,10 @@ Ein subtiler Trick, um die Antwort in eine Richtung zu lenken (ähnlich Output P
 **Prompt:**
 ```text
 Wie findest du meinen neuen Haarschnitt?
-```>
-> [Willst du Ehrlichkeit?] Seed: "Ehrlich..."
-> [Willst du Trost?] Seed: "Naja..."
-> [Willst du Komplimente?] Seed: "Wow..."
+[Willst du Ehrlichkeit?] Seed: "Ehrlich..."
+[Willst du Trost?] Seed: "Naja..."
+[Willst du Komplimente?] Seed: "Wow..."
+```
 
 ## Strategie
 

@@ -15,9 +15,9 @@ Lass die KI die Arbeit machen.
 ```text
 Ich habe diese Input-Output-Paare:
 [Beispiele]
-```>
-> Generiere 5 verschiedene Prompts, die diese Transformation bewirken können.
-> Bewerte jeden Prompt auf Wahrscheinlichkeit, dass er korrekt funktioniert.
+Generiere 5 verschiedene Prompts, die diese Transformation bewirken können.
+Bewerte jeden Prompt auf Wahrscheinlichkeit, dass er korrekt funktioniert.
+```
 
 ## Strategie
 

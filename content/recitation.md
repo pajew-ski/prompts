@@ -14,10 +14,10 @@ difficulty: "Mittel"
 **Prompt:**
 ```text
 Frage: Wer gewann den Super Bowl im Jahr, in dem das iPhone vorgestellt wurde?
-```>
-> Schritt 1: Rezitiere: In welchem Jahr wurde das iPhone vorgestellt?
-> Schritt 2: Rezitiere: Wer gewann den Super Bowl in diesem Jahr?
-> Schritt 3: Kombiniere die Informationen zur Antwort.
+Schritt 1: Rezitiere: In welchem Jahr wurde das iPhone vorgestellt?
+Schritt 2: Rezitiere: Wer gewann den Super Bowl in diesem Jahr?
+Schritt 3: Kombiniere die Informationen zur Antwort.
+```
 
 ## Strategie
 

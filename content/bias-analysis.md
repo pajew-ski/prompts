@@ -14,8 +14,8 @@ Diese Strategie hilft dabei, Texte kritisch zu hinterfragen und subtile Manipula
 **Prompt:**
 ```text
 Analysiere den folgenden Text auf logische Fehlschlüsse (wie Ad Hominem, Strohmann-Argument) und kognitive Verzerrungen (wie Confirmation Bias). Gib für jeden Fund eine kurze Erklärung und ein Zitat aus dem Text an.
-```>
-> Text: "[Hier Text einfügen]"
+Text: "[Hier Text einfügen]"
+```
 
 ## Strategie
 

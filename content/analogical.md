@@ -14,10 +14,10 @@ Fordere das Modell auf, eine relevante Analogie oder ein ähnliches Problem zu f
 **Prompt:**
 ```text
 Problem: Wie können wir die Fluktuation in unserem Unternehmen senken?
-```>
-> Schritt 1: Erinnere dich an ein relevantes Problem aus der Biologie (z.B. wie ein Ökosystem stabil bleibt).
-> Schritt 2: Beschreibe die Lösung in der Biologie.
-> Schritt 3: Übertrage diese Lösung auf das Unternehmen.
+Schritt 1: Erinnere dich an ein relevantes Problem aus der Biologie (z.B. wie ein Ökosystem stabil bleibt).
+Schritt 2: Beschreibe die Lösung in der Biologie.
+Schritt 3: Übertrage diese Lösung auf das Unternehmen.
+```
 
 ## Strategie
 

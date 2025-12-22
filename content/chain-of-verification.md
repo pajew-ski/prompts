@@ -14,11 +14,11 @@ Einer der besten Ansätze gegen Halluzinationen.
 **Prompt:**
 ```text
 Frage: [Frage]
-```>
-> 1. Erstelle einen ersten Entwurf der Antwort.
-> 2. Identifiziere Fakten im Entwurf, die verifiziert werden müssen.
-> 3. Formuliere Überprüfungsfragen für diese Fakten und beantworte sie unabhängig.
-> 4. Schreibe die finale Antwort basierend auf den Antworten aus Schritt 3.
+1. Erstelle einen ersten Entwurf der Antwort.
+2. Identifiziere Fakten im Entwurf, die verifiziert werden müssen.
+3. Formuliere Überprüfungsfragen für diese Fakten und beantworte sie unabhängig.
+4. Schreibe die finale Antwort basierend auf den Antworten aus Schritt 3.
+```
 
 ## Strategie
 

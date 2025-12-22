@@ -14,13 +14,13 @@ Stärkt die Argumentation durch Abgrenzung.
 **Prompt:**
 ```text
 Übersetze "Bank" (Finanzinstitut) ins Deutsche.
-```>
-> Richtig: Bank.
-> Falsch: Ufer (weil das "river bank" wäre).
-> Falsch: Bankett (falscher Kontext).
->
-> Aufgabe: [Neue Aufgabe]
-> Gib erst Kontrast-Beispiele, dann die Lösung.
+Richtig: Bank.
+Falsch: Ufer (weil das "river bank" wäre).
+Falsch: Bankett (falscher Kontext).
+
+Aufgabe: [Neue Aufgabe]
+Gib erst Kontrast-Beispiele, dann die Lösung.
+```
 
 ## Strategie
 

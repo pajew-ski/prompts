@@ -14,12 +14,12 @@ Wenn du den Output weiterverarbeiten willst (in Code), muss das Format stimmen.
 **Prompt:**
 ```text
 Analysiere den Text und gib das Ergebnis NUR als valides JSON zurück. Keine Einleitung, kein Markdown, kein erklärender Text.
-```>
-> Schema:
-> {
->   "sentiment": "string",
->   "score": number
-> }
+Schema:
+{
+  "sentiment": "string",
+  "score": number
+}
+```
 
 ## Strategie
 

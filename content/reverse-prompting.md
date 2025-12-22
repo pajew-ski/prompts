@@ -14,8 +14,8 @@ Du hast einen tollen KI-Text gefunden und willst wissen, wie er entstanden ist? 
 **Prompt:**
 ```text
 Hier ist ein Marketing-Text: "[Text]"
-```>
-> Schreibe mir den Prompt, den ich nutzen müsste, um genau diesen Stil und diese Struktur von dir generieren zu lassen.
+Schreibe mir den Prompt, den ich nutzen müsste, um genau diesen Stil und diese Struktur von dir generieren zu lassen.
+```
 
 ## Strategie
 

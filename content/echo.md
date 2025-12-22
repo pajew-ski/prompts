@@ -14,8 +14,8 @@ Einfach aber effektiv.
 **Prompt:**
 ```text
 Aufgabe: [Komplexe Anweisung]
-```>
-> Bevor du startest: Wiederhole die Aufgabe mit deinen eigenen Worten und bestätige, dass du alle Einschränkungen verstanden hast.
+Bevor du startest: Wiederhole die Aufgabe mit deinen eigenen Worten und bestätige, dass du alle Einschränkungen verstanden hast.
+```
 
 ## Strategie
 

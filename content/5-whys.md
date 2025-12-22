@@ -14,11 +14,11 @@ Eine Methode aus dem Toyota Produktionssystem.
 **Prompt:**
 ```text
 Problem: Der Server ist abgestürzt.
-```>
-> Frage mich 5 mal "Warum?", und simuliere meine Antworten, bis wir die wirkliche Ursache gefunden haben.
-> 1. Warum ist er abgestürzt? (Weil Speicher voll war)
-> 2. Warum war Speicher voll? (Weil Logs nicht gelöscht wurden)
-> ...
+Frage mich 5 mal "Warum?", und simuliere meine Antworten, bis wir die wirkliche Ursache gefunden haben.
+1. Warum ist er abgestürzt? (Weil Speicher voll war)
+2. Warum war Speicher voll? (Weil Logs nicht gelöscht wurden)
+...
+```
 
 ## Strategie
 

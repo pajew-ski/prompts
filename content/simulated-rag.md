@@ -14,13 +14,13 @@ Wenn du kein echtes Vektor-Datenbank-System hast, kannst du RAG simulieren, inde
 **Prompt:**
 ```text
 Nutze AUSSCHLIESSLICH die folgenden Informationen, um die Frage zu beantworten. Wenn die Antwort nicht im Text steht, sag "Weiß ich nicht".
-```>
-> --- KONTEXT ANFANG ---
-> [Auszug aus Handbuch Seite 5]
-> [Auszug aus Wiki Artikel]
-> --- KONTEXT ENDE ---
->
-> Frage: Wie setze ich das Gerät zurück?
+--- KONTEXT ANFANG ---
+[Auszug aus Handbuch Seite 5]
+[Auszug aus Wiki Artikel]
+--- KONTEXT ENDE ---
+
+Frage: Wie setze ich das Gerät zurück?
+```
 
 ## Strategie
 

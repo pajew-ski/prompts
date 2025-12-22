@@ -15,8 +15,8 @@ Manchmal ist es leichter, Beispiele zu geben, als die Regel zu erklären.
 ```text
 Input: "Hallo" -> Output: "ollaH"
 Input: "Welt" -> Output: "tleW"
-```>
-> Was ist die Instruktion? Wende sie dann auf "Prompting" an.
+Was ist die Instruktion? Wende sie dann auf "Prompting" an.
+```
 
 ## Strategie
 

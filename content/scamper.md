@@ -14,12 +14,12 @@ Eine strukturierte Methode zur Ideenfindung.
 **Prompt:**
 ```text
 Gegenstand: Ein Regenschirm.
-```>
-> Wende SCAMPER an, um ihn zu innovieren:
-> - Substitute (Ersetzen): Was kann man statt Stoff nehmen?
-> - Combine (Kombinieren): Womit kann man ihn kombinieren?
-> - ...
-> Gib für jeden Buchstaben eine Idee.
+Wende SCAMPER an, um ihn zu innovieren:
+- Substitute (Ersetzen): Was kann man statt Stoff nehmen?
+- Combine (Kombinieren): Womit kann man ihn kombinieren?
+- ...
+Gib für jeden Buchstaben eine Idee.
+```
 
 ## Strategie
 

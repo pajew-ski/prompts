@@ -18,8 +18,8 @@ Denke Schritt für Schritt (CoT).
 Prüfe deine Fakten (Verification).
 Kritisiere deinen Entwurf (Reflexion).
 Formatiere das Ergebnis als Tabelle (Format).
-```>
-> Aufgabe: Erstelle den ultimativen Guide.
+Aufgabe: Erstelle den ultimativen Guide.
+```
 
 ## Strategie
 

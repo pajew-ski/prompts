@@ -14,9 +14,9 @@ Besonders nützlich bei Code-Generierung oder Mathe.
 **Prompt:**
 ```text
 Aufgabe: [Komplexe Logik]
-```>
-> Nutze einen <scratchpad> Block, um Zwischenergebnisse, Variablenzustände oder Logikschritte festzuhalten.
-> Gib erst danach die finale Antwort aus.
+Nutze einen <scratchpad> Block, um Zwischenergebnisse, Variablenzustände oder Logikschritte festzuhalten.
+Gib erst danach die finale Antwort aus.
+```
 
 ## Strategie
 

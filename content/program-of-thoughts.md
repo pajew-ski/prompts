@@ -14,8 +14,8 @@ LLMs sind oft schlecht im Kopfrechnen, aber gut im Coden. PoT lagert die Berechn
 **Prompt:**
 ```text
 Frage: Berechne die Wurzel aus der Summe der ersten 50 Primzahlen.
-```>
-> Schreibe ein Python-Programm, das dies berechnet. Führe den Code gedanklich aus und gib das Ergebnis.
+Schreibe ein Python-Programm, das dies berechnet. Führe den Code gedanklich aus und gib das Ergebnis.
+```
 
 ## Strategie
 

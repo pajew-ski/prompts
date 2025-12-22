@@ -15,11 +15,11 @@ Reflexion ist ein Prozess, bei dem das Modell seine eigene Arbeit überprüft ("
 ```text
 Schreibe einen kurzen Essay über Quantenphysik.
 [Modell generiert Text]
-```>
-> Kritisiere den obigen Text auf historische Genauigkeit und Verständlichkeit für Laien.
-> [Modell generiert Kritik]
->
-> Schreibe den Essay nun unter Berücksichtigung der Kritik neu.
+Kritisiere den obigen Text auf historische Genauigkeit und Verständlichkeit für Laien.
+[Modell generiert Kritik]
+
+Schreibe den Essay nun unter Berücksichtigung der Kritik neu.
+```
 
 ## Strategie
 

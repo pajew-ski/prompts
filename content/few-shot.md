@@ -14,15 +14,15 @@ Anstatt das Modell nur anzuweisen, was es tun soll (Zero-Shot), gibst du ihm Bei
 **Prompt:**
 ```text
 Bestimme die Stimmung der folgenden Tweets:
-```>
-> Tweet: "Ich liebe das neue Design!"
-> Stimmung: Positiv
->
-> Tweet: "Das Update hat mein Handy zerstört."
-> Stimmung: Negativ
->
-> Tweet: "Es ist okay, aber nichts Besonderes."
-> Stimmung:
+Tweet: "Ich liebe das neue Design!"
+Stimmung: Positiv
+
+Tweet: "Das Update hat mein Handy zerstört."
+Stimmung: Negativ
+
+Tweet: "Es ist okay, aber nichts Besonderes."
+Stimmung:
+```
 
 **Erwartete Antwort:**
 > Neutral

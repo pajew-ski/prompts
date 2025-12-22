@@ -14,9 +14,9 @@ Manchmal verliert sich das Modell in Details. Mit Step-Back Prompting zwingst du
 **Prompt:**
 ```text
 Frage: Warum dehnt sich Wasser aus, wenn es gefriert?
-```>
-> Schritt 1: Was sind die physikalischen Prinzipien hinter Dichte, Wasserstoffbrückenbindungen und festen Aggregatzuständen? Erkläre diese kurz.
-> Schritt 2: Beantworte basierend auf diesen Prinzipien die ursprüngliche Frage.
+Schritt 1: Was sind die physikalischen Prinzipien hinter Dichte, Wasserstoffbrückenbindungen und festen Aggregatzuständen? Erkläre diese kurz.
+Schritt 2: Beantworte basierend auf diesen Prinzipien die ursprüngliche Frage.
+```
 
 ## Strategie
 

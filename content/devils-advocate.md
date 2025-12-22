@@ -14,8 +14,8 @@ Der beste Weg, um Ideen auf Robustheit zu prüfen.
 **Prompt:**
 ```text
 Hier ist mein Plan für den Produktlaunch: [Plan]
-```>
-> Spiele Des Advokats Teufel. Kritisiere den Plan gnadenlos. Suche nach logischen Lücken, falschen Annahmen und Risiken, die ich übersehen habe.
+Spiele Des Advokats Teufel. Kritisiere den Plan gnadenlos. Suche nach logischen Lücken, falschen Annahmen und Risiken, die ich übersehen habe.
+```
 
 ## Strategie
 

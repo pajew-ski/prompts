@@ -14,10 +14,10 @@ Logik (vertikales Denken) vertieft das Loch. Laterales Denken gräbt ein neues L
 **Prompt:**
 ```text
 Problem: Wir haben nicht genug Parkplätze im Büro.
-```>
-> Logische Lösung: Mehr Parkplätze bauen.
->
-> Deine Aufgabe: Finde 5 laterale Lösungen, die das Problem umgehen oder das Konzept "Parkplatz" neu definieren. (z.B. "Niemand kommt mehr ins Büro").
+Logische Lösung: Mehr Parkplätze bauen.
+
+Deine Aufgabe: Finde 5 laterale Lösungen, die das Problem umgehen oder das Konzept "Parkplatz" neu definieren. (z.B. "Niemand kommt mehr ins Büro").
+```
 
 ## Strategie
 

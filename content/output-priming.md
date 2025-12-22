@@ -14,8 +14,8 @@ Das Modell ist ein Autocomplete-Engine. Wenn du den ersten Stein legst, folgt de
 **Prompt:**
 ```text
 Erzähle eine Gruselgeschichte.
-```>
-> Anfang: "Es war eine dunkle und stürmische Nacht, als der alte..."
+Anfang: "Es war eine dunkle und stürmische Nacht, als der alte..."
+```
 
 **Prompt (Code):**
 > Erstelle ein Python-Skript.
