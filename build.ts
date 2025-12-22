@@ -164,8 +164,11 @@ async function build() {
     try {
         await copyFile("./src/style.css", join(DIST_DIR, "style.css"));
         await copyFile("./src/script.js", join(DIST_DIR, "script.js"));
+        await copyFile("./src/icon.svg", join(DIST_DIR, "icon.svg"));
+        await copyFile("./src/manifest.json", join(DIST_DIR, "manifest.json"));
+        await copyFile("./src/sw.js", join(DIST_DIR, "sw.js"));
     } catch (e) {
-        console.log("⚠️ CSS/JS not found yet, skipping copy.");
+        console.log("⚠️ Assets not found yet, skipping copy.", e);
     }
 
     // 8. Generate RDF

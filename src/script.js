@@ -82,53 +82,77 @@ document.addEventListener('DOMContentLoaded', () => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
-    // Card Expand Logic (Click anywhere on card)
-    // Card Expand Logic (Click anywhere on card)
+    // --- Click Logic: 1x Toggle, 2x Copy, 3x Close ---
+    let clickCount = 0;
+    let clickTimer = null;
+    const CLICK_DELAY = 400; // ms
+
     container.addEventListener('click', (e) => {
-        // 1. Handle Copy Button Click
+        const card = e.target.closest('.prompt-card');
+        if (!card) return;
+
+        // Handle specific Copy Button (always copy)
         const copyBtn = e.target.closest('.copy-btn');
         if (copyBtn) {
-            e.stopPropagation();
-            const card = copyBtn.closest('.prompt-card');
+            e.stopPropagation(); // Don't trigger the card logic
             const rawText = decodeURIComponent(card.getAttribute('data-copy-text'));
             copyToClipboard(rawText, copyBtn);
             return;
         }
 
-        const card = e.target.closest('.prompt-card');
-        if (!card) return;
-
-        // Prevent toggling if clicking on tags, links, or the summary itself (native behavior)
+        // Ignore interactive elements
         if (e.target.closest('a') || e.target.closest('.tag') || e.target.closest('summary')) {
             return;
         }
 
-        // Prevent double-toggle on double click (only handle single click)
-        if (e.detail > 1) return;
+        clickCount++;
 
+        if (clickCount === 1) {
+            // Wait to see if it becomes a double click
+            clickTimer = setTimeout(() => {
+                // It stayed a single click -> Toggle
+                clickCount = 0;
+                toggleCard(card);
+            }, CLICK_DELAY);
+
+        } else if (clickCount === 2) {
+            // It is a double click -> Copy
+            clearTimeout(clickTimer); // Cancel toggle
+
+            // Perform Copy
+            const rawText = decodeURIComponent(card.getAttribute('data-copy-text'));
+            const btn = card.querySelector('.copy-btn');
+            copyToClipboard(rawText, btn);
+
+            // Wait briefly to see if it becomes a triple click
+            clickTimer = setTimeout(() => {
+                clickCount = 0;
+            }, CLICK_DELAY);
+
+        } else if (clickCount === 3) {
+            // It is a triple click -> Close
+            clearTimeout(clickTimer);
+            clickCount = 0;
+
+            console.log("Triple click detected. Closing...");
+            try {
+                window.close();
+            } catch (err) {
+                console.warn("Could not close window:", err);
+            }
+        }
+    });
+
+    function toggleCard(card) {
         const details = card.querySelector('details');
         if (details) {
-            // Toggle open attribute logic
             if (details.hasAttribute('open')) {
                 details.removeAttribute('open');
             } else {
                 details.setAttribute('open', '');
             }
         }
-    });
-
-    // Double Click Logic (Copy)
-    container.addEventListener('dblclick', (e) => {
-        const card = e.target.closest('.prompt-card');
-        if (!card) return;
-
-        // Optional: Ignore if clicking on interactive elements that consume dblclick
-        if (e.target.closest('a') || e.target.closest('input')) return;
-
-        const rawText = decodeURIComponent(card.getAttribute('data-copy-text'));
-        const btn = card.querySelector('.copy-btn');
-        copyToClipboard(rawText, btn);
-    });
+    }
 
     async function copyToClipboard(text, btnElement) {
         if (!text) return;
@@ -152,21 +176,39 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Theme Toggle Logic
+    // --- Theme Logic ---
     if (themeToggle) {
+        // 1. Initial Load: Check LocalStorage, then System
         const savedTheme = localStorage.getItem('theme');
-        if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+
+        if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark.matches)) {
             document.documentElement.setAttribute('data-theme', 'dark');
+        } else {
+             document.documentElement.setAttribute('data-theme', 'light');
         }
 
+        // 2. System Change Listener
+        // Requirement: "System settings automatically follow... overrides manual toggle until automation strikes again"
+        // Interpretation: When system changes, it takes priority and clears manual override.
+        systemPrefersDark.addEventListener('change', (e) => {
+            const newTheme = e.matches ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', newTheme);
+
+            // Clear manual override so it sticks to system now
+            localStorage.removeItem('theme');
+        });
+
+        // 3. Manual Toggle
         themeToggle.addEventListener('click', () => {
             const currentTheme = document.documentElement.getAttribute('data-theme');
             const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
             document.documentElement.setAttribute('data-theme', newTheme);
             localStorage.setItem('theme', newTheme);
         });
     }
 
-    // Initial Render to ensure sort order matches default (A-Z or Relevance)
+    // Initial Render
     updateGrid();
 });
