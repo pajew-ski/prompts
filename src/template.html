@@ -20,12 +20,10 @@
 <body>
     <header>
         <div class="container header-content">
-            <div class="header-left">
-                <h1>Prompts</h1>
-            </div>
+            <h1 class="sr-only">Prompts</h1>
             <div class="controls-container">
                 <div class="search-wrapper">
-                    <input type="text" id="search" placeholder="Suche..." aria-label="Suche">
+                    <input type="text" id="search" placeholder=">_ Prompts finden ..." aria-label="Suche">
                 </div>
                 <div class="filter-wrapper">
                     <select id="sort-select" aria-label="Sortierung">
@@ -38,10 +36,21 @@
                         <option value="anfänger">Anfänger</option>
                         <option value="mittel">Mittel</option>
                         <option value="fortgeschritten">Fortgeschritten</option>
-
                     </select>
+                    <button id="theme-toggle" aria-label="Design wechseln">
+                        <svg class="theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                             <circle cx="12" cy="12" r="5"></circle>
+                             <line x1="12" y1="1" x2="12" y2="3"></line>
+                             <line x1="12" y1="21" x2="12" y2="23"></line>
+                             <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                             <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                             <line x1="1" y1="12" x2="3" y2="12"></line>
+                             <line x1="21" y1="12" x2="23" y2="12"></line>
+                             <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                             <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                        </svg>
+                    </button>
                 </div>
-                <button id="theme-toggle" aria-label="Design wechseln">◐</button>
             </div>
         </div>
     </header>

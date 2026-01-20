@@ -136,9 +136,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
             console.log("Triple click detected. Closing...");
             try {
+                // Workaround for "Scripts may close only the windows that were opened by it"
+                window.opener = null;
+                window.open("", "_self");
                 window.close();
             } catch (err) {
                 console.warn("Could not close window:", err);
+                alert("Window could not be closed automatically due to browser security restrictions.");
             }
         }
     });
@@ -178,14 +182,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Theme Logic ---
     if (themeToggle) {
+        // Helper to update meta theme-color
+        const updateMetaThemeColor = (theme) => {
+            const metaThemeColor = document.querySelector('meta[name="theme-color"]');
+            if (metaThemeColor) {
+                // Colors match CSS variables: --bg-color
+                // Light: #fafafa, Dark: #1a1a1a
+                metaThemeColor.setAttribute('content', theme === 'dark' ? '#1a1a1a' : '#fafafa');
+            }
+        };
+
         // 1. Initial Load: Check LocalStorage, then System
         const savedTheme = localStorage.getItem('theme');
         const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)');
 
         if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark.matches)) {
             document.documentElement.setAttribute('data-theme', 'dark');
+            updateMetaThemeColor('dark');
         } else {
-             document.documentElement.setAttribute('data-theme', 'light');
+            document.documentElement.setAttribute('data-theme', 'light');
+            updateMetaThemeColor('light');
         }
 
         // 2. System Change Listener
@@ -194,6 +210,7 @@ document.addEventListener('DOMContentLoaded', () => {
         systemPrefersDark.addEventListener('change', (e) => {
             const newTheme = e.matches ? 'dark' : 'light';
             document.documentElement.setAttribute('data-theme', newTheme);
+            updateMetaThemeColor(newTheme);
 
             // Clear manual override so it sticks to system now
             localStorage.removeItem('theme');
@@ -205,6 +222,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
 
             document.documentElement.setAttribute('data-theme', newTheme);
+            updateMetaThemeColor(newTheme);
             localStorage.setItem('theme', newTheme);
         });
     }
