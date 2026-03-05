@@ -160,23 +160,52 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function copyToClipboard(text, btnElement) {
         if (!text) return;
-        try {
-            await navigator.clipboard.writeText(text);
 
-            // Visual Feedback
-            if (btnElement) {
-                const originalContent = btnElement.innerHTML;
-                // Checkmark icon
-                btnElement.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
-                btnElement.classList.add('copied');
+        let success = false;
 
-                setTimeout(() => {
-                    btnElement.innerHTML = originalContent;
-                    btnElement.classList.remove('copied');
-                }, 2000);
+        // Try modern Clipboard API first (requires secure context + clipboard-write permission)
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            try {
+                await navigator.clipboard.writeText(text);
+                success = true;
+            } catch (err) {
+                // Fails silently in iframes (e.g. Home Assistant Ingress) — fall through to legacy
+                console.warn("Clipboard API unavailable, trying execCommand fallback:", err);
             }
-        } catch (err) {
-            console.error('Failed to copy!', err);
+        }
+
+        // Fallback: execCommand — works inside iframes without clipboard-write permission policy
+        if (!success) {
+            try {
+                const textarea = document.createElement("textarea");
+                textarea.value = text;
+                textarea.style.position = "fixed";
+                textarea.style.left = "-9999px";
+                textarea.style.top = "-9999px";
+                textarea.setAttribute("readonly", "");
+                document.body.appendChild(textarea);
+                textarea.focus();
+                textarea.select();
+                success = document.execCommand("copy");
+                document.body.removeChild(textarea);
+            } catch (err) {
+                console.error("execCommand fallback also failed:", err);
+            }
+        }
+
+        // Visual Feedback
+        if (success && btnElement) {
+            const originalContent = btnElement.innerHTML;
+            // Checkmark icon
+            btnElement.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+            btnElement.classList.add("copied");
+
+            setTimeout(() => {
+                btnElement.innerHTML = originalContent;
+                btnElement.classList.remove("copied");
+            }, 2000);
+        } else if (!success) {
+            console.error("Failed to copy text — both Clipboard API and execCommand failed.");
         }
     }
 

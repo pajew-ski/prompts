@@ -116,6 +116,7 @@ The prompt text **must** be in a fenced code block tagged as ` ```text ` or ` ``
   - Double click → copy prompt text to clipboard
   - Triple click → attempt `window.close()`
 - **Copy button** (`.copy-btn`): always copies, shows checkmark for 2 seconds
+- **Clipboard strategy**: tries `navigator.clipboard.writeText()` first; falls back to `document.execCommand('copy')` via a temporary `<textarea>`. The fallback is required for embedded contexts such as **Home Assistant Ingress**, where the parent iframe does not grant the `clipboard-write` permission policy.
 - **Theme**: checks `localStorage('theme')` then `prefers-color-scheme`; system changes clear manual override; sets `data-theme` on `<html>`
 
 ## TypeScript Configuration
@@ -164,3 +165,4 @@ Run with: `bun test`
 8. **RDF base URI**: `rdf.ts` hardcodes `http://localhost:3000/` — this should be updated to the production domain before deploying to a custom domain.
 9. **Run tests before committing**: `bun test` validates all content files. A failing content test means a file has malformed frontmatter or is missing the required code block.
 10. **Slug is filename**: Each prompt's URL slug is derived from its filename (minus `.md`). Use lowercase, hyphen-separated filenames (e.g., `chain-of-thought.md`).
+11. **Home Assistant Ingress compatibility**: The site is designed to work inside HA Ingress iframes. The `copyToClipboard` function must always include the `execCommand` fallback because HA Ingress does not grant `clipboard-write` permission to embedded frames. Do not remove the fallback.
