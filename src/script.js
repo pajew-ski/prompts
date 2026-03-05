@@ -14,6 +14,16 @@ document.addEventListener('DOMContentLoaded', () => {
         difficulty: (card.querySelector('.difficulty-badge')?.textContent || '').toLowerCase()
     }));
 
+    // Shuffle cards randomly on startup (Fisher-Yates)
+    for (let i = cards.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [cards[i], cards[j]] = [cards[j], cards[i]];
+    }
+    // Store random order index so we can restore it later
+    cards.forEach((card, idx) => {
+        card.randomOrder = idx;
+    });
+
     function updateGrid() {
         const query = searchInput.value.toLowerCase();
         const sortMode = sortSelect.value; // 'relevance', 'az', 'za'
@@ -44,17 +54,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // 2. Sort
         results.sort((a, b) => {
-            // If searching (and sort is relevance), prioritize score
-            if (query && sortMode === 'relevance') {
+            if (sortMode === 'az') return a.title.localeCompare(b.title);
+            if (sortMode === 'za') return b.title.localeCompare(a.title);
+
+            // sortMode === 'relevance'
+            if (query) {
+                // With search query: sort by semantic relevance score
                 return b.score - a.score;
             }
-
-            // Otherwise (or if explicitly sorting A-Z/Z-A), sort by title
-            if (sortMode === 'za') {
-                return b.title.localeCompare(a.title);
-            }
-            // Default to A-Z
-            return a.title.localeCompare(b.title);
+            // No query: preserve the random startup order
+            return a.randomOrder - b.randomOrder;
         });
 
         // 3. Render (DOM Manipulation)
