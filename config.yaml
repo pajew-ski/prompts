@@ -1,6 +1,6 @@
 name: "Prompts"
 description: "100+ KI-Prompting-Strategien – durchsuchbar, filterbar, sofort kopierbar."
-version: "1.0.0"
+version: "1.0.1"
 slug: "prompts"
 url: "https://github.com/pajew-ski/prompts"
 arch:
