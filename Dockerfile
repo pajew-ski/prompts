@@ -1,3 +1,5 @@
+ARG BUILD_FROM
+
 # Stage 1: Build static site with Bun
 FROM oven/bun:1-alpine AS builder
 
@@ -13,7 +15,6 @@ COPY content/ content/
 RUN bun run build.ts
 
 # Stage 2: Serve with nginx on HA base image
-ARG BUILD_FROM
 FROM ${BUILD_FROM}
 
 RUN apk add --no-cache nginx
@@ -28,7 +29,7 @@ COPY nginx.conf /etc/nginx/http.d/default.conf
 COPY run.sh /run.sh
 RUN chmod a+x /run.sh
 
-LABEL io.hass.version="1.0.0" \
+LABEL io.hass.version="1.0.2" \
       io.hass.type="addon" \
       io.hass.arch="amd64|aarch64|armv7|armhf|i386"
 
