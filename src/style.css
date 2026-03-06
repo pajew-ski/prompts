@@ -25,34 +25,31 @@
     --radius-md: 0.5rem;
     --radius-lg: 0.75rem;
 
-    --font-main: 'Inter', system-ui, -apple-system, sans-serif;
+    --font-main: "Roboto", "Noto", "Inter", system-ui, -apple-system, sans-serif;
 
     --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
     --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
 }
 
 [data-theme="dark"] {
-    /* Dark Mode (Soft Dark) */
-    --bg-color: #1a1a1a;
-    /* Pleasant dark gray, not black */
-    --text-color: #e5e5e5;
+    /* Dark Mode – aligned with Home Assistant dark theme defaults */
+    --bg-color: #111111;
+    --text-color: #e1e1e1;
     --primary-color: #ffffff;
-    --secondary-color: #a3a3a3;
+    --secondary-color: #9b9b9b;
 
-    --card-bg: #262626;
-    /* Slightly lighter surface */
-    --card-border: #404040;
-    --input-bg: #262626;
-    --border-color: #404040;
+    --card-bg: #1c1c1c;
+    --card-border: #333333;
+    --input-bg: #1c1c1c;
+    --border-color: #333333;
 
-    --badge-bg: #333333;
-    --badge-text: #e5e5e5;
-    --tag-bg: #333333;
+    --badge-bg: #2a2a2a;
+    --badge-text: #e1e1e1;
+    --tag-bg: #2a2a2a;
     --tag-text: #d4d4d4;
 
     --shadow-sm: none;
     --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
-    /* Subtle shadow for depth */
 }
 
 * {
