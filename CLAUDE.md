@@ -21,13 +21,22 @@ prompts/
 ├── tests/
 │   ├── build.test.ts # Verifies build produces dist/index.html
 │   └── content.test.ts # Validates every content/*.md file's frontmatter and body format
+├── translations/
+│   └── en.yaml       # HA add-on translations stub
 ├── build.ts          # Main build script: parses content/, generates dist/
 ├── rdf.ts            # RDF/Turtle and JSON-LD semantic data generator
-├── serve.ts          # Local dev server (Bun, port 3000, serves dist/)
+├── serve.ts          # Dev server (Bun); supports HA Ingress via env vars
 ├── index.ts          # CLI entry point dispatching build/serve/test/help commands
 ├── package.json      # Scripts delegate to index.ts
 ├── tsconfig.json     # Strict TypeScript (ESNext, bundler resolution, noEmit)
 ├── .prettierrc       # 4-space indent, double quotes, trailing commas (ES5), printWidth 100
+├── config.yaml       # Home Assistant add-on configuration
+├── build.yaml        # HA add-on base images per architecture
+├── Dockerfile        # Multi-stage: oven/bun builds site, HA base + nginx serves
+├── nginx.conf        # nginx config for HA add-on (port 8099)
+├── run.sh            # HA add-on entry point (starts nginx)
+├── repository.yaml   # HA add-on repository metadata
+├── DOCS.md           # Documentation shown in HA add-on UI (German)
 └── .github/workflows/deploy.yml  # GitHub Actions: build → deploy to GitHub Pages on push to main
 ```
 
@@ -153,6 +162,29 @@ Run with: `bun test`
 - Steps: checkout → setup Bun (latest) → `bun install` → `bun run build.ts` → upload `dist/` → deploy to GitHub Pages
 - The deploy branch is `main` (not `master`)
 
+## Home Assistant Add-on
+
+The project doubles as a Home Assistant add-on. All HA-specific files live in the repo root:
+
+- **`config.yaml`**: Add-on metadata — name, version, ingress config, supported architectures. **Bump the `version` field every time you change anything that affects the Docker image** (Dockerfile, nginx.conf, run.sh, build pipeline, content, styles, JS). HA caches images by version; same version = no rebuild.
+- **`build.yaml`**: Maps architectures to HA base images (`ghcr.io/home-assistant/*-base:latest`).
+- **`Dockerfile`**: Multi-stage build. Stage 1 uses `oven/bun:1-alpine` to install deps and run `build.ts`. Stage 2 copies `dist/` into the HA base image and installs nginx. Bun is **not** needed at runtime.
+- **`nginx.conf`**: Serves static files from `/var/www/html` on port 8099. HA Ingress proxies to this port.
+- **`run.sh`**: Entry point — starts nginx in foreground (`daemon off`).
+- **`repository.yaml`**: Allows HA to discover the add-on when the repo URL is added as a custom repository.
+- **`DOCS.md`**: German documentation shown in the HA add-on info panel.
+- **`translations/en.yaml`**: Required translations stub.
+
+### Ingress
+
+- `config.yaml` sets `ingress: true` and `ingress_port: 8099`.
+- `serve.ts` (used in standalone mode) reads `INGRESS_PORT` and `INGRESS_HOST` env vars and strips the `X-Ingress-Path` header prefix from request paths.
+- In the Docker add-on, nginx handles serving directly — `serve.ts` is not used at runtime.
+
+### Version Bumping
+
+**Every change that affects the built Docker image requires a version bump in `config.yaml`.** This includes changes to: Dockerfile, nginx.conf, run.sh, build.ts, rdf.ts, any file in `src/`, any file in `content/`, package.json. Without a version bump, HA will not rebuild the image and users won't see the update.
+
 ## Key Conventions for AI Assistants
 
 1. **Language**: All content in `content/` is written in **German**. Keep it German.
@@ -166,3 +198,7 @@ Run with: `bun test`
 9. **Run tests before committing**: `bun test` validates all content files. A failing content test means a file has malformed frontmatter or is missing the required code block.
 10. **Slug is filename**: Each prompt's URL slug is derived from its filename (minus `.md`). Use lowercase, hyphen-separated filenames (e.g., `chain-of-thought.md`).
 11. **Home Assistant Ingress compatibility**: The site is designed to work inside HA Ingress iframes. The `copyToClipboard` function must always include the `execCommand` fallback because HA Ingress does not grant `clipboard-write` permission to embedded frames. Do not remove the fallback.
+12. **HA add-on version bump**: Every change that affects the Docker image (Dockerfile, nginx.conf, run.sh, build.ts, src/*, content/*, package.json) **must** include a version bump in `config.yaml`. HA caches by version — same version means no rebuild.
+13. **Dockerfile is multi-stage**: Stage 1 (`oven/bun:1-alpine`) builds the static site. Stage 2 (HA base image) serves with nginx. Do **not** try to install Bun on HA base images — the Alpine/musl combination is unreliable.
+14. **Dark mode colors**: Aligned with HA dark theme defaults (`#111111` background, `#1c1c1c` card surfaces, `#e1e1e1` text). Keep these in sync if HA changes their defaults.
+15. **Font stack**: Uses `Roboto, Noto, Inter, system-ui` — Roboto and Noto are HA's default fonts.
