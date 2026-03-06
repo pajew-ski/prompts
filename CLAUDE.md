@@ -168,7 +168,7 @@ The project doubles as a Home Assistant add-on. All HA-specific files live in th
 
 - **`config.yaml`**: Add-on metadata — name, version, ingress config, supported architectures. **Bump the `version` field every time you change anything that affects the Docker image** (Dockerfile, nginx.conf, run.sh, build pipeline, content, styles, JS). HA caches images by version; same version = no rebuild.
 - **`build.yaml`**: Maps architectures to HA base images (`ghcr.io/home-assistant/*-base:latest`).
-- **`Dockerfile`**: Multi-stage build. Stage 1 uses `oven/bun:1-alpine` to install deps and run `build.ts`. Stage 2 copies `dist/` into the HA base image and installs nginx. Bun is **not** needed at runtime.
+- **`Dockerfile`**: Multi-stage build. Stage 1 uses `node:22-alpine` with `tsx` to run `build.ts` (not Bun — HA hosts often lack AVX support which Bun requires). Stage 2 copies `dist/` into the HA base image and installs nginx.
 - **`nginx.conf`**: Serves static files from `/var/www/html` on port 8099. HA Ingress proxies to this port.
 - **`run.sh`**: Entry point — starts nginx in foreground (`daemon off`).
 - **`repository.yaml`**: Allows HA to discover the add-on when the repo URL is added as a custom repository.
@@ -199,6 +199,6 @@ The project doubles as a Home Assistant add-on. All HA-specific files live in th
 10. **Slug is filename**: Each prompt's URL slug is derived from its filename (minus `.md`). Use lowercase, hyphen-separated filenames (e.g., `chain-of-thought.md`).
 11. **Home Assistant Ingress compatibility**: The site is designed to work inside HA Ingress iframes. The `copyToClipboard` function must always include the `execCommand` fallback because HA Ingress does not grant `clipboard-write` permission to embedded frames. Do not remove the fallback.
 12. **HA add-on version bump**: Every change that affects the Docker image (Dockerfile, nginx.conf, run.sh, build.ts, src/*, content/*, package.json) **must** include a version bump in `config.yaml`. HA caches by version — same version means no rebuild.
-13. **Dockerfile is multi-stage**: Stage 1 (`oven/bun:1-alpine`) builds the static site. Stage 2 (HA base image) serves with nginx. Do **not** try to install Bun on HA base images — the Alpine/musl combination is unreliable.
+13. **Dockerfile is multi-stage**: Stage 1 (`node:22-alpine` + `tsx`) builds the static site. Stage 2 (HA base image) serves with nginx. Do **not** use Bun in Docker — HA hosts often lack AVX CPU support which Bun requires. The build scripts (`build.ts`, `rdf.ts`) use only standard Node.js APIs (`fs/promises`, `path`) so `tsx` runs them without issues.
 14. **Dark mode colors**: Aligned with HA dark theme defaults (`#111111` background, `#1c1c1c` card surfaces, `#e1e1e1` text). Keep these in sync if HA changes their defaults.
 15. **Font stack**: Uses `Roboto, Noto, Inter, system-ui` — Roboto and Noto are HA's default fonts.
