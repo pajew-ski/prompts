@@ -220,48 +220,106 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Theme Logic ---
     if (themeToggle) {
-        // Helper to update meta theme-color
-        const updateMetaThemeColor = (theme) => {
-            const metaThemeColor = document.querySelector('meta[name="theme-color"]');
-            if (metaThemeColor) {
-                // Colors match CSS variables: --bg-color
-                // Light: #fafafa, Dark: #1a1a1a
-                metaThemeColor.setAttribute('content', theme === 'dark' ? '#1a1a1a' : '#fafafa');
-            }
+        const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+        const VALID_MODES = ["light", "dark", "auto"];
+
+        // SVG icons for each mode
+        const THEME_ICONS = {
+            light: `<svg class="theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="12" cy="12" r="5"></circle>
+                <line x1="12" y1="1" x2="12" y2="3"></line>
+                <line x1="12" y1="21" x2="12" y2="23"></line>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                <line x1="1" y1="12" x2="3" y2="12"></line>
+                <line x1="21" y1="12" x2="23" y2="12"></line>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+            </svg>`,
+            dark: `<svg class="theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+            </svg>`,
+            auto: `<svg class="theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                <line x1="8" y1="21" x2="16" y2="21"></line>
+                <line x1="12" y1="17" x2="12" y2="21"></line>
+            </svg>`,
         };
 
-        // 1. Initial Load: Check LocalStorage, then System
-        const savedTheme = localStorage.getItem('theme');
-        const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+        const THEME_LABELS = {
+            light: "Hell-Modus (klicken für Dunkel)",
+            dark: "Dunkel-Modus (klicken für Auto)",
+            auto: "Automatischer Modus (klicken für Hell)",
+        };
 
-        if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark.matches)) {
-            document.documentElement.setAttribute('data-theme', 'dark');
-            updateMetaThemeColor('dark');
-        } else {
-            document.documentElement.setAttribute('data-theme', 'light');
-            updateMetaThemeColor('light');
+        // Returns the visual theme ('light' | 'dark') for a given mode
+        function getEffectiveTheme(mode) {
+            if (mode === "dark") return "dark";
+            if (mode === "light") return "light";
+            // auto: follow system
+            return systemPrefersDark.matches ? "dark" : "light";
         }
 
-        // 2. System Change Listener
-        // Requirement: "System settings automatically follow... overrides manual toggle until automation strikes again"
-        // Interpretation: When system changes, it takes priority and clears manual override.
-        systemPrefersDark.addEventListener('change', (e) => {
-            const newTheme = e.matches ? 'dark' : 'light';
-            document.documentElement.setAttribute('data-theme', newTheme);
-            updateMetaThemeColor(newTheme);
+        function updateMetaThemeColor(effectiveTheme) {
+            const metaThemeColor = document.querySelector('meta[name="theme-color"]');
+            if (metaThemeColor) {
+                metaThemeColor.setAttribute("content", effectiveTheme === "dark" ? "#1a1a1a" : "#fafafa");
+            }
+        }
 
-            // Clear manual override so it sticks to system now
-            localStorage.removeItem('theme');
+        // Apply a mode ('light' | 'dark' | 'auto') and persist it
+        function applyMode(mode) {
+            currentMode = mode;
+            const effective = getEffectiveTheme(mode);
+            document.documentElement.setAttribute("data-theme", effective);
+            updateMetaThemeColor(effective);
+            themeToggle.innerHTML = THEME_ICONS[mode];
+            themeToggle.setAttribute("aria-label", THEME_LABELS[mode]);
+            localStorage.setItem("theme", mode);
+        }
+
+        // Refresh the effective theme without changing the mode (used by auto listeners)
+        function refreshAutoTheme() {
+            if (currentMode === "auto") {
+                const effective = getEffectiveTheme("auto");
+                document.documentElement.setAttribute("data-theme", effective);
+                updateMetaThemeColor(effective);
+            }
+        }
+
+        // 1. Determine initial mode
+        //    Priority: localStorage → URL param → 'auto'
+        const savedTheme = localStorage.getItem("theme");
+        const urlTheme = new URLSearchParams(location.search).get("theme");
+
+        let currentMode = "auto"; // default
+        if (savedTheme && VALID_MODES.includes(savedTheme)) {
+            currentMode = savedTheme;
+        } else if (urlTheme && VALID_MODES.includes(urlTheme)) {
+            currentMode = urlTheme;
+        }
+
+        applyMode(currentMode);
+
+        // 2. System change listener — only re-applies when mode is 'auto'
+        systemPrefersDark.addEventListener("change", refreshAutoTheme);
+
+        // 3. postMessage from HA parent — applies only in auto mode
+        //    HA sends: { type: 'theme-update', theme: 'dark' | 'light' }
+        window.addEventListener("message", (e) => {
+            if (e.data?.type === "theme-update") {
+                const haTheme = e.data.theme;
+                if (currentMode === "auto" && (haTheme === "dark" || haTheme === "light")) {
+                    document.documentElement.setAttribute("data-theme", haTheme);
+                    updateMetaThemeColor(haTheme);
+                }
+            }
         });
 
-        // 3. Manual Toggle
-        themeToggle.addEventListener('click', () => {
-            const currentTheme = document.documentElement.getAttribute('data-theme');
-            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-
-            document.documentElement.setAttribute('data-theme', newTheme);
-            updateMetaThemeColor(newTheme);
-            localStorage.setItem('theme', newTheme);
+        // 4. Manual Toggle: cycle auto → light → dark → auto
+        themeToggle.addEventListener("click", () => {
+            const cycle = { auto: "light", light: "dark", dark: "auto" };
+            applyMode(cycle[currentMode] || "auto");
         });
     }
 
