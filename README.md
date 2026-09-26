@@ -1,87 +1,42 @@
-# PROMPTS
+# prompts
 
-Eine Sammlung von **100+ KI-Prompting-Strategien** auf Deutsch – durchsuchbar, filterbar und sofort kopierbar.
+Hundert Prompting-Strategien für Sprachmodelle, auf Deutsch, als eine Seite, dazu Skills und Agenten-Anweisungen in den Standardformaten `SKILL.md` und `AGENTS.md`. Suchen, aufklappen, kopieren. Eine HTML-Datei mit allem darin; die Standarddateien liegen daneben, wo Werkzeuge sie erwarten.
 
-## Features
+**Seite**: [pajew-ski.github.io/prompts](https://pajew-ski.github.io/prompts/)
 
-- **100+ Strategien** von Chain-of-Thought bis Tree-of-Thought, ReAct u.v.m.
-- **Echtzeit-Suche** über Titel, Tags und Inhalte
-- **Filter** nach Schwierigkeitsgrad (Anfänger / Mittel / Fortgeschritten)
-- **Doppelklick** oder Kopier-Button kopiert den Prompt-Text
-- **Dark/Light Mode** – folgt automatisch dem System-Theme
-- **Semantische Daten** – RDF/Turtle und JSON-LD Export
-- **PWA** – offline nutzbar nach dem ersten Laden
+## Was drin ist
 
----
+Eine Prompting-Strategie ist ein wiederverwendbares Muster für die Anweisung an ein Sprachmodell: Chain of Thought lässt es Zwischenschritte ausgeben, Few-Shot zeigt ihm Beispiele, ein Persona-Prompt gibt ihm eine Rolle. Jede Karte auf der Seite ist eine solche Strategie mit einem Satz zum Zweck, Schlagworten, einer Erklärung und einem Beispiel-Prompt, den ein Knopf in die Zwischenablage kopiert.
 
-## Standalone (ohne Home Assistant)
+Drei Stufen sagen, wie viel Vorwissen eine Strategie braucht: Anfänger funktioniert mit einem Satz im Prompt, Mittel braucht etwas Struktur, Fortgeschritten setzt auf mehrere Schritte oder mehrere Prompts.
 
-### Voraussetzungen
+Die Suche läuft im Browser über Titel, Schlagworte und Text. Ein Schlagwort anklicken filtert danach, der Titel einer Karte ist ihr Link. Nichts wird nachgeladen, nichts gesendet.
 
-- **[Bun](https://bun.sh)** (v1.0+)
+## Skills und Agenten
 
-### Installation & Start
+Zwei weitere Kartenarten sind Dateien in Standardformaten, die Coding-Agenten lesen:
+
+- **Skills** nach dem [Agent-Skills-Standard](https://agentskills.io): `skills/<name>/SKILL.md` mit `name` und `description` im Kopf und der Anleitung darunter. Claude Code, Codex und andere laden einen Skill, wenn die Beschreibung auf die Aufgabe passt.
+- **Agenten** nach dem [AGENTS.md-Standard](https://agents.md): `agents/<name>/AGENTS.md`, die Anweisung, die im Wurzelverzeichnis eines Repos sagt, wie darin gearbeitet wird.
+
+Die Karte zeigt die Datei, ein Knopf kopiert sie, einer speichert sie unter ihrem Namen. Die Dateien liegen zugleich im Repo, damit Werkzeuge sie an ihrem Pfad finden; ein Check hält Karte und Datei byte-gleich. Eigene Skills und Agenten kommen als Datei plus Karte dazu, siehe [CONTRIBUTING.md](CONTRIBUTING.md).
+
+## Lokal ausführen
 
 ```bash
 git clone https://github.com/pajew-ski/prompts.git
 cd prompts
-bun install
-bun run build
-bun run serve
+open index.html
 ```
 
-Die Seite läuft unter `http://localhost:3000`.
+Die ganze App ist `index.html`; diese eine Datei läuft überall, wohin man sie kopiert. Es gibt keinen Build-Schritt und keine Abhängigkeit. Jeder statische Host liefert sie so aus, wie sie ist; auf GitHub Pages aus dem Root von `main`. Die Footer-Links passen sich einem Fork von selbst an.
 
----
+Als Home-Assistant-Add-on kommt die Seite über die [Home Assistant Apps Collection](https://github.com/pajew-ski/home-assistant-apps-collection), zusammen mit den Geschwister-Apps.
 
-## Home Assistant Add-on
+## Mitmachen
 
-Das Projekt kann als **Home Assistant Add-on** direkt in der Sidebar installiert werden.
-
-### Installation
-
-1. In Home Assistant: **Einstellungen → Add-ons → Add-on Store**
-2. Oben rechts auf **⋮ → Repositories** klicken
-3. Repository-URL hinzufügen:
-   ```
-   https://github.com/pajew-ski/prompts
-   ```
-4. **Prompts** im Store suchen und installieren
-5. Add-on starten – es erscheint automatisch in der Sidebar
-
-### Funktionsweise
-
-- Das Add-on baut die Seite beim Container-Start und serviert sie über **Ingress** (Port 8099).
-- Es wird kein externer Port freigegeben – der Zugriff läuft ausschließlich über die HA-Oberfläche.
-- Dark/Light Mode passt sich dem HA-Theme an.
-- Die Zwischenablage-Funktion nutzt einen `execCommand`-Fallback, da HA Ingress die `clipboard-write` Permission nicht gewährt.
-
-### Architektur-Support
-
-| Architektur | Unterstützt |
-|-------------|-------------|
-| amd64       | Ja          |
-| aarch64     | Ja          |
-| armv7       | Ja          |
-| armhf       | Ja          |
-| i386        | Ja          |
-
----
-
-## Projektstruktur
-
-```
-prompts/
-├── content/          # 100+ Markdown-Dateien (eine pro Strategie)
-├── src/              # Frontend-Assets (HTML, CSS, JS, PWA)
-├── build.ts          # Build-Script → generiert dist/
-├── serve.ts          # Dev-Server (Bun)
-├── rdf.ts            # RDF/Turtle + JSON-LD Generator
-├── config.yaml       # Home Assistant Add-on Konfiguration
-├── Dockerfile        # Container-Build für HA
-└── dist/             # Generierter Output (gitignored)
-```
+Eine Strategie ist ein `<article>`-Block in `index.html`, ein Skill oder Agent eine Datei plus Block; [CONTRIBUTING.md](CONTRIBUTING.md) zeigt beides. Alles hier wurde von einem Coding-Agenten aus [AGENTS.md](AGENTS.md) gebaut, der Design- und Verhaltensspezifikation der Seite.
 
 ## Lizenz
 
-[MIT License](LICENSE)
+[MIT](LICENSE).

@@ -1,0 +1,59 @@
+# The standard files under skills/ and agents/ are the tool-facing form of
+# the Skill and Agent cards in index.html; the card's <pre class="prompt"> is
+# the same file, byte for byte. This check fails when the two drift, and when
+# a SKILL.md breaks the Agent Skills rules (name matches its directory, name
+# and description present). No dependency: node and its standard library.
+name: Check standard files
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Compare cards with files
+        run: |
+          node - <<'EOF'
+          const fs = require("node:fs");
+          const path = require("node:path");
+          const html = fs.readFileSync("index.html", "utf8");
+          const unescape = (t) => t
+            .replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, '"')
+            .replace(/&#39;/g, "'").replace(/&#x27;/g, "'").replace(/&amp;/g, "&");
+          const cards = new Map();
+          const re = /<article class="card" data-kind="(skill|agent)" id="([^"]+)" data-file="([^"]+)"[\s\S]*?<pre class="prompt" tabindex="0">([\s\S]*?)<\/pre>/g;
+          for (const m of html.matchAll(re)) cards.set(m[3], { kind: m[1], id: m[2], text: unescape(m[4]) });
+          const errors = [];
+          const files = [
+            ...fs.existsSync("skills") ? fs.readdirSync("skills").map((d) => path.join("skills", d, "SKILL.md")) : [],
+            ...fs.existsSync("agents") ? fs.readdirSync("agents").map((d) => path.join("agents", d, "AGENTS.md")) : [],
+          ];
+          for (const file of files) {
+            if (!fs.existsSync(file)) { errors.push(`${file}: missing`); continue; }
+            const text = fs.readFileSync(file, "utf8");
+            const card = cards.get(file);
+            if (!card) { errors.push(`${file}: no card in index.html`); continue; }
+            if (card.text !== text) errors.push(`${file}: card and file differ`);
+            if (file.endsWith("SKILL.md")) {
+              const fm = text.match(/^---\n([\s\S]+?)\n---\n/);
+              const name = fm && fm[1].match(/^name:\s*(.+)$/m);
+              const desc = fm && fm[1].match(/^description:\s*(.+)$/m);
+              const dir = path.basename(path.dirname(file));
+              if (!name) errors.push(`${file}: no name in frontmatter`);
+              else if (name[1].trim() !== dir) errors.push(`${file}: name "${name[1].trim()}" is not the directory "${dir}"`);
+              else if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(dir) || dir.length > 64) errors.push(`${file}: name must be lowercase letters, digits and hyphens, at most 64 characters`);
+              if (!desc) errors.push(`${file}: no description in frontmatter`);
+              else if (desc[1].trim().length > 1024) errors.push(`${file}: description longer than 1024 characters`);
+            }
+            cards.delete(file);
+          }
+          for (const [file] of cards) errors.push(`${file}: card in index.html but no file`);
+          if (errors.length) { console.error(errors.join("\n")); process.exit(1); }
+          console.log(`${files.length} files match their cards`);
+          EOF

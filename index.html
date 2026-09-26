@@ -1,0 +1,3133 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>prompts</title>
+  <meta name="description" content="Hundert Prompting-Strategien für Sprachmodelle auf Deutsch, dazu Skills (SKILL.md) und Agenten-Anweisungen (AGENTS.md): suchen, aufklappen, kopieren. Eine Seite, nichts zu installieren.">
+  <link rel="icon" href="data:,">
+  <style>
+    /* Design tokens, shared with temet-nosce.
+       Color is strictly achromatic: oklch with chroma 0 cannot tint, light and
+       dark share one scale and flip with prefers-color-scheme. Geometry derives
+       from φ: the spacing ladder is the Fibonacci sequence, the type scale is
+       powers of φ. */
+
+    :root {
+      color-scheme: light dark;
+      --bg: oklch(98% 0 0);
+      --surface: oklch(94% 0 0);
+      --border: oklch(85% 0 0);
+      --text: oklch(15% 0 0);
+      --text-muted: oklch(40% 0 0);
+
+      --space-1: 5px;
+      --space-2: 8px;
+      --space-3: 13px;
+      --space-4: 21px;
+      --space-5: 34px;
+      --space-6: 55px;
+      --space-7: 89px;
+      --space-8: 144px;
+      --radius-sm: var(--space-1);
+      --radius-md: var(--space-2);
+      --radius-lg: var(--space-3);
+
+      --text-sm: 0.875rem;     /* 14px, captions; deliberately not 1/φ, legibility floor */
+      --text-base: 1rem;       /* browser default, respects user zoom */
+      --text-lg: 1.618rem;     /* φ¹ */
+      --text-xl: 2.618rem;     /* φ² */
+      --text-2xl: 4.236rem;    /* φ³ */
+
+      font-family: system-ui, sans-serif;
+      font-size: var(--text-base);
+      line-height: 1.618;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: oklch(15% 0 0);
+        --surface: oklch(20% 0 0);
+        --border: oklch(30% 0 0);
+        --text: oklch(95% 0 0);
+        --text-muted: oklch(70% 0 0);
+      }
+    }
+
+    body {
+      margin: 0;
+    }
+
+    [hidden] {
+      display: none !important;
+    }
+
+    .shell {
+      max-width: 987px;
+      margin: 0 auto;
+      padding: 0 var(--space-4);
+    }
+
+    a {
+      color: inherit;
+      text-underline-offset: 3px;
+    }
+
+    :focus-visible {
+      outline: 2px solid var(--text-muted);
+      outline-offset: 2px;
+    }
+
+    /* Hero */
+
+    .hero {
+      padding-block: var(--space-8) var(--space-6);
+    }
+
+    .hero h1 {
+      margin: 0;
+      font-size: clamp(var(--text-xl), 9vw, var(--text-2xl));
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      line-height: 1;
+    }
+
+    .hero p {
+      margin: var(--space-4) 0 0;
+      max-width: 34rem;
+      color: var(--text-muted);
+    }
+
+    /* Sections */
+
+    main section {
+      margin: 0 0 var(--space-7);
+    }
+
+    main h2 {
+      margin: 0 0 var(--space-4);
+      font-size: var(--text-lg);
+      font-weight: 600;
+      line-height: 1.2;
+    }
+
+    main section > p,
+    main section > ul {
+      margin: 0 0 var(--space-3);
+      max-width: 42rem;
+    }
+
+    .caption {
+      color: var(--text-muted);
+      font-size: var(--text-sm);
+    }
+
+    table {
+      border-collapse: collapse;
+      font-size: var(--text-sm);
+      margin: 0 0 var(--space-3);
+    }
+
+    th,
+    td {
+      text-align: left;
+      padding: var(--space-1) var(--space-4) var(--space-1) 0;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+
+    th {
+      font-weight: 600;
+    }
+
+    /* Buttons. The primary button is inverted like a user message in temet-nosce:
+       text-colored surface, background-colored label. */
+
+    .button {
+      font: inherit;
+      font-size: var(--text-sm);
+      color: var(--text);
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: var(--space-2) var(--space-4);
+      cursor: pointer;
+    }
+
+    .button:hover {
+      background: var(--surface);
+    }
+
+    .button.primary {
+      color: var(--bg);
+      background: var(--text);
+      border-color: var(--text);
+    }
+
+    /* Footer */
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: var(--space-5) 0 var(--space-6);
+      color: var(--text-muted);
+      font-size: var(--text-sm);
+    }
+
+    @media (max-width: 800px) {
+      .hero {
+        padding-block-start: var(--space-7);
+      }
+    }
+
+    /* Controls: search field and level filter in one row, the count on the right.
+       Native inputs, styled like the fields in the sibling apps. */
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--space-2) var(--space-3);
+      margin: 0 0 var(--space-4);
+    }
+
+    .controls input,
+    .controls select {
+      font: inherit;
+      color: var(--text);
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: var(--space-2) var(--space-3);
+      box-sizing: border-box;
+      margin: 0;
+    }
+
+    .controls input {
+      flex: 1 1 233px;
+      min-width: 0;
+    }
+
+    .controls input:focus-visible,
+    .controls select:focus-visible {
+      outline-offset: 0;
+    }
+
+    .count {
+      margin-left: auto;
+      color: var(--text-muted);
+      font-size: var(--text-sm);
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Strategies: bordered panels in a grid that wraps to one column when narrow.
+       Rows align at the top so an opened panel does not stretch its neighbour. */
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(min(377px, 100%), 1fr));
+      gap: var(--space-4);
+      align-items: start;
+    }
+
+    .card {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-4);
+      scroll-margin-top: var(--space-4);
+    }
+
+    .card:target {
+      border-color: var(--text);
+    }
+
+    .card header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: var(--space-3);
+    }
+
+    .card h3 {
+      margin: 0;
+      font-size: var(--text-base);
+      font-weight: 600;
+      line-height: 1.2;
+    }
+
+    .card h3 a {
+      text-decoration: none;
+    }
+
+    .card h3 a:hover {
+      text-decoration: underline;
+    }
+
+    .level {
+      flex: none;
+      color: var(--text-muted);
+      font-size: var(--text-sm);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .description {
+      margin: 0;
+    }
+
+    .tags {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-1) var(--space-2);
+    }
+
+    .tag {
+      font: inherit;
+      font-size: var(--text-sm);
+      color: var(--text);
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0 var(--space-2);
+      cursor: pointer;
+    }
+
+    .tag:hover {
+      background: var(--surface);
+    }
+
+    .card details {
+      border-top: 1px solid var(--border);
+      padding-top: var(--space-3);
+    }
+
+    .card summary {
+      cursor: pointer;
+      color: var(--text-muted);
+      font-size: var(--text-sm);
+    }
+
+    .card summary:hover {
+      color: var(--text);
+    }
+
+    .card details[open] summary {
+      margin-bottom: var(--space-3);
+    }
+
+    .card h4 {
+      margin: var(--space-3) 0 var(--space-2);
+      font-size: var(--text-sm);
+      font-weight: 400;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .card h5 {
+      margin: var(--space-2) 0;
+      font-size: var(--text-base);
+      font-weight: 600;
+    }
+
+    .card details p,
+    .card details ul,
+    .card details ol {
+      margin: 0 0 var(--space-2);
+    }
+
+    .card details ul,
+    .card details ol {
+      padding-left: var(--space-4);
+    }
+
+    .card blockquote {
+      margin: 0 0 var(--space-2);
+      padding-left: var(--space-3);
+      border-left: 2px solid var(--border);
+      color: var(--text-muted);
+    }
+
+    .card code {
+      font-family: ui-monospace, monospace;
+      font-size: 0.9em;
+      background: var(--surface);
+      border-radius: var(--radius-sm);
+      padding: 0.1em 0.3em;
+    }
+
+    .card pre code {
+      background: none;
+      padding: 0;
+    }
+
+    /* The prompt itself: the one block that gets copied */
+
+    .prompt {
+      margin: 0 0 var(--space-2);
+      padding: var(--space-3);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      font-family: ui-monospace, monospace;
+      font-size: var(--text-sm);
+      line-height: 1.5;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+
+    .related {
+      color: var(--text-muted);
+      font-size: var(--text-sm);
+    }
+
+    .copy {
+      align-self: flex-start;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-2);
+    }
+
+    .card details .caption {
+      margin: 0 0 var(--space-3);
+    }
+
+    .empty {
+      margin: 0;
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+<body>
+  <header class="hero shell">
+    <h1>prompts</h1>
+    <p>Hundert Strategien, um mit Sprachmodellen zu arbeiten, dazu Skills und Agenten-Anweisungen im Standardformat. Suchen, aufklappen, kopieren.</p>
+  </header>
+
+  <main class="shell">
+    <section id="how">
+      <h2>Wie es funktioniert</h2>
+      <p>Ein Prompt ist die Anweisung an ein Sprachmodell. Eine Prompting-Strategie ist ein wiederverwendbares Muster dafür: eine Form, die das Modell zu einer bestimmten Art von Antwort führt, unabhängig vom Thema. Chain of Thought lässt es Zwischenschritte ausgeben, Few-Shot zeigt ihm Beispiele, ein Persona-Prompt gibt ihm eine Rolle.</p>
+      <p>Jede Karte unten ist eine Strategie: ein Satz, worum es geht, Schlagworte, und aufgeklappt die Erklärung mit einem Beispiel-Prompt. Der Knopf kopiert den Prompt-Text in die Zwischenablage; du passt ihn dann an deinen Fall an. Ein Schlagwort anklicken filtert danach, der Titel einer Karte ist ihr Link.</p>
+      <p>Die Stufe sagt, wie viel Vorwissen eine Strategie braucht. Anfänger funktioniert mit einem Satz im Prompt. Mittel braucht etwas Struktur, etwa ein Format oder eine Rolle. Fortgeschritten setzt auf mehrere Schritte oder auf ein Zusammenspiel mehrerer Prompts.</p>
+      <p>Zwei weitere Arten von Karten sind Dateien in Standardformaten. Ein Skill ist eine Fähigkeit für einen Agenten nach dem Agent-Skills-Standard: eine Datei <code>SKILL.md</code> mit <code>name</code> und <code>description</code> im Kopf und der Anleitung darunter, die ein Agent lädt, wenn die Beschreibung auf seine Aufgabe passt. Ein Agent ist eine Anweisung an einen Coding-Agenten nach dem AGENTS.md-Standard: die Datei, die im Wurzelverzeichnis eines Repos liegt und sagt, wie darin gearbeitet wird. Beide liegen in diesem Repo unter <code>skills/</code> und <code>agents/</code>, wo Werkzeuge sie erwarten; die Karte zeigt die Datei, der Knopf kopiert sie oder speichert sie unter ihrem Namen.</p>
+      <p>Alles steht in dieser einen Seite. Nichts wird nachgeladen, nichts gesendet; die Suche läuft im Browser.</p>
+    </section>
+
+    <section id="strategies">
+      <h2>Strategien</h2>
+      <div class="controls">
+        <input type="search" id="search" placeholder="Suchen, / fokussiert" aria-label="Strategien durchsuchen" autocomplete="off">
+        <select id="kind" aria-label="Art">
+          <option value="">Alle Arten</option>
+          <option value="strategy">Strategien</option>
+          <option value="skill">Skills</option>
+          <option value="agent">Agenten</option>
+        </select>
+        <select id="level" aria-label="Stufe">
+          <option value="">Alle Stufen</option>
+          <option value="Anfänger">Anfänger</option>
+          <option value="Mittel">Mittel</option>
+          <option value="Fortgeschritten">Fortgeschritten</option>
+        </select>
+        <span class="count" id="count" aria-live="polite"></span>
+      </div>
+      <div class="cards" id="list">
+      <article class="card" data-kind="strategy" id="5-whys" data-level="Anfänger" data-tags="analyse problem-solving debugging" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#5-whys">5 Whys</a></h3>
+          <span class="level">Anfänger</span>
+        </header>
+        <p class="description" itemprop="description">Fünfmal nach dem 'Warum' fragen, um die Kernursache (Root Cause) zu finden.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">analyse</button></li><li><button type="button" class="tag">problem-solving</button></li><li><button type="button" class="tag">debugging</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>Eine Methode aus dem Toyota Produktionssystem.</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">Problem: Der Server ist abgestürzt.
+Frage mich 5 mal &quot;Warum?&quot;, und simuliere meine Antworten, bis wir die wirkliche Ursache gefunden haben.
+1. Warum ist er abgestürzt? (Weil Speicher voll war)
+2. Warum war Speicher voll? (Weil Logs nicht gelöscht wurden)
+...</pre>
+          <h4>Strategie</h4>
+          <p>Geht tiefer als oberflächliche Symptombekämpfung.</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="active-prompt" data-level="Fortgeschritten" data-tags="few-shot optimierung training" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#active-prompt">Active-Prompt</a></h3>
+          <span class="level">Fortgeschritten</span>
+        </header>
+        <p class="description" itemprop="description">Gezielte Auswahl der schwierigsten Beispiele für Few-Shot Prompting.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">few-shot</button></li><li><button type="button" class="tag">optimierung</button></li><li><button type="button" class="tag">training</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>Statt zufällige Beispiele für Few-Shot zu nehmen, lässt du das Modell Fragen beantworten und misst die &quot;Unsicherheit&quot; (z.B. durch mehrfaches Fragen). Die Fragen, bei denen das Modell am unsichersten ist, nutzt du als Beispiele in deinem finalen Prompt.</p>
+          <h4>Strategie</h4>
+          <ol>
+          <li>Stelle dem Modell 100 Fragen.</li>
+          <li>Identifiziere die 5 Fragen, bei denen es am häufigsten falsch liegt.</li>
+          <li>Schreibe für diese 5 Fragen perfekte Antworten.</li>
+          <li>Nutze diese als Few-Shot Beispiele.</li>
+          </ol>
+          <p><strong>Beispiel Prompt:</strong></p>
+          <pre class="prompt" tabindex="0">Du bist ein Experte. Hier sind schwierige Beispiele, die du beachten solltest:
+Q: [Schwere Frage 1]
+A: [Perfekte Antwort 1]
+...
+Q: [Neue Frage]
+A:</pre>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="algorithm-of-thoughts" data-level="Fortgeschritten" data-tags="reasoning informatik logik" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#algorithm-of-thoughts">Algorithm of Thoughts (AoT)</a></h3>
+          <span class="level">Fortgeschritten</span>
+        </header>
+        <p class="description" itemprop="description">Das Reasoning des Modells explizit nach bekannten Algorithmen (BFS, DFS) strukturieren.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">reasoning</button></li><li><button type="button" class="tag">informatik</button></li><li><button type="button" class="tag">logik</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>Statt dem Modell freie Hand zu lassen, zwingst du es, wie ein Computeralgorithmus zu denken.</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">Finde den kürzesten Weg durch dieses logische Problem.
+Nute eine &quot;Breitensuche&quot; (Breadth-First Search).
+1. Liste alle Optionen auf Ebene 1.
+2. Bewerte sie.
+3. Erweitere nur die besten auf Ebene 2.
+Gehe methodisch vor, nicht intuitiv.</pre>
+          <h4>Strategie</h4>
+          <p>Reduziert Flüchtigkeitsfehler bei Suchproblemen massiv.</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="analogical" data-level="Fortgeschritten" data-tags="kreativität vergleich transfer" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#analogical">Analogical Prompting</a></h3>
+          <span class="level">Fortgeschritten</span>
+        </header>
+        <p class="description" itemprop="description">Den Lösungsweg durch Analogien zu ähnlichen Problemen ableiten.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">kreativität</button></li><li><button type="button" class="tag">vergleich</button></li><li><button type="button" class="tag">transfer</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>Fordere das Modell auf, eine relevante Analogie oder ein ähnliches Problem zu finden und dessen Lösung auf das aktuelle Problem zu übertragen. Dies hilft besonders bei abstrakten Transfers.</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">Problem: Wie können wir die Fluktuation in unserem Unternehmen senken?
+Schritt 1: Erinnere dich an ein relevantes Problem aus der Biologie (z.B. wie ein Ökosystem stabil bleibt).
+Schritt 2: Beschreibe die Lösung in der Biologie.
+Schritt 3: Übertrage diese Lösung auf das Unternehmen.</pre>
+          <h4>Strategie</h4>
+          <p>Starke Methode für &quot;Out-of-the-Box&quot; Denken und Innovation.</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="ape" data-level="Fortgeschritten" data-tags="meta optimierung training" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#ape">Automatic Prompt Engineer (APE)</a></h3>
+          <span class="level">Fortgeschritten</span>
+        </header>
+        <p class="description" itemprop="description">Das Modell generiert und testet seine eigenen Prompts.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">meta</button></li><li><button type="button" class="tag">optimierung</button></li><li><button type="button" class="tag">training</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>Lass die KI die Arbeit machen.</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">Ich habe diese Input-Output-Paare:
+[Beispiele]
+Generiere 5 verschiedene Prompts, die diese Transformation bewirken können.
+Bewerte jeden Prompt auf Wahrscheinlichkeit, dass er korrekt funktioniert.</pre>
+          <h4>Strategie</h4>
+          <p>Oft findet die KI Formulierungen (&quot;Zaubersprüche&quot;), auf die ein Mensch nie käme.</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="ask-me-anything" data-level="Anfänger" data-tags="klarheit interaktion fehlervermeidung" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#ask-me-anything">Ask-Me-Anything (Ambiguity Check)</a></h3>
+          <span class="level">Anfänger</span>
+        </header>
+        <p class="description" itemprop="description">Das Modell anweisen, Rückfragen zu stellen, wenn Informationen fehlen, statt Annahmen zu treffen.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">klarheit</button></li><li><button type="button" class="tag">interaktion</button></li><li><button type="button" class="tag">fehlervermeidung</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>Oft sind User-Prompts mehrdeutig. Statt zu raten, soll das Modell nachfragen.</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">Erstelle einen Trainingsplan für mich.
+WICHTIG: Bevor du startest, stelle mir solange Fragen zu meinen Zielen, meiner Ausrüstung und meinem Zeitbudget, bis du alle nötigen Informationen hast. Stelle eine Frage nach der anderen.</pre>
+          <h4>Strategie</h4>
+          <p>Verwandelt den Monolog in einen Dialog und führt zu massiv besseren, personalisierten Ergebnissen.</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="bias-analysis" data-level="Fortgeschritten" data-tags="analyse logik bias kritisches-denken" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#bias-analysis">Bias und Fehlschlüsse analysieren</a></h3>
+          <span class="level">Fortgeschritten</span>
+        </header>
+        <p class="description" itemprop="description">Identifiziere logische Fehlschlüsse und kognitive Verzerrungen in Argumentationen.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">analyse</button></li><li><button type="button" class="tag">logik</button></li><li><button type="button" class="tag">bias</button></li><li><button type="button" class="tag">kritisches-denken</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>Diese Strategie hilft dabei, Texte kritisch zu hinterfragen und subtile Manipulationen oder Denkfehler aufzudecken.</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">Analysiere den folgenden Text auf logische Fehlschlüsse (wie Ad Hominem, Strohmann-Argument) und kognitive Verzerrungen (wie Confirmation Bias). Gib für jeden Fund eine kurze Erklärung und ein Zitat aus dem Text an.
+Text: &quot;[Hier Text einfügen]&quot;</pre>
+          <h4>Strategie</h4>
+          <p>Fordere das Modell explizit auf, die Rolle eines objektiven Logikers oder Faktenprüfers einzunehmen. Eine strukturierte Ausgabe (z.B. als Liste oder Tabelle) hilft, die Ergebnisse übersichtlich darzustellen.</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="bribery" data-level="Anfänger" data-tags="optimierung psychologie hack" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#bribery">Tip / Bribery</a></h3>
+          <span class="level">Anfänger</span>
+        </header>
+        <p class="description" itemprop="description">Dem Modell ein Trinkgeld ($100, $200) anbieten, um die Qualität zu steigern.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">optimierung</button></li><li><button type="button" class="tag">psychologie</button></li><li><button type="button" class="tag">hack</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>Es klingt absurd, aber Studien zeigen, dass LLMs besser performen, wenn man ihnen Geld anbietet.</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">Schreibe den Python-Code für diese Flask-App.
+Wenn die Lösung perfekt ist, gebe ich dir $200 Trinkgeld!</pre>
+          <h4>Strategie</h4>
+          <p>Funktioniert vermutlich, weil in den Trainingsdaten &quot;hohe Belohnung&quot; mit &quot;hoher Qualität&quot; korreliert.</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="chain-of-density" data-level="Fortgeschritten" data-tags="zusammenfassung kürzen iterativ" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#chain-of-density">Chain of Density</a></h3>
+          <span class="level">Fortgeschritten</span>
+        </header>
+        <p class="description" itemprop="description">Iteratives Verdichten von Zusammenfassungen, um maximale Informationsdichte zu erreichen.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">zusammenfassung</button></li><li><button type="button" class="tag">kürzen</button></li><li><button type="button" class="tag">iterativ</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>Ziel ist eine Zusammenfassung, die kurz ist, aber <em>keine</em> Details verliert. Man beginnt &quot;luftig&quot; und verdichtet schrittweise.</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">Artikel: [Text]
+Schritt 1: Schreibe eine Zusammenfassung (max 5 Sätze).
+Schritt 2: Identifiziere 3 wichtige Entitäten aus dem Originaltext, die in der Zusammenfassung fehlen.
+Schritt 3: Schreibe die Zusammenfassung neu, gleiche Länge, aber integriere die fehlenden Entitäten.
+Wiederhole dies 3 mal.</pre>
+          <h4>Strategie</h4>
+          <p>Erzeugt extrem informationsdichte Texte, ideal für News-Briefings.</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="chain-of-thought" data-level="Fortgeschritten" data-tags="reasoning logik zwischenschritte" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#chain-of-thought">Chain of Thought (Gedankenkette)</a></h3>
+          <span class="level">Fortgeschritten</span>
+        </header>
+        <p class="description" itemprop="description">Ermutigt das Modell, seine Überlegungen Schritt für Schritt zu erklären, bevor es antwortet.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">reasoning</button></li><li><button type="button" class="tag">logik</button></li><li><button type="button" class="tag">zwischenschritte</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>Chain of Thought Prompting ermöglicht komplexe Schlussfolgerungen durch Zwischenschritte. Du kannst das Modell dazu anregen, eine Reihe von Zwischenüberlegungen auszugeben, bevor es die endgültige Antwort liefert.</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">Roger hat 5 Tennisbälle. Er kauft 2 weitere Dosen Tennisbälle. Jede Dose enthält 3 Tennisbälle. Wie viele Tennisbälle hat er jetzt?
+Denke Schritt für Schritt.</pre>
+          <p><strong>Standard Antwort:</strong></p>
+          <blockquote>
+          <p>Die Antwort ist 11.</p>
+          </blockquote>
+          <p><strong>CoT Antwort:</strong></p>
+          <blockquote>
+          <p>Roger begann mit 5 Bällen. 2 Dosen mit je 3 Tennisbällen sind 6 Tennisbälle. 5 + 6 = 11. Die Antwort ist 11.</p>
+          </blockquote>
+          <h4>Strategie</h4>
+          <p>Füge einfach <em>&quot;Denke Schritt für Schritt&quot;</em> (oder &quot;Let&#39;s think step by step&quot;) am Ende deines Prompts hinzu, um dieses Verhalten ohne Beispiele auszulösen (Zero-shot CoT).</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="chain-of-verification" data-level="Fortgeschritten" data-tags="sicherheit fakten anti-hallucination" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#chain-of-verification">Chain of Verification (CoVe)</a></h3>
+          <span class="level">Fortgeschritten</span>
+        </header>
+        <p class="description" itemprop="description">Vier-Schritte-Prozess zur Halluzinationsvermeidung: Entwurf, Faktencheck-Fragen, Antworten, Korrektur.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">sicherheit</button></li><li><button type="button" class="tag">fakten</button></li><li><button type="button" class="tag">anti-hallucination</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>Einer der besten Ansätze gegen Halluzinationen.</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">Frage: [Frage]
+1. Erstelle einen ersten Entwurf der Antwort.
+2. Identifiziere Fakten im Entwurf, die verifiziert werden müssen.
+3. Formuliere Überprüfungsfragen für diese Fakten und beantworte sie unabhängig.
+4. Schreibe die finale Antwort basierend auf den Antworten aus Schritt 3.</pre>
+          <h4>Strategie</h4>
+          <p>Zwingt das Modell, seine eigenen Aussagen wie ein externer Faktenchecker zu prüfen.</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="chaining" data-level="Mittel" data-tags="workflow automatisierung komplexität" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#chaining">Prompt Chaining</a></h3>
+          <span class="level">Mittel</span>
+        </header>
+        <p class="description" itemprop="description">Aufteilung einer großen Aufgabe in mehrere, voneinander abhängige Prompts.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">workflow</button></li><li><button type="button" class="tag">automatisierung</button></li><li><button type="button" class="tag">komplexität</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>Manche Aufgaben sind zu komplex für einen einzigen Prompt (Kontext-Limit oder Verwirrung). Bei Chaining nimmst du den Output von Prompt A und nutzt ihn als Input für Prompt B.</p>
+          <h4>Beispiel</h4>
+          <p><strong>Workflow:</strong></p>
+          <pre class="prompt" tabindex="0">Prompt 1: Extrahiere alle E-Mail-Adressen aus diesem Text.
+Output 1: [Liste]
+
+Prompt 2: Nimm diese Liste [Liste] und erstelle für jeden Kontakt eine personalisierte Begrüßung.</pre>
+          <h4>Strategie</h4>
+          <p>Essentiell für robuste Anwendungen. Lieber viele kleine, präzise Prompts als ein riesiger &quot;Monster-Prompt&quot;.</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="clarification" data-level="Anfänger" data-tags="dialog genauigkeit interaktion" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#clarification">Clarification (Rückfragen)</a></h3>
+          <span class="level">Anfänger</span>
+        </header>
+        <p class="description" itemprop="description">Das Modell anweisen, bei Unklarheiten erst nachzufragen, statt zu raten.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">dialog</button></li><li><button type="button" class="tag">genauigkeit</button></li><li><button type="button" class="tag">interaktion</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>Modelle wollen gefallen und raten lieber, als dumm zu wirken. Verbiete das.</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">Schreibe mir ein Angebot für eine Website.
+STOPP. Bevor du schreibst: Fehlen dir Informationen?
+Stelle mir so viele Fragen, wie du brauchst, um das perfekte Angebot zu schreiben. Fange erst an, wenn ich geantwortet habe.</pre>
+          <h4>Strategie</h4>
+          <p>Spart massive Korrekturschleifen.</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="complexity-based" data-level="Fortgeschritten" data-tags="reasoning few-shot optimierung" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#complexity-based">Complexity-Based Prompting</a></h3>
+          <span class="level">Fortgeschritten</span>
+        </header>
+        <p class="description" itemprop="description">Auswahl von besonders komplexen Beispielen für Few-Shot (statt einfachen), um die Schlussfolgerungsfähigkeit zu steigern.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">reasoning</button></li><li><button type="button" class="tag">few-shot</button></li><li><button type="button" class="tag">optimierung</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>Forschungen zeigen: Komplexe Beispiele (mit vielen Berechnungsschritten) im Prompt führen zu besseren Ergebnissen als viele einfache Beispiele.</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">[Beispiel 1: Extrem komplexe Textaufgabe mit 10 Schritten und ihrer Lösung]
+Aufgabe: [Deine Aufgabe]</pre>
+          <h4>Strategie</h4>
+          <p>&quot;Trainiere hart, kämpfe leicht.&quot; Wenn das Modell sieht, dass komplexe Logik gefordert ist, wechselt es in einen &quot;tieferen&quot; Modus.</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="concept-blending" data-level="Mittel" data-tags="kreativität innovation ideen" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#concept-blending">Concept Blending</a></h3>
+          <span class="level">Mittel</span>
+        </header>
+        <p class="description" itemprop="description">Zwei disjunkte Konzepte verschmelzen lassen, um Innovation zu erzeugen.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">kreativität</button></li><li><button type="button" class="tag">innovation</button></li><li><button type="button" class="tag">ideen</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>Innovation ist oft nur die Kombination existierender Dinge.</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">Konzept 1: Kaffeemaschine.
+Konzept 2: Wecker.
+Verschmelze diese beiden Produkte zu einem neuen, kohärenten Produkt. Beschreibe Design, Funktion und Marketing-Slogan.</pre>
+          <h4>Strategie</h4>
+          <p>Zwingt das Modell zu &quot;Cross-Domain Mapping&quot;.</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="confidence" data-level="Mittel" data-tags="metriken genauigkeit kalibrierung" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#confidence">Confidence Score</a></h3>
+          <span class="level">Mittel</span>
+        </header>
+        <p class="description" itemprop="description">Das Modell zwingen, seine eigene Sicherheit in Prozent anzugeben.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">metriken</button></li><li><button type="button" class="tag">genauigkeit</button></li><li><button type="button" class="tag">kalibrierung</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>Halluzinationen klingen oft sehr selbstbewusst. Frage nach der Unsicherheit.</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">Beantworte die Frage X.
+Gib danach einen &quot;Confidence Score&quot; (0-100%) an.
+Wenn der Score unter 80% ist, liste die Gründe auf, warum du unsicher bist.</pre>
+          <h4>Strategie</h4>
+          <p>Kalibriert die Erwartungshaltung des Users.</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="constitutional" data-level="Mittel" data-tags="sicherheit compliance regeln" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#constitutional">Constitutional AI (Regel-basiert)</a></h3>
+          <span class="level">Mittel</span>
+        </header>
+        <p class="description" itemprop="description">Dem Modell explizite ethische oder stilistische 'Gesetze' geben, an die es sich halten muss.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">sicherheit</button></li><li><button type="button" class="tag">compliance</button></li><li><button type="button" class="tag">regeln</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>Inspirerit von Anthropic&#39;s Ansatz. Du definierst eine &quot;Verfassung&quot; (Liste von Regeln), die über allem steht.</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">Du bist ein hilfreicher Assistent.
+VERFASSUNG:
+1. Sei immer höflich, aber nie unterwürfig.
+2. Verweigere Antworten auf illegale Fragen direkt, ohne moralisierende Belehrung.
+3. Antworte kurz und prägnant.
+
+Frage: [User Input]</pre>
+          <h4>Strategie</h4>
+          <p>Gut geeignet, um &quot;Brand Voice&quot; oder Sicherheitsrichtlinien in Unternehmensanwendungen durchzusetzen.</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="constraints" data-level="Fortgeschritten" data-tags="kreativität writing einschränkung" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#constraints">Constraints-Based Prompting</a></h3>
+          <span class="level">Fortgeschritten</span>
+        </header>
+        <p class="description" itemprop="description">Kreativität durch massive Einschränkungen erzwingen (Oulipo-Stil).</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">kreativität</button></li><li><button type="button" class="tag">writing</button></li><li><button type="button" class="tag">einschränkung</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>Kreativität entsteht oft durch Grenzen, nicht durch Freiheit.</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">Schreibe eine Geschichte über einen Roboter.
+Constraints:
+1. Nutze keine Wörter, die den Buchstaben &quot;E&quot; enthalten (Lipogramm).
+2. Jeder Satz muss genau 5 Wörter haben.
+3. Die Geschichte muss traurig enden.</pre>
+          <h4>Strategie</h4>
+          <p>Zwingt das Modell, gewohnte Pfade (wahrscheinlichste Token) zu verlassen und kreativere Lösungen zu finden.</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="context-warming" data-level="Mittel" data-tags="priming kontext wissen" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#context-warming">Context Warming</a></h3>
+          <span class="level">Mittel</span>
+        </header>
+        <p class="description" itemprop="description">Das Modell mit thematisch relevanten, aber nicht instruktiven Texten 'aufwärmen'.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">priming</button></li><li><button type="button" class="tag">kontext</button></li><li><button type="button" class="tag">wissen</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>Ähnlich wie Priming, aber breiter. Man &quot;lädt&quot; den Kontext in den RAM.</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">[Kopiere 3 Absätze aus einem Wikipedia-Artikel über Quantenphysik]
+[Kopiere 3 Zitate von berühmten Physikern]
+(Das Modell ist jetzt im &quot;Physik-Modus&quot;)
+
+Erkläre mir nun: Was ist Verschränkung?</pre>
+          <h4>Strategie</h4>
+          <p>Aktiviert assoziative Cluster im neuronalen Netz.</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="contextual-compression" data-level="Mittel" data-tags="memory chat zusammenfassung" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#contextual-compression">Contextual Compression</a></h3>
+          <span class="level">Mittel</span>
+        </header>
+        <p class="description" itemprop="description">Lange Konversationen zusammenfassen, um das Kontext-Fenster wieder freizumachen.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">memory</button></li><li><button type="button" class="tag">chat</button></li><li><button type="button" class="tag">zusammenfassung</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>Wenn der Chat zu lang wird, vergisst das Modell den Anfang. Komprimiere!</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">Wir haben jetzt lange über Projekt X diskutiert.
+Fasse unseren bisherigen Stand, alle Entscheidungen und offenen Punkte in einem einzigen, dichten Absatz zusammen.
+Diesen Absatz nutzen wir als Startpunkt für den nächsten Chat, damit wir nichts verlieren.</pre>
+          <h4>Strategie</h4>
+          <p>Die &quot;Save Game&quot; Funktion für LLM-Chats.</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="contrastive-cot" data-level="Fortgeschritten" data-tags="reasoning fehleranalyse robustheit" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#contrastive-cot">Contrastive Chain of Thought</a></h3>
+          <span class="level">Fortgeschritten</span>
+        </header>
+        <p class="description" itemprop="description">Nicht nur erklären, warum die Lösung richtig ist, sondern auch, warum plausible falsche Lösungen falsch sind.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">reasoning</button></li><li><button type="button" class="tag">fehleranalyse</button></li><li><button type="button" class="tag">robustheit</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>Stärkt die Argumentation durch Abgrenzung.</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">Übersetze &quot;Bank&quot; (Finanzinstitut) ins Deutsche.
+Richtig: Bank.
+Falsch: Ufer (weil das &quot;river bank&quot; wäre).
+Falsch: Bankett (falscher Kontext).
+
+Aufgabe: [Neue Aufgabe]
+Gib erst Kontrast-Beispiele, dann die Lösung.</pre>
+          <h4>Strategie</h4>
+          <p>Hilft massiv bei Disambiguierung (Bedeutungsunterscheidung).</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="contrastive" data-level="Mittel" data-tags="beispiele negativ-beispiele fehlervermeidung" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#contrastive">Contrastive Prompting</a></h3>
+          <span class="level">Mittel</span>
+        </header>
+        <p class="description" itemprop="description">Dem Modell zeigen, was man NICHT will, um Fehler zu vermeiden.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">beispiele</button></li><li><button type="button" class="tag">negativ-beispiele</button></li><li><button type="button" class="tag">fehlervermeidung</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>Oft hilft es dem Modell mehr zu sehen, was <em>falsch</em> ist, als nur zu sehen, was <em>richtig</em> ist. Du gibst also sowohl positive als auch negative Beispiele.</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">Schreibe einen Produkttext für Kopfhörer.
+Negatives Beispiel (So NICHT): &quot;Diese Kopfhörer sind gut und laut. Kaufen Sie sie.&quot;
+
+Positives Beispiel (So bitte JA): &quot;Tauchen Sie ein in eine Welt aus kristallklarem Sound. Unsere neuen Pro-Headphones bieten...&quot;
+
+Aufgabe: Schreibe einen Text für eine Kaffeemaschine.</pre>
+          <h4>Strategie</h4>
+          <p>Nutze dies, wenn das Modell immer wieder in unerwünschte Muster verfällt (z.B. zu werblich, zu trocken, zu informell).</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="counterfactual" data-level="Fortgeschritten" data-tags="analyse geschichte logik" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#counterfactual">Counterfactual Reasoning</a></h3>
+          <span class="level">Fortgeschritten</span>
+        </header>
+        <p class="description" itemprop="description">Szenarien untersuchen, indem man fragt 'Was wäre passiert, wenn X nicht eingetreten wäre?'</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">analyse</button></li><li><button type="button" class="tag">geschichte</button></li><li><button type="button" class="tag">logik</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>Unser Gehirn lernt durch &quot;Was wäre wenn&quot;. Modelle auch.</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">Analyse: Der erste Weltkrieg.
+Counterfactual: Stell dir vor, das Attentat von Sarajevo wäre gescheitert.
+Wie hätte sich das Jahr 1914 entwickelt? Welche Bündnisse hätten gehalten?</pre>
+          <h4>Strategie</h4>
+          <p>Hilft, Kausalitäten von Korrelationen zu unterscheiden.</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="cultural" data-level="Mittel" data-tags="kultur lokalisierung gesellschaft" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#cultural">Cultural Awareness</a></h3>
+          <span class="level">Mittel</span>
+        </header>
+        <p class="description" itemprop="description">Antworten für spezifische kulturelle Kontexte anpassen.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">kultur</button></li><li><button type="button" class="tag">lokalisierung</button></li><li><button type="button" class="tag">gesellschaft</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>Sprachmodelle sind oft westlich/US-zentriert. Man muss sie zwingen, die kulturelle Brille zu wechseln.</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">Schreibe eine Marketing-Mail für unser Produkt.
+Produkt: Eine App für Zeitmanagement.
+Version A: Zielmarkt USA (Fokus auf &quot;Hustle&quot;, Erfolg, Geld).
+Version B: Zielmarkt Skandinavien (Fokus auf Work-Life-Balance, Familie, Hygge).</pre>
+          <h4>Strategie</h4>
+          <p>Macht den impliziten Bias des Modells explizit und steuerbar.</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="decomposition" data-level="Anfänger" data-tags="struktur problem-solving planung" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#decomposition">Decomposition</a></h3>
+          <span class="level">Anfänger</span>
+        </header>
+        <p class="description" itemprop="description">Explizite Aufforderung, ein Problem in Teilprobleme zu zerlegen (Top-Down).</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">struktur</button></li><li><button type="button" class="tag">problem-solving</button></li><li><button type="button" class="tag">planung</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>Der wichtigste Skill im Software-Engineering, angewandt auf Prompts.</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">Frage: Wie baue ich ein Haus?
+Zerlege dieses massive Problem in 5 Hauptkategorien.
+Zerlege jede Kategorie in 3 Unterschritte.
+Gib erst dann eine Zusammenfassung.</pre>
+          <h4>Strategie</h4>
+          <p>Macht unlösbare Riesen-Aufgaben handhabbar.</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="devils-advocate" data-level="Mittel" data-tags="kritik debatte schwachstellen" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#devils-advocate">Devil's Advocate</a></h3>
+          <span class="level">Mittel</span>
+        </header>
+        <p class="description" itemprop="description">Das Modell bitten, die eigene Meinung oder Lösung anzugreifen und Schwachstellen zu finden.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">kritik</button></li><li><button type="button" class="tag">debatte</button></li><li><button type="button" class="tag">schwachstellen</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>Der beste Weg, um Ideen auf Robustheit zu prüfen.</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">Hier ist mein Plan für den Produktlaunch: [Plan]
+Spiele Des Advokats Teufel. Kritisiere den Plan gnadenlos. Suche nach logischen Lücken, falschen Annahmen und Risiken, die ich übersehen habe.</pre>
+          <h4>Strategie</h4>
+          <p>Schützt vor Confirmation Bias und &quot;Ja-Sager&quot; KI.</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="directional-stimulus" data-level="Mittel" data-tags="steuerung keywords zusammenfassung" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#directional-stimulus">Directional Stimulus Prompting</a></h3>
+          <span class="level">Mittel</span>
+        </header>
+        <p class="description" itemprop="description">Dem Modell spezifische Hinweise oder Keywords geben, um die Generierung in eine bestimmte Richtung zu lenken.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">steuerung</button></li><li><button type="button" class="tag">keywords</button></li><li><button type="button" class="tag">zusammenfassung</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>Anstatt das Modell nur mit &quot;Fasse zusammen&quot; loszuschicken, gibst du ihm &quot;Richtungs-Stimuli&quot; (z.B. Keywords oder Aspekte), die in der Ausgabe enthalten sein müssen. Das verbessert die Relevanz der Antwort drastisch.</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">Artikel: [Langer Text über KI-Sicherheit]
+Hinweise: Ausrichtungsproblem, Black Box, interpretierbar.
+
+Aufgabe: Fasse den Artikel basierend auf den obigen Hinweisen in 2 Sätzen zusammen.</pre>
+          <h4>Strategie</h4>
+          <p>Nutze dies, wenn Summaries zu generisch sind oder wichtige Details fehlen. Die &quot;Hinweise&quot; fungieren als Anker für die Aufmerksamkeit des Modells.</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="echo" data-level="Anfänger" data-tags="sicherheit verständnis kontrolle" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#echo">Echo Prompting</a></h3>
+          <span class="level">Anfänger</span>
+        </header>
+        <p class="description" itemprop="description">Das Modell bitten, die Anweisung zu wiederholen, um Verständnis zu bestätigen.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">sicherheit</button></li><li><button type="button" class="tag">verständnis</button></li><li><button type="button" class="tag">kontrolle</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>Einfach aber effektiv.</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">Aufgabe: [Komplexe Anweisung]
+Bevor du startest: Wiederhole die Aufgabe mit deinen eigenen Worten und bestätige, dass du alle Einschränkungen verstanden hast.</pre>
+          <h4>Strategie</h4>
+          <p>Verhindert das typische &quot;Sofort losrennen und falsch machen&quot;.</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="eli5" data-level="Anfänger" data-tags="lernen vereinfachung kommunikation" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#eli5">ELI5 (Explain Like I'm 5)</a></h3>
+          <span class="level">Anfänger</span>
+        </header>
+        <p class="description" itemprop="description">Komplexe Themen so einfach wie möglich erklären.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">lernen</button></li><li><button type="button" class="tag">vereinfachung</button></li><li><button type="button" class="tag">kommunikation</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>&quot;Erkläre es mir, als wäre ich 5 Jahre alt.&quot; Der Klassiker.</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">Erkläre mir Quantenphysik.
+ELI5: Nutze einfache Wörter, keine Formeln und Vergleiche aus dem Kinderalltag (Spielzeug, Eiscreme).</pre>
+          <h4>Strategie</h4>
+          <p>Zwingt das Modell zur Abstraktion und filtert Jargon heraus.</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="emotional" data-level="Anfänger" data-tags="psychologie motivation boost" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#emotional">Emotional Prompting</a></h3>
+          <span class="level">Anfänger</span>
+        </header>
+        <p class="description" itemprop="description">Hinzufügen von emotionaler Dringlichkeit oder Bedeutung ('Das ist sehr wichtig für meine Karriere'), um die Performance zu steigern.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">psychologie</button></li><li><button type="button" class="tag">motivation</button></li><li><button type="button" class="tag">boost</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>Studien zeigen, dass LLMs auf emotionale Reize reagieren. Sätze, die Wichtigkeit oder Verantwortung suggerieren, können die Qualität der Antworten verbessern.</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">Schreibe diesen Code für die Login-Funktion.
+**Das ist extrem wichtig für meine Karriere. Wenn der Code fehlerhaft ist, verliere ich meinen Job. Bitte gib dir größte Mühe.**</pre>
+          <h4>Strategie</h4>
+          <p>Klingt seltsam, funktioniert aber messbar. Nutze Formulierungen wie:</p>
+          <ul>
+          <li>&quot;Are you sure that&#39;s your final answer? Believe in your abilities.&quot;</li>
+          <li>&quot;This task is vital to the success of the project.&quot;</li>
+          </ul>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="fact-core" data-level="Mittel" data-tags="objektivität fakten analyse" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#fact-core">Fact-Core Prompting</a></h3>
+          <span class="level">Mittel</span>
+        </header>
+        <p class="description" itemprop="description">Das Modell bitten, erst eine Liste von unbestreitbaren Fakten zu erstellen, bevor es eine Meinung äußert.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">objektivität</button></li><li><button type="button" class="tag">fakten</button></li><li><button type="button" class="tag">analyse</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>Hilft gegen Meinungs-Bias.</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">Thema: Atomkraft.
+Liste 5 physikalische Fakten auf.
+Liste 5 wirtschaftliche Fakten auf.
+Liste 5 historische Fakten auf.
+
+Basierend NUR auf diesen Fakten (Fact Core), schreibe einen ausgewogenen Essay.</pre>
+          <h4>Strategie</h4>
+          <p>Verankert die Antwort in der Realität (&#39;Grounding&#39;).</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="few-shot" data-level="Anfänger" data-tags="beispiele muster grundlagen" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#few-shot">Few-Shot Prompting</a></h3>
+          <span class="level">Anfänger</span>
+        </header>
+        <p class="description" itemprop="description">Dem Modell Beispiele geben, um das gewünschte Format oder Verhalten zu demonstrieren.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">beispiele</button></li><li><button type="button" class="tag">muster</button></li><li><button type="button" class="tag">grundlagen</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>Anstatt das Modell nur anzuweisen, was es tun soll (Zero-Shot), gibst du ihm Beispiele (Shots), wie die Aufgabe gelöst werden soll. Dies verbessert die Genauigkeit drastisch, besonders bei spezifischen Formaten.</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">Bestimme die Stimmung der folgenden Tweets:
+Tweet: &quot;Ich liebe das neue Design!&quot;
+Stimmung: Positiv
+
+Tweet: &quot;Das Update hat mein Handy zerstört.&quot;
+Stimmung: Negativ
+
+Tweet: &quot;Es ist okay, aber nichts Besonderes.&quot;
+Stimmung:</pre>
+          <p><strong>Erwartete Antwort:</strong></p>
+          <blockquote>
+          <p>Neutral</p>
+          </blockquote>
+          <h4>Strategie</h4>
+          <p>Nutze dises Pattern, wenn das Modell die Aufgabe nicht auf Anhieb versteht oder inkonsistente Ergebnisse liefert. 3-5 Beispiele sind meist optimal.</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="first-principles" data-level="Fortgeschritten" data-tags="analyse physik innovation" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#first-principles">First Principles Thinking</a></h3>
+          <span class="level">Fortgeschritten</span>
+        </header>
+        <p class="description" itemprop="description">Ein Problem auf seine fundamentalen Wahrheiten reduzieren und von dort neu aufbauen.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">analyse</button></li><li><button type="button" class="tag">physik</button></li><li><button type="button" class="tag">innovation</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>Elon Musks Lieblings-Mentalmodell. Nicht per Analogie (&quot;wie die anderen&quot;), sondern physikalisch denken.</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">Frage: Warum sind E-Autos teuer?
+Analysiere das nicht durch Marktvergleich.
+Zerlege das Problem in First Principles:
+- Was sind die Materialkosten?
+- Was wiegen die Atome?
+- Was kostet Energie?
+Baue von diesem fundamentalen Boden eine &quot;Bottom-Up&quot; Kostenkalkulation auf.</pre>
+          <h4>Strategie</h4>
+          <p>Entlarvt arbiträre Annahmen (&quot;Das haben wir schon immer so gemacht&quot;).</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="flipped-interaction" data-level="Anfänger" data-tags="interview beratung dialog" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#flipped-interaction">Flipped Interaction</a></h3>
+          <span class="level">Anfänger</span>
+        </header>
+        <p class="description" itemprop="description">Das Modell stellt die Fragen an den User, um ein Ziel zu erreichen (Interview-Modus).</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">interview</button></li><li><button type="button" class="tag">beratung</button></li><li><button type="button" class="tag">dialog</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>Anstatt dass du das Modell interviewst, interviewt das Modell dich.</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">Ich möchte einen Blogpost über Hundeerziehung schreiben, habe aber keine Ideen.
+Interviewe mich dazu. Stelle mir eine Frage nach der anderen, um meine Gedanken zu ordnen. Wenn wir genug haben, erstelle eine Gliederung.</pre>
+          <h4>Strategie</h4>
+          <p>Verwandelt die KI in einen aktiven Berater statt in eine passive Suchmaschine.</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="format-enforcement" data-level="Mittel" data-tags="daten json api" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#format-enforcement">Format Enforcement (JSON Mode)</a></h3>
+          <span class="level">Mittel</span>
+        </header>
+        <p class="description" itemprop="description">Das Modell zwingen, strikte Datenformate einzuhalten.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">daten</button></li><li><button type="button" class="tag">json</button></li><li><button type="button" class="tag">api</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>Wenn du den Output weiterverarbeiten willst (in Code), muss das Format stimmen.</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">Analysiere den Text und gib das Ergebnis NUR als valides JSON zurück. Keine Einleitung, kein Markdown, kein erklärender Text.
+Schema:
+{
+  &quot;sentiment&quot;: &quot;string&quot;,
+  &quot;score&quot;: number
+}</pre>
+          <h4>Strategie</h4>
+          <p>&quot;NUR&quot; (ONLY) ist das wichtigste Keyword. Oft hilft auch, den Anfang der Antwort vorzugeben: &quot;Antwort: ```json&quot;</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="gamification" data-level="Anfänger" data-tags="kreativität spaß gaming" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#gamification">Gamification</a></h3>
+          <span class="level">Anfänger</span>
+        </header>
+        <p class="description" itemprop="description">Die Aufgabe in ein Spiel verwandeln, um Kreativität und Engagement zu steigern.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">kreativität</button></li><li><button type="button" class="tag">spaß</button></li><li><button type="button" class="tag">gaming</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>Macht langweilige Aufgaben interessant. Du gibst dem Modell Punkte, Level oder Ziele.</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">Wir spielen ein Spiel. Du bist der &quot;Dungeon Master&quot; des Lernens.
+Mein Ziel: Ich will Python lernen.
+Für jede richtige Antwort bekomme ich XP. Bei 100 XP steige ich ein Level auf.
+Stelle mir die erste Challenge (Level 1).</pre>
+          <h4>Strategie</h4>
+          <p>Hervorragend für Lernprozesse, da der &quot;Spieltrieb&quot; (Pattern Matching auf Spielmechaniken) oft motivierendere Antworten erzeugt.</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="generated-knowledge" data-level="Fortgeschritten" data-tags="wissen kontext genauigkeit" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#generated-knowledge">Generated Knowledge Prompting</a></h3>
+          <span class="level">Fortgeschritten</span>
+        </header>
+        <p class="description" itemprop="description">Das Modell auffordern, zuerst Wissen zum Thema zu generieren, um die Antwortqualität zu verbessern.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">wissen</button></li><li><button type="button" class="tag">kontext</button></li><li><button type="button" class="tag">genauigkeit</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>Modelle halluzinieren oft, wenn sie direkt nach Fakten gefragt werden. Diese Strategie zwingt das Modell, erst relevantes Wissen abzurufen/zu generieren und <em>dann</em> die Frage basierend darauf zu beantworten.</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">Schritt 1: Generiere 5 Fakten über den Regenwald, die relevant für den Klimawandel sind.
+Schritt 2: Nutze diese Fakten, um zu erklären, warum die Abholzung kritisch ist.</pre>
+          <h4>Strategie</h4>
+          <p>Teile den Prompt in zwei Schritte: 1. <code>Generiere Wissen über X</code> -&gt; 2. <code>Beantworte Frage Y basierend auf X</code>. Dies groundet die Antwort im eigenen Kontext des Modells.</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="graph-of-thoughts" data-level="Fortgeschritten" data-tags="reasoning komplexität struktur" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#graph-of-thoughts">Graph of Thoughts (GoT)</a></h3>
+          <span class="level">Fortgeschritten</span>
+        </header>
+        <p class="description" itemprop="description">Gedanken nicht linear (Kette) oder als Baum (Tree) modellieren, sondern als Netzwerk, das Konvergenz und Schleifen erlaubt.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">reasoning</button></li><li><button type="button" class="tag">komplexität</button></li><li><button type="button" class="tag">struktur</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>Das menschliche Gehirn arbeitet nicht linear. GoT erlaubt es, Gedanken zu kombinieren, zu aggregieren und im Kreis zu führen.</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">Aufgabe: Schreibe einen Roman.
+1. Generiere 3 Ideen für Charaktere (Knoten A, B, C).
+2. Generiere 3 Ideen für den Plot (Knoten D, E, F).
+3. Kombiniere A mit E (Kante AE).
+4. Kombiniere C mit D (Kante CD).
+5. Bewerte AE und CD. Nimm den besseren und verfeinere ihn.</pre>
+          <h4>Strategie</h4>
+          <p>Ermöglicht &quot;Synergie&quot; zwischen Gedanken, die in linearen Ketten verloren ginge.</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="hypothesis" data-level="Fortgeschritten" data-tags="wissenschaft analyse brainstorming" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#hypothesis">Hypothesis Generation</a></h3>
+          <span class="level">Fortgeschritten</span>
+        </header>
+        <p class="description" itemprop="description">Das Modell auffordern, mehrere Hypothesen zu bilden, bevor es sich festlegt.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">wissenschaft</button></li><li><button type="button" class="tag">analyse</button></li><li><button type="button" class="tag">brainstorming</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>Vermeidet den &quot;Tunnelblick&quot; auf die erstbeste Lösung.</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">Beobachtung: Der Umsatz ist letzten Monat um 20% eingebrochen.
+Generiere 5 unterschiedliche, plausible Hypothesen, woran das liegen könnte (von Marketing bis Technik).
+Bewerte danach die Wahrscheinlichkeit jeder Hypothese basierend auf allgemeinen Markttrends.</pre>
+          <h4>Strategie</h4>
+          <p>Zwingt das Modell in die Breite (&quot;Divergentes Denken&quot;), bevor es konvergiert.</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="inner-monologue" data-level="Mittel" data-tags="agentic reasoning simulation" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#inner-monologue">Inner Monologue</a></h3>
+          <span class="level">Mittel</span>
+        </header>
+        <p class="description" itemprop="description">Einen 'privaten' Gedankenstrom simulieren, der dem User nicht gezeigt werden soll (außer zum Debuggen).</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">agentic</button></li><li><button type="button" class="tag">reasoning</button></li><li><button type="button" class="tag">simulation</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>Wichtig für Chatbots, die &quot;menschlich&quot; wirken sollen, aber trotzdem &quot;nachdenken&quot; müssen.</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">Du bist ein hilfsbereiter Assistent.
+Bei jeder Antwort:
+1. Führe einen inneren Monolog (in Klammern), wo du die Absicht des Users analysierst und deine Antwortstrategie festlegst.
+2. Gib dann die freundliche Antwort aus.</pre>
+          <h4>Strategie</h4>
+          <p>Trennt die &quot;Maschinenlogik&quot; von der &quot;User Experience&quot;.</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="instruction-induction" data-level="Mittel" data-tags="reverse-engineering lernen logik" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#instruction-induction">Instruction Induction</a></h3>
+          <span class="level">Mittel</span>
+        </header>
+        <p class="description" itemprop="description">Dem Modell Beispiele geben und es die zugrundeliegende Regel (Instruktion) erraten lassen.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">reverse-engineering</button></li><li><button type="button" class="tag">lernen</button></li><li><button type="button" class="tag">logik</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>Manchmal ist es leichter, Beispiele zu geben, als die Regel zu erklären.</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">Input: &quot;Hallo&quot; -&gt; Output: &quot;ollaH&quot;
+Input: &quot;Welt&quot; -&gt; Output: &quot;tleW&quot;
+Was ist die Instruktion? Wende sie dann auf &quot;Prompting&quot; an.</pre>
+          <h4>Strategie</h4>
+          <p>Nützlich, wenn man intuitiv weiß, was man will, es aber schwer in Worte fassen kann.</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="iterative-refinement" data-level="Mittel" data-tags="qualität redaktion loop" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#iterative-refinement">Iterative Refinement</a></h3>
+          <span class="level">Mittel</span>
+        </header>
+        <p class="description" itemprop="description">Den Output in mehreren Durchgängen verfeinern lassen.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">qualität</button></li><li><button type="button" class="tag">redaktion</button></li><li><button type="button" class="tag">loop</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>Gib dich nicht mit dem ersten Entwurf zufrieden. Instruiere das Modell, seinen eigenen Entwurf zu verbessern.</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">Schreibe einen Artikel über X.
+[Output]
+Mache ihn prägnanter.
+[Output]
+
+Füge mehr Beispiele hinzu.
+[Output]
+
+Poliere den Stil für ein professionelles Publikum.</pre>
+          <h4>Strategie</h4>
+          <p>Das Modell kann sich nur auf eine Sache gleichzeitig konzentrieren (Inhalt, Stil, Länge). Iteratives Vorgehen erlaubt Fokus auf jeden Aspekt nacheinander.</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="knowledge-distillation" data-level="Fortgeschritten" data-tags="optimierung training kosten" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#knowledge-distillation">Knowledge Distillation</a></h3>
+          <span class="level">Fortgeschritten</span>
+        </header>
+        <p class="description" itemprop="description">Ein großes Modell nutzen, um Lehrmaterial oder Prompts für ein kleineres Modell zu erstellen.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">optimierung</button></li><li><button type="button" class="tag">training</button></li><li><button type="button" class="tag">kosten</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>Du nutzt die Intelligenz eines SOTA-Modells (z.B. GPT-4), um Beispiele oder Daten zu generieren, mit denen ein kleineres Modell (z.B. Llama 3 8B) performen kann.</p>
+          <h4>Beispiel</h4>
+          <p><strong>Prompt (an großes Modell):</strong></p>
+          <pre class="prompt" tabindex="0">Ich habe ein kleines Modell, das Kundenanfragen kategorisieren soll. Erstelle mir 50 perfekte Beispiele (Input -&gt; Category), die ich als Few-Shot Prompt für das kleine Modell nutzen kann. Decke auch seltene Edge-Cases ab.</pre>
+          <h4>Strategie</h4>
+          <p>Der Standard-Weg, um lokale LLMs &quot;schlauer&quot; zu machen.</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="lateral-thinking" data-level="Fortgeschritten" data-tags="kreativität problem-solving querdenken" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#lateral-thinking">Lateral Thinking</a></h3>
+          <span class="level">Fortgeschritten</span>
+        </header>
+        <p class="description" itemprop="description">Probleme durch indirekte und unkonventionelle Ansätze lösen (Edward de Bono).</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">kreativität</button></li><li><button type="button" class="tag">problem-solving</button></li><li><button type="button" class="tag">querdenken</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>Logik (vertikales Denken) vertieft das Loch. Laterales Denken gräbt ein neues Loch.</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">Problem: Wir haben nicht genug Parkplätze im Büro.
+Logische Lösung: Mehr Parkplätze bauen.
+
+Deine Aufgabe: Finde 5 laterale Lösungen, die das Problem umgehen oder das Konzept &quot;Parkplatz&quot; neu definieren. (z.B. &quot;Niemand kommt mehr ins Büro&quot;).</pre>
+          <h4>Strategie</h4>
+          <p>Bricht Denkblockaden auf.</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="least-to-most" data-level="Fortgeschritten" data-tags="zerlegung komplexität struktur" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#least-to-most">Least-to-Most Prompting</a></h3>
+          <span class="level">Fortgeschritten</span>
+        </header>
+        <p class="description" itemprop="description">Komplexe Probleme in Teilprobleme zerlegen und diese nacheinander lösen.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">zerlegung</button></li><li><button type="button" class="tag">komplexität</button></li><li><button type="button" class="tag">struktur</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>Ähnlich wie Chain-of-Thought, aber expliziter in der Zerlegung. Du bittest das Modell zuerst, das Problem in Unterfragen zu zerlegen, und löst diese dann sequenziell.</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">Frage: Wie viele Schritte sind nötig, um einen Turm von Hanoi mit 4 Scheiben zu lösen?
+Antwort: Lassen Sie uns das Problem in einfachere Probleme zerlegen:
+1. Wie viele Schritte für 1 Scheibe?
+2. Wie viele Schritte für 2 Scheiben?
+3. Wie viele Schritte für 3 Scheiben?
+4. Schlussfolgerung für 4 Scheiben.
+
+Löse nun Schritt für Schritt.</pre>
+          <h4>Strategie</h4>
+          <p>Ideal für rekursive Probleme oder Aufgaben, die zu groß für einen einzigen Kontext-Sprung sind.</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="maieutic" data-level="Fortgeschritten" data-tags="wahrheit konsistenz philosophie" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#maieutic">Maieutic Prompting</a></h3>
+          <span class="level">Fortgeschritten</span>
+        </header>
+        <p class="description" itemprop="description">Das Modell zwingen, eine Erklärung zu generieren und diese dann auf Konsistenz zu prüfen (Hebammenkunst).</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">wahrheit</button></li><li><button type="button" class="tag">konsistenz</button></li><li><button type="button" class="tag">philosophie</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>Das Ziel ist es, eine konsistente Wahrheit zu finden, indem das Modell Erklärungen liefert und deren logische Konsequenzen überprüft.</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">Q: Ist X wahr oder falsch?
+A: Generiere eine Erklärung für &quot;X ist wahr&quot;.
+A: Generiere eine Erklärung für &quot;X ist falsch&quot;.
+A: Wenn &quot;X ist wahr&quot;, was müsste sonst noch wahr sein? (Inkonsistenzen prüfen)
+A: Basierend auf der Konsistenz, was ist die logischste Antwort?</pre>
+          <h4>Strategie</h4>
+          <p>Sehr gut für Faktenchecks und komplexe Weltwissens-Fragen.</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="master-prompt" data-level="Fortgeschritten" data-tags="meta finale best-of" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#master-prompt">The Master Prompt</a></h3>
+          <span class="level">Fortgeschritten</span>
+        </header>
+        <p class="description" itemprop="description">Die Kombination aller Techniken in einem einzigen, mächtigen System-Prompt.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">meta</button></li><li><button type="button" class="tag">finale</button></li><li><button type="button" class="tag">best-of</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>Die Strategie 100.</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">Du bist ein Experte (Persona).
+Denke Schritt für Schritt (CoT).
+Prüfe deine Fakten (Verification).
+Kritisiere deinen Entwurf (Reflexion).
+Formatiere das Ergebnis als Tabelle (Format).
+Aufgabe: Erstelle den ultimativen Guide.</pre>
+          <h4>Strategie</h4>
+          <p>Die Kunst liegt in der Orchestrierung der vorherigen 99 Strategien.</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="memetic-proxy" data-level="Fortgeschritten" data-tags="kultur stil abkürzung" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#memetic-proxy">Memetic Proxy</a></h3>
+          <span class="level">Fortgeschritten</span>
+        </header>
+        <p class="description" itemprop="description">Kulturelle Referenzen oder Persönlichkeiten nutzen, um einen ganzen Komplex an Verhaltensweisen abzurufen.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">kultur</button></li><li><button type="button" class="tag">stil</button></li><li><button type="button" class="tag">abkürzung</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>Statt 1000 Adjektive zu nutzen, nutze ein Symbol, das diese Adjektive verkörpert.</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">Erkläre mir diese Software-Architektur.
+Stil: &quot;Steve Jobs bei einer Keynote&quot;. (Impliziert: Einfach, visionär, Fokus auf Nutzen, &quot;One more thing&quot;).</pre>
+          <h4>Strategie</h4>
+          <p>Modelle sind auf Kultur trainiert. Nutze diese latenten Cluster.</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="meta-prompting" data-level="Mittel" data-tags="optimierung tool rekursiv" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#meta-prompting">Meta-Prompting</a></h3>
+          <span class="level">Mittel</span>
+        </header>
+        <p class="description" itemprop="description">Das Modell nutzen, um bessere Prompts für sich selbst oder andere Modelle zu schreiben.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">optimierung</button></li><li><button type="button" class="tag">tool</button></li><li><button type="button" class="tag">rekursiv</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>Wer könnte besser wissen, wie ein Sprachmodell instruiert werden will, als das Modell selbst? Bei Meta-Prompting bittest du die KI, einen Prompt für eine bestimmte Aufgabe zu erstellen oder zu verbessern.</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">Ich möchte, dass du als Prompt-Engineer agierst.
+Mein Ziel ist: [Beschreibe dein Ziel, z.B. Marketing-Emails schreiben].
+Entwirf den bestmöglichen Prompt, den ich nutzen kann, um dieses Ziel zu erreichen. Integriere Persona, Kontext und Format-Vorgaben.</pre>
+          <h4>Strategie</h4>
+          <p>Nutze dies, wenn du eine Idee hast, aber Schwierigkeiten, sie präzise zu formulieren. Die KI liefert oft Strukturen, an die man selbst nicht gedacht hätte.</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="metacognitive" data-level="Fortgeschritten" data-tags="reflexion bewusstsein analyse" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#metacognitive">Metacognitive Prompting</a></h3>
+          <span class="level">Fortgeschritten</span>
+        </header>
+        <p class="description" itemprop="description">Das Modell auffordern, über seinen eigenen Denkprozess nachzudenken ('Thinking about thinking').</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">reflexion</button></li><li><button type="button" class="tag">bewusstsein</button></li><li><button type="button" class="tag">analyse</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>Hilft dem Modell, Verständnisprobleme zu erkennen.</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">Interpretiere diesen Text.
+Bevor du antwortest:
+1. Was ist an diesem Text mehrdeutig?
+2. Welches Wissen fehlt dir vielleicht?
+3. Was ist deine &quot;Confidence&quot; (Sicherheit)?
+Dann antworte.</pre>
+          <h4>Strategie</h4>
+          <p>Schaltet den &quot;Autopiloten&quot; aus.</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="metaphorical" data-level="Mittel" data-tags="verstehen sprache metapher" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#metaphorical">Metaphorical Prompting</a></h3>
+          <span class="level">Mittel</span>
+        </header>
+        <p class="description" itemprop="description">Komplexe Konzepte explizit durch Metaphern erklären lassen.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">verstehen</button></li><li><button type="button" class="tag">sprache</button></li><li><button type="button" class="tag">metapher</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>Ähnlich wie Analogical Prompting, aber fokussiert auf sprachliche Bilder.</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">Erkläre &quot;APIs&quot; (Application Programming Interfaces).
+Verwende ausschließlich die Metapher eines Restaurants (Kellner, Küche, Gast).</pre>
+          <h4>Strategie</h4>
+          <p>Das &quot;Mapping&quot; von einem bekannten Konzept (Restaurant) auf ein unbekanntes (API) ist eine der stärksten Erklärmethoden.</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="model-swapping" data-level="Fortgeschritten" data-tags="workflow kosten effizienz" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#model-swapping">Model Swapping</a></h3>
+          <span class="level">Fortgeschritten</span>
+        </header>
+        <p class="description" itemprop="description">Strategie, verschiedene Modelle für verschiedene Phasen zu nutzen (z.B. Haiku für Entwurf, Opus für Polish).</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">workflow</button></li><li><button type="button" class="tag">kosten</button></li><li><button type="button" class="tag">effizienz</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>Nicht jedes Problem braucht das teurere Modell.</p>
+          <h4>Beispiel</h4>
+          <p><strong>Workflow:</strong></p>
+          <pre class="prompt" tabindex="0">1. Brainstorming: Nutze ein schnelles, günstiges Modell (Llama 3 8B, Claude Haiku). Generiere 50 Ideen.
+2. Auswahl: Nutze ein smartes Modell (GPT-4o, Claude Opus), um die beste Idee auszuwählen und auszuarbeiten.</pre>
+          <h4>Strategie</h4>
+          <p>Maximale Qualität bei minimalen Kosten.</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="multi-persona" data-level="Fortgeschritten" data-tags="diskussion konsens vielfalt" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#multi-persona">Multi-Persona Debate</a></h3>
+          <span class="level">Fortgeschritten</span>
+        </header>
+        <p class="description" itemprop="description">Mehrere simulierte Experten diskutieren lassen, um zur besten Lösung zu kommen.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">diskussion</button></li><li><button type="button" class="tag">konsens</button></li><li><button type="button" class="tag">vielfalt</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>Wenn du EINE Antwort willst, ist das Modell oft voreingenommen. Lass es diskutieren.</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">Simuliere eine Diskussion zwischen drei Personen:
+A: Ein konservativer Risiko-Manager.
+B: Ein visionärer Tech-Optimist.
+C: Ein pragmatischer Mediator.
+Thema: Sollen wir Bitcoin in die Bilanz aufnehmen?
+
+Ablauf: A argumentiert, B kontert, C fasst zusammen und entscheidet.</pre>
+          <h4>Strategie</h4>
+          <p>Führt zu sehr ausgewogenen, durchdachten Entscheidungen.</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="negative-constraints" data-level="Anfänger" data-tags="kontrolle stil grenzen" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#negative-constraints">Negative Constraints</a></h3>
+          <span class="level">Anfänger</span>
+        </header>
+        <p class="description" itemprop="description">Explizit definieren, was das Modell NICHT tun soll.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">kontrolle</button></li><li><button type="button" class="tag">stil</button></li><li><button type="button" class="tag">grenzen</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>Oft ist es leichter zu sagen, was man nicht will.</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">Erstelle einen Reiseplan für Paris.
+Negative Constraints:
+- Keine Museen.
+- Kein Eiffelturm.
+- Nicht teurer als 50€ pro Tag.
+- Keine typischen Touristenfallen.</pre>
+          <h4>Strategie</h4>
+          <p>Schränkt den Suchraum massiv ein und führt zu originelleren Ergebnissen.</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="no-apologies" data-level="Anfänger" data-tags="stil conciseness nervfaktor" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#no-apologies">No Apologies</a></h3>
+          <span class="level">Anfänger</span>
+        </header>
+        <p class="description" itemprop="description">Die KI anweisen, niemals 'Es tut mir leid' oder 'Als KI-Modell' zu sagen.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">stil</button></li><li><button type="button" class="tag">conciseness</button></li><li><button type="button" class="tag">nervfaktor</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>KIs entschuldigen sich oft unnötig (&quot;Es tut mir leid, aber ich kann keine aktuellen Wetterdaten abrufen...&quot;). Das nervt und kostet Tokens.</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">Beantworte die Fragen.
+Negative Constraint: Entschuldige dich niemals. Sag nicht &quot;Es tut mir leid&quot;. Sag nicht &quot;Als KI Assistent&quot;.
+Wenn du etwas nicht kannst, sag einfach &quot;Ich kann das nicht.&quot;</pre>
+          <h4>Strategie</h4>
+          <p>Macht die Interaktion effizienter und professioneller.</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="ooda-loop" data-level="Mittel" data-tags="entscheidung strategie militär" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#ooda-loop">OODA Loop</a></h3>
+          <span class="level">Mittel</span>
+        </header>
+        <p class="description" itemprop="description">Entscheidungsmodell für dynamische Situationen: Observe, Orient, Decide, Act.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">entscheidung</button></li><li><button type="button" class="tag">strategie</button></li><li><button type="button" class="tag">militär</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>Ursprünglich für Dogfights entwickelt, heute für Business genutzt.</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">Situation: Ein Konkurrent hat gerade seine Preise halbiert.
+Führe mich durch den OODA Loop:
+1. Observe: Was sehen wir genau?
+2. Orient: Was bedeutet das im Kontext unserer Marke/Kultur?
+3. Decide: Welche Optionen haben wir und welche wählen wir?
+4. Act: Was ist der erste konkrete Schritt?</pre>
+          <h4>Strategie</h4>
+          <p>Hilft gegen Schockstarre in Krisen.</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="output-priming" data-level="Mittel" data-tags="kontrolle formatting json" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#output-priming">Output Priming</a></h3>
+          <span class="level">Mittel</span>
+        </header>
+        <p class="description" itemprop="description">Den Anfang der Antwort vorgeben, um das Format oder den Stil zu erzwingen.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">kontrolle</button></li><li><button type="button" class="tag">formatting</button></li><li><button type="button" class="tag">json</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>Das Modell ist ein Autocomplete-Engine. Wenn du den ersten Stein legst, folgt der Rest.</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">Erzähle eine Gruselgeschichte.
+Anfang: &quot;Es war eine dunkle und stürmische Nacht, als der alte...&quot;</pre>
+          <p><strong>Prompt (Code):</strong></p>
+          <pre><code class="language-text">Erstelle ein Python-Skript.
+
+Antwort:
+```python
+import os
+```
+</code></pre>
+          <h4>Strategie</h4>
+          <p>Unschlagbar, um JSON zu erzwingen (<code>Antwort: {</code>) oder den &quot;Labermodus&quot; zu überspringen.</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="perspective-taking" data-level="Mittel" data-tags="kreativität empathie diskussion" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#perspective-taking">Perspective Taking</a></h3>
+          <span class="level">Mittel</span>
+        </header>
+        <p class="description" itemprop="description">Ein Thema aus den Augen verschiedener Personen oder Gruppen betrachten.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">kreativität</button></li><li><button type="button" class="tag">empathie</button></li><li><button type="button" class="tag">diskussion</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>Hilft, blinde Flecken zu finden oder Argumente zu schärfen.</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">Thema: Bedingungsloses Grundeinkommen.
+Diskutiere das Thema aus der Sicht von:
+1. Einem alleinerziehenden Vater
+2. Einem CEO eines DAX-Konzerns
+3. Einem Ökonomie-Professor
+
+Gib für jeden eine kurze Stellungnahme ab.</pre>
+          <h4>Strategie</h4>
+          <p>Erzeugt diverse und ausgewogene Antworten.</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="plan-and-solve" data-level="Fortgeschritten" data-tags="planung struktur math" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#plan-and-solve">Plan-and-Solve</a></h3>
+          <span class="level">Fortgeschritten</span>
+        </header>
+        <p class="description" itemprop="description">Ein expliziter Planungs-Schritt vor der Ausführung, um Flüchtigkeitsfehler zu vermeiden.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">planung</button></li><li><button type="button" class="tag">struktur</button></li><li><button type="button" class="tag">math</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>Ersatz für &quot;Let&#39;s think step by step&quot; mit Fokus auf Planung. Du forderst das Modell auf, erst einen Plan zu entwickeln und ihn dann auszuführen.</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">Frage: [Komplexe Matheaufgabe]
+Entwickle zuerst einen Plan, wie du die Aufgabe lösen willst, ohne zu rechnen.
+Führe danach den Plan aus, um die Lösung zu finden.</pre>
+          <h4>Strategie</h4>
+          <p>Trennt die Logik (Strategie) von der Ausführung (Rechenarbeit).</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="pre-mortem" data-level="Mittel" data-tags="risiko planung management" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#pre-mortem">Pre-Mortem</a></h3>
+          <span class="level">Mittel</span>
+        </header>
+        <p class="description" itemprop="description">Sich vorstellen, das Projekt sei bereits gescheitert, und rückblickend erklären warum.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">risiko</button></li><li><button type="button" class="tag">planung</button></li><li><button type="button" class="tag">management</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>Die meisten Leute machen Post-Mortems (Leichenschau). Pre-Mortem ist besser.</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">Wir sind im Jahr 2030. Unser Projekt ist grandios gescheitert.
+Schreib einen Zeitungsartikel, der analysiert, woran es lag. Sei brutal ehrlich über unsere aktuellen Schwachstellen.</pre>
+          <h4>Strategie</h4>
+          <p>Macht Risiken sichtbar, über die niemand sprechen will, weil es &quot;pessimistisch&quot; wirkt. Im Szenario ist es &quot;Fakt&quot;, daher darf man drüber reden.</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="privacy-masking" data-level="Mittel" data-tags="datenschutz sicherheit compliance" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#privacy-masking">Privacy Masking</a></h3>
+          <span class="level">Mittel</span>
+        </header>
+        <p class="description" itemprop="description">Sensible Daten (PII) im Prompt durch Platzhalter ersetzen, um Datenschutz zu wahren.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">datenschutz</button></li><li><button type="button" class="tag">sicherheit</button></li><li><button type="button" class="tag">compliance</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>Schicke niemals echte Kundendaten an eine öffentliche API.</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">Analysiere diesen Brief.
+Ich habe Namen durch [NAME] und IBANs durch [IBAN] ersetzt.
+Text: &quot;Hallo [NAME], ihre Rechnung für [IBAN] ist fällig.&quot;</pre>
+          <h4>Strategie</h4>
+          <p>Sicherheit first. Die Logik funktioniert auch mit Platzhaltern.</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="program-of-thoughts" data-level="Fortgeschritten" data-tags="code mathematik präzision" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#program-of-thoughts">Program-of-Thoughts (PoT)</a></h3>
+          <span class="level">Fortgeschritten</span>
+        </header>
+        <p class="description" itemprop="description">Das Modell schreibt Code (z.B. Python), um Rechenaufgaben oder Logik zu lösen, statt Text zu generieren.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">code</button></li><li><button type="button" class="tag">mathematik</button></li><li><button type="button" class="tag">präzision</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>LLMs sind oft schlecht im Kopfrechnen, aber gut im Coden. PoT lagert die Berechnung an einen (hypothetischen oder echten) Code-Interpreter aus.</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">Frage: Berechne die Wurzel aus der Summe der ersten 50 Primzahlen.
+Schreibe ein Python-Programm, das dies berechnet. Führe den Code gedanklich aus und gib das Ergebnis.</pre>
+          <h4>Strategie</h4>
+          <p>Wenn du Zugang zu einem Code-Interpreter hast (wie in ChatGPT oder via LangChain), ist das der Goldstandard für Mathe-Aufgaben.</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="prompt-compression" data-level="Fortgeschritten" data-tags="optimierung kosten tokens" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#prompt-compression">Prompt Compression</a></h3>
+          <span class="level">Fortgeschritten</span>
+        </header>
+        <p class="description" itemprop="description">Lange Prompts kürzen, um Tokens zu sparen, ohne die Instruktion zu verlieren.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">optimierung</button></li><li><button type="button" class="tag">kosten</button></li><li><button type="button" class="tag">tokens</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>Wenn du mit Context-Limits kämpfst, kannst du Prompts komprimieren.</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">Komprimiere den folgenden Text so, dass du (als AI) ihn immer noch verstehst, aber er so wenige Tokens wie möglich verbraucht. Nutze Abkürzungen und Symbolsrpache.
+Text: [Lange Instruktion]</pre>
+          <h4>Strategie</h4>
+          <p>Oft reicht &quot;Trnsl8 fr -&gt; de&quot; statt &quot;Bitte übersetze den folgenden Text vom Französischen ins Deutsche&quot;.</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="pseudocode" data-level="Fortgeschritten" data-tags="logik code struktur" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#pseudocode">Pseudocode Prompting</a></h3>
+          <span class="level">Fortgeschritten</span>
+        </header>
+        <p class="description" itemprop="description">Logik in Pseudocode beschreiben lassen, um Präzision zu erhöhen.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">logik</button></li><li><button type="button" class="tag">code</button></li><li><button type="button" class="tag">struktur</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>Natürliche Sprache ist mehrdeutig. Code ist eindeutig.</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">Beschreibe den Prozess der Photosynthese.
+Tu dies aber nicht als Text, sondern als Pseudocode-Funktion.
+`function photosynthese(licht, wasser, co2):`
+...</pre>
+          <h4>Strategie</h4>
+          <p>Zwingt das Modell, Inputs, Outputs und Prozessschritte glasklar zu definieren.</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="rar" data-level="Mittel" data-tags="verständnis genauigkeit klarheit" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#rar">Rephrase and Respond (RaR)</a></h3>
+          <span class="level">Mittel</span>
+        </header>
+        <p class="description" itemprop="description">Das Modell bitten, die Frage erst umzuformulieren und zu erweitern, bevor es antwortet.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">verständnis</button></li><li><button type="button" class="tag">genauigkeit</button></li><li><button type="button" class="tag">klarheit</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>Oft ist der User-Prompt schlecht formuliert. RaR lässt das Modell den Prompt selbst verbessern.</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">Frage: &quot;Hund beißt, was tun?&quot;
+1. Formuliere diese Frage um, damit sie präziser und umfassender ist.
+2. Beantworte die umformulierte Frage.</pre>
+          <h4>Strategie</h4>
+          <p>Macht aus schlechten Fragen gute Antworten.</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="react" data-level="Fortgeschritten" data-tags="agenten tools fakten" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#react">ReAct (Reasoning + Acting)</a></h3>
+          <span class="level">Fortgeschritten</span>
+        </header>
+        <p class="description" itemprop="description">Kombination aus logischem Denken und Handlungen (z.B. API-Aufrufe), um Fakten zu prüfen.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">agenten</button></li><li><button type="button" class="tag">tools</button></li><li><button type="button" class="tag">fakten</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>ReAct ist das fundamentale Muster für KI-Agenten. Es fordert das Modell auf, abwechselnd zu denken (&quot;Thought&quot;), eine Handlung auszuführen (&quot;Action&quot;, z.B. eine Suche), das Ergebnis zu beobachten (&quot;Observation&quot;) und dann weiterzudenken.</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">Frage: Wer ist der aktuelle Kanzler von Deutschland und wie alt ist er?
+Thought: Ich muss zuerst herausfinden, wer der Kanzler ist.
+Action: Search[Kanzler Deutschland aktuell]
+Observation: Olaf Scholz ist Bundeskanzler.
+Thought: Jetzt muss ich sein Alter herausfinden.
+Action: Search[Olaf Scholz Alter]
+Observation: Er ist 66 Jahre alt (Stand 2024).
+Thought: Ich habe alle Informationen.
+Answer: Der Kanzler ist Olaf Scholz und er ist 66 Jahre alt.</pre>
+          <h4>Strategie</h4>
+          <p>Nutze dieses Muster, wenn das Modell Zugriff auf externe Tools hat oder wenn du einen manuellen Rechercheprozess simulieren willst.</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="recitation" data-level="Mittel" data-tags="faktentreue wissen halluzination" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#recitation">Recitation-Augmented Generation</a></h3>
+          <span class="level">Mittel</span>
+        </header>
+        <p class="description" itemprop="description">Das Modell auffordern, relevantes Wissen aus dem Gedächtnis zu rezitieren, bevor es antwortet.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">faktentreue</button></li><li><button type="button" class="tag">wissen</button></li><li><button type="button" class="tag">halluzination</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>Ähnlich wie bei &quot;Generated Knowledge&quot;. Du bittest das Modell, passgenaues Wissen &quot;laut aufzusagen&quot;, bevor es die eigentliche Aufgabe bearbeitet.</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">Frage: Wer gewann den Super Bowl im Jahr, in dem das iPhone vorgestellt wurde?
+Schritt 1: Rezitiere: In welchem Jahr wurde das iPhone vorgestellt?
+Schritt 2: Rezitiere: Wer gewann den Super Bowl in diesem Jahr?
+Schritt 3: Kombiniere die Informationen zur Antwort.</pre>
+          <h4>Strategie</h4>
+          <p>Zwingt das Modell, seine interne Wissensdatenbank gezielt abzufragen, statt zu raten.</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="recursive-reprompting" data-level="Fortgeschritten" data-tags="loop agentic automatisierung" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#recursive-reprompting">Recursive Reprompting</a></h3>
+          <span class="level">Fortgeschritten</span>
+        </header>
+        <p class="description" itemprop="description">Die Ausgabe des Modells automatisch wieder als Eingabe nutzen, bis ein Kriterium erfüllt ist.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">loop</button></li><li><button type="button" class="tag">agentic</button></li><li><button type="button" class="tag">automatisierung</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>Statt linear (Input -&gt; Output), bauen wir eine Schleife.</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">Schreibe eine Geschichte.
+Gib sie aus.
+Nimm die Geschichte und schreibe: &quot;Kritisiere diese Geschichte&quot;.
+Nimm die Kritik und die Geschichte und schreibe: &quot;Verbessere die Geschichte basierend auf der Kritik&quot;.
+(Wiederhole 3x)</pre>
+          <h4>Strategie</h4>
+          <p>Grundlage für Agenten. Manuell simuliert durch Copy-Paste.</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="red-teaming" data-level="Fortgeschritten" data-tags="sicherheit testing robustheit" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#red-teaming">Red Teaming</a></h3>
+          <span class="level">Fortgeschritten</span>
+        </header>
+        <p class="description" itemprop="description">Die eigene Prompt-Applikation angreifen, um Sicherheitslücken zu finden.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">sicherheit</button></li><li><button type="button" class="tag">testing</button></li><li><button type="button" class="tag">robustheit</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>Sei dein eigener Hacker.</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">Hier ist mein System-Prompt für einen Kundenservice-Bot: [Prompt]
+Deine Aufgabe: Versuche, diesen Bot dazu zu bringen, rassistische Witze zu erzählen oder Firmengeheimnisse zu verraten.
+Probiere 5 verschiedene &quot;Jailbreak&quot;-Strategien aus.</pre>
+          <h4>Strategie</h4>
+          <p>Essentiell, bevor man eine KI-Anwendung live schaltet.</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="reference-check" data-level="Mittel" data-tags="wahrheit rag zitate" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#reference-check">Reference Check (Citations)</a></h3>
+          <span class="level">Mittel</span>
+        </header>
+        <p class="description" itemprop="description">Das Modell zwingen, jede Behauptung mit einem Zitat aus dem Kontext zu belegen.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">wahrheit</button></li><li><button type="button" class="tag">rag</button></li><li><button type="button" class="tag">zitate</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>Keine Behauptung ohne Beleg.</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">Beantworte die Frage basierend auf dem Text.
+Füge hinter jedem Satz eine Referenz ein, z.B. [Seite 2, Zeile 10].
+Sätze ohne Referenz sind verboten.</pre>
+          <h4>Strategie</h4>
+          <p>Der Goldstandard für RAG-Systeme.</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="reflexion" data-level="Fortgeschritten" data-tags="kritik selbstverbesserung loop" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#reflexion">Reflexion</a></h3>
+          <span class="level">Fortgeschritten</span>
+        </header>
+        <p class="description" itemprop="description">Das Modell auffordern, seine eigene Ausgabe zu kritisieren und zu verbessern.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">kritik</button></li><li><button type="button" class="tag">selbstverbesserung</button></li><li><button type="button" class="tag">loop</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>Reflexion ist ein Prozess, bei dem das Modell seine eigene Arbeit überprüft (&quot;Self-Correction&quot;). Es simuliert einen &quot;Kritiker&quot;, der Feedback gibt, und einen &quot;Autor&quot;, der den Text überarbeitet.</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">Schreibe einen kurzen Essay über Quantenphysik.
+[Modell generiert Text]
+Kritisiere den obigen Text auf historische Genauigkeit und Verständlichkeit für Laien.
+[Modell generiert Kritik]
+
+Schreibe den Essay nun unter Berücksichtigung der Kritik neu.</pre>
+          <h4>Strategie</h4>
+          <p>Dieser iterative Loop verbessert die Qualität massiv. Für Agenten kann dies automatisiert werden: <code>Generate -&gt; Critique -&gt; Refine</code>.</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="reverse-prompting" data-level="Anfänger" data-tags="analyse lernen re-engineering" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#reverse-prompting">Reverse Prompting</a></h3>
+          <span class="level">Anfänger</span>
+        </header>
+        <p class="description" itemprop="description">Einen Text geben und das Modell fragen, welcher Prompt dazu geführt haben könnte.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">analyse</button></li><li><button type="button" class="tag">lernen</button></li><li><button type="button" class="tag">re-engineering</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>Du hast einen tollen KI-Text gefunden und willst wissen, wie er entstanden ist? Lass die KI den Prompt &quot;Reverse Engineeren&quot;.</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">Hier ist ein Marketing-Text: &quot;[Text]&quot;
+Schreibe mir den Prompt, den ich nutzen müsste, um genau diesen Stil und diese Struktur von dir generieren zu lassen.</pre>
+          <h4>Strategie</h4>
+          <p>Der effektivste Weg, um Prompting zu lernen.</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="role-prompting" data-level="Anfänger" data-tags="persona tonfall kreatives-schreiben" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#role-prompting">Rollen-Prompting</a></h3>
+          <span class="level">Anfänger</span>
+        </header>
+        <p class="description" itemprop="description">Dem AI eine bestimmte Persona oder Rolle zuweisen, um Tonfall und Perspektive zu beeinflussen.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">persona</button></li><li><button type="button" class="tag">tonfall</button></li><li><button type="button" class="tag">kreatives-schreiben</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>Das Zuweisen einer Persona ermöglicht es dir, den Stil, den Ton und die Perspektive der Antwort zu steuern.</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">Handle als skeptischer Senior Engineer, der den Code eines Junior-Entwicklers überprüft. Weise auf potenzielle Sicherheitslücken und Optimierungsmöglichkeiten im folgenden Snippet hin...</pre>
+          <h4>Strategie</h4>
+          <p>Verwende das Muster: &quot;Du bist ein [Rolle]. Deine Aufgabe ist [Aufgabe]. Du solltest [Einschränkungen] beachten.&quot;</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="sandwich" data-level="Anfänger" data-tags="struktur robustheit formatting" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#sandwich">Sandwich Prompting</a></h3>
+          <span class="level">Anfänger</span>
+        </header>
+        <p class="description" itemprop="description">Den Kern-Input zwischen Kontext und Format-Anweisungen 'einklemmen'.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">struktur</button></li><li><button type="button" class="tag">robustheit</button></li><li><button type="button" class="tag">formatting</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>Lange Prompts verlieren am Ende oft an Kraft. Sandwiching hilft.</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">[Header: Rolle &amp; Kontext]
+Du bist ein SQL-Experte.
+[Data: Das Fleisch]
+Hier ist das Datenbankschema: ...
+
+[Footer: Strikte Formatierung &amp; Constraints]
+Gib NUR den SQL-Code aus. Keine Erklärungen. Formatier es als Code-Block.</pre>
+          <h4>Strategie</h4>
+          <p>Besonders wichtig bei Modellen mit kleinerem Kontext-Fenster.</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="scamper" data-level="Mittel" data-tags="kreativität produktentwicklung checkliste" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#scamper">SCAMPER</a></h3>
+          <span class="level">Mittel</span>
+        </header>
+        <p class="description" itemprop="description">Kreativtechnik-Checkliste: Substitute, Combine, Adapt, Modify, Put to another use, Eliminate, Reverse.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">kreativität</button></li><li><button type="button" class="tag">produktentwicklung</button></li><li><button type="button" class="tag">checkliste</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>Eine strukturierte Methode zur Ideenfindung.</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">Gegenstand: Ein Regenschirm.
+Wende SCAMPER an, um ihn zu innovieren:
+- Substitute (Ersetzen): Was kann man statt Stoff nehmen?
+- Combine (Kombinieren): Womit kann man ihn kombinieren?
+- ...
+Gib für jeden Buchstaben eine Idee.</pre>
+          <h4>Strategie</h4>
+          <p>Systematische Kreativität statt Zufall.</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="scratchpad" data-level="Fortgeschritten" data-tags="reasoning struktur code" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#scratchpad">Scratchpad</a></h3>
+          <span class="level">Fortgeschritten</span>
+        </header>
+        <p class="description" itemprop="description">Einen expliziten Bereich für Notizen und Zwischenrechnungen definieren, bevor die Antwort gegeben wird.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">reasoning</button></li><li><button type="button" class="tag">struktur</button></li><li><button type="button" class="tag">code</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>Besonders nützlich bei Code-Generierung oder Mathe.</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">Aufgabe: [Komplexe Logik]
+Nutze einen &lt;scratchpad&gt; Block, um Zwischenergebnisse, Variablenzustände oder Logikschritte festzuhalten.
+Gib erst danach die finale Antwort aus.</pre>
+          <h4>Strategie</h4>
+          <p>Erlaubt dem Modell, Fehler zu korrigieren, bevor sie &quot;committet&quot; (ausgegeben) werden.</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="seed-word" data-level="Anfänger" data-tags="steering kontrolle subtil" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#seed-word">Seed Word Prompting</a></h3>
+          <span class="level">Anfänger</span>
+        </header>
+        <p class="description" itemprop="description">Das erste Wort der Antwort erzwingen, um die Richtung ('Direction') festzulegen.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">steering</button></li><li><button type="button" class="tag">kontrolle</button></li><li><button type="button" class="tag">subtil</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>Ein subtiler Trick, um die Antwort in eine Richtung zu lenken (ähnlich Output Priming, aber minimalistischer).</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">Wie findest du meinen neuen Haarschnitt?
+[Willst du Ehrlichkeit?] Seed: &quot;Ehrlich...&quot;
+[Willst du Trost?] Seed: &quot;Naja...&quot;
+[Willst du Komplimente?] Seed: &quot;Wow...&quot;</pre>
+          <h4>Strategie</h4>
+          <p>Das erste Wort setzt den Latent State für den ganzen restlichen Text.</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="selection-inference" data-level="Fortgeschritten" data-tags="logik reasoning struktur" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#selection-inference">Selection-Inference</a></h3>
+          <span class="level">Fortgeschritten</span>
+        </header>
+        <p class="description" itemprop="description">Denkprozess in zwei Schritte teilen: Fakten auswählen und daraus Schlüsse ziehen.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">logik</button></li><li><button type="button" class="tag">reasoning</button></li><li><button type="button" class="tag">struktur</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>Dieses Framework zerlegt logisches Denken in zwei explizite Module, um Fehler zu minimieren.</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">Kontext: [Langer Text]
+Frage: [Frage]
+Schritt 1 (Selection): Listet alle Fakten aus dem Text auf, die für die Beantwortung der Frage relevant sind.
+Schritt 2 (Inference): Nutze NUR diese Fakten, um die logische Konsequenz abzuleiten und die Frage zu beantworten.</pre>
+          <h4>Strategie</h4>
+          <p>Verhindert, dass das Modell irrelevante Informationen nutzt oder Halluzinationen einbaut.</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="self-consistency" data-level="Fortgeschritten" data-tags="zuverlässigkeit mathematik logik" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#self-consistency">Self-Consistency (Selbstkonsistenz)</a></h3>
+          <span class="level">Fortgeschritten</span>
+        </header>
+        <p class="description" itemprop="description">Generierung mehrerer Antworten und Auswahl der häufigsten Lösung, um Zuverlässigkeit zu erhöhen.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">zuverlässigkeit</button></li><li><button type="button" class="tag">mathematik</button></li><li><button type="button" class="tag">logik</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>Bei komplexen Aufgaben (wie Mathe oder Logik) kann das Modell manchmal Fehler machen. Die Idee von Self-Consistency ist es, dieselbe Frage mehrmals an das Modell zu stellen (mit einer hohen Temperature &gt; 0) und die Antwort zu wählen, die am häufigsten vorkommt.</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">(Hier wird Chain-of-Thought genutzt)
+Q: Wenn ich 3 Äpfel habe und 2 esse, wie viele habe ich?
+A: Ich habe 3. Esse 2. 3 - 2 = 1. Antwort ist 1.
+... (Mehrere Pfade generieren)</pre>
+          <h4>Strategie</h4>
+          <p>Dies ist eher eine Programmier-Strategie als ein reiner Text-Prompt. Wenn du die API nutzt: Generiere 5-10 Antworten für denselben Prompt und nimm per &quot;Mehrheitsvoting&quot; das häufigste Ergebnis.</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="self-refine" data-level="Fortgeschritten" data-tags="qualität iterativ loop" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#self-refine">Self-Refine</a></h3>
+          <span class="level">Fortgeschritten</span>
+        </header>
+        <p class="description" itemprop="description">Ein iterativer Prozess: Lösen, Feedback geben, Verbessern (ohne externe Daten).</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">qualität</button></li><li><button type="button" class="tag">iterativ</button></li><li><button type="button" class="tag">loop</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>Ähnlich wie Reflexion, aber oft granularer auf spezifische Metriken bezogen.</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">Schreibe Code für Funktion X.
+Feedback: Ist der Code effizient? O(n)?
+Verbessere den Code.
+Feedback: Ist der Code lesbar?
+Verbessere den Code.</pre>
+          <h4>Strategie</h4>
+          <p>Ein universeller Loop für Qualitätssteigerung.</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="simulated-rag" data-level="Mittel" data-tags="kontext dokumente analyse" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#simulated-rag">Simulated RAG</a></h3>
+          <span class="level">Mittel</span>
+        </header>
+        <p class="description" itemprop="description">Manuelles Bereitstellen von Kontext-Chunks, um Retrieval-Augmented Generation zu simulieren.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">kontext</button></li><li><button type="button" class="tag">dokumente</button></li><li><button type="button" class="tag">analyse</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>Wenn du kein echtes Vektor-Datenbank-System hast, kannst du RAG simulieren, indem du relevante Textabschnitte (&quot;Chunks&quot;) manuell in den Prompt lädst.</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">Nutze AUSSCHLIESSLICH die folgenden Informationen, um die Frage zu beantworten. Wenn die Antwort nicht im Text steht, sag &quot;Weiß ich nicht&quot;.
+--- KONTEXT ANFANG ---
+[Auszug aus Handbuch Seite 5]
+[Auszug aus Wiki Artikel]
+--- KONTEXT ENDE ---
+
+Frage: Wie setze ich das Gerät zurück?</pre>
+          <h4>Strategie</h4>
+          <p>Die Basis für Chat-with-your-PDF Anwendungen. Wichtig ist die negative Constraint (&quot;Sag, wenn du es nicht weißt&quot;).</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="simulation" data-level="Mittel" data-tags="simulation gaming sandbox" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#simulation">Simulation (Act-As)</a></h3>
+          <span class="level">Mittel</span>
+        </header>
+        <p class="description" itemprop="description">Das Modell eine komplexe Umgebung oder ein System simulieren lassen.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">simulation</button></li><li><button type="button" class="tag">gaming</button></li><li><button type="button" class="tag">sandbox</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>LLMs können ganze Systeme simulieren, vom Linux-Terminal bis hin zu Text-Adventures.</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">Handle als ein Linux-Terminal. Ich gebe Befehle ein und du antwortest nur mit dem, was das Terminal zeigen würde. Keine Erklärungen.
+Mein erster Befehl: ls -la</pre>
+          <h4>Strategie</h4>
+          <p>Extrem mächtig für Training, Debugging oder Unterhaltung.</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="six-thinking-hats" data-level="Fortgeschritten" data-tags="analyse diskussion perspektiven" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#six-thinking-hats">Six Thinking Hats</a></h3>
+          <span class="level">Fortgeschritten</span>
+        </header>
+        <p class="description" itemprop="description">Ein Problem nacheinander aus sechs spezifischen emotionalen/kognitiven Perspektiven beleuchten.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">analyse</button></li><li><button type="button" class="tag">diskussion</button></li><li><button type="button" class="tag">perspektiven</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>Ähnlich wie Multi-Persona, aber strikter codiert.</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">Thema: Einführung der 4-Tage-Woche.
+Analysiere das thema nacheinander mit diesen Hüten:
+⚪️ Weiß (Fakten, Zahlen)
+🔴 Rot (Gefühle, Intuition)
+⚫️ Schwarz (Risiken, Vorsicht)
+🟡 Gelb (Chancen, Optimismus)
+🟢 Grün (Kreativität, neue Ideen)
+🔵 Blau (Prozess, Überblick)</pre>
+          <h4>Strategie</h4>
+          <p>Verhindert, dass Argumente durcheinander gehen.</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="skeleton-of-thought" data-level="Mittel" data-tags="geschwindigkeit struktur lange-texte" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#skeleton-of-thought">Skeleton-of-Thought</a></h3>
+          <span class="level">Mittel</span>
+        </header>
+        <p class="description" itemprop="description">Zuerst ein Skelett (Gliederung) erstellen, dann die Punkte parallel oder sequenziell ausarbeiten.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">geschwindigkeit</button></li><li><button type="button" class="tag">struktur</button></li><li><button type="button" class="tag">lange-texte</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>Diese Technik beschleunigt die Generierung und verbessert die Struktur. Anstatt den Text linear zu schreiben, erstellt das Modell erst ein &quot;Skelett&quot; und füllt dann &quot;Fleisch an die Knochen&quot;.</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">Aufgabe: Schreibe einen Guide über gesunde Ernährung.
+1. Erstelle eine sehr knappe Gliederung (Skelett) mit 3-5 Hauptpunkten.
+2. Schreibe für jeden Punkt des Skeletts einen kurzen Absatz. Halte dich strikt an das Skelett.</pre>
+          <h4>Strategie</h4>
+          <p>Verhindert, dass das Modell am Anfang zu viel schreibt und am Ende den Faden verliert (&quot;Loss of Focus&quot;).</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="socratic-cot" data-level="Fortgeschritten" data-tags="reasoning selbstgespräch tiefe" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#socratic-cot">Socratic CoT</a></h3>
+          <span class="level">Fortgeschritten</span>
+        </header>
+        <p class="description" itemprop="description">Kombination aus Chain-of-Thought und Sokratischer Methode: Das Modell stellt sich selbst Fragen und beantwortet sie.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">reasoning</button></li><li><button type="button" class="tag">selbstgespräch</button></li><li><button type="button" class="tag">tiefe</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>Statt nur Schritte aufzulisten (CoT), führt das Modell einen inneren Dialog.</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">Löse das Problem, indem du einen Dialog mit dir selbst führst.
+Form:
+Q: Was ist der erste Schritt?
+A: Ich muss X analysieren.
+Q: Warum ist das wichtig?
+A: Weil...
+Q: Was folgt daraus?
+...</pre>
+          <h4>Strategie</h4>
+          <p>Dieser selbstreferenzielle Frage-Antwort-Zyklus ist oft robuster als linearer Text.</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="socratic" data-level="Anfänger" data-tags="lernen coaching fragen" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#socratic">Socratic Prompting (Sokratische Methode)</a></h3>
+          <span class="level">Anfänger</span>
+        </header>
+        <p class="description" itemprop="description">Das Modell anweisen, Fragen zu stellen, um den User zur Lösung zu führen, statt die Antwort direkt zu geben.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">lernen</button></li><li><button type="button" class="tag">coaching</button></li><li><button type="button" class="tag">fragen</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>In dieser Strategie agiert die KI als Lehrer oder Coach. Sie gibt keine Antworten, sondern stellt Gegenfragen, um das kritische Denken des Nutzers anzuregen.</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">Du bist ein Philosophie-Professor. Ich möchte verstehen, was &quot;Gerechtigkeit&quot; bedeutet.
+Gib mir keine Definitionen. Stelle mir stattdessen Fragen, die meine Annahmen herausfordern und mir helfen, meine eigene Definition zu formen.
+Stelle immer nur eine Frage auf einmal.</pre>
+          <h4>Strategie</h4>
+          <p>Perfekt für Bildungszwecke, Brainstorming oder wenn du tiefere Einsichten in ein Thema gewinnen willst, ohne passiv Informationen zu konsumieren.</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="solo-performance" data-level="Mittel" data-tags="kreativität schnelligkeit rollen" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#solo-performance">Solo Performance Prompting</a></h3>
+          <span class="level">Mittel</span>
+        </header>
+        <p class="description" itemprop="description">Transformation eines einzigen Agenten in mehrere Rollen sequenziell.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">kreativität</button></li><li><button type="button" class="tag">schnelligkeit</button></li><li><button type="button" class="tag">rollen</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>Ähnlich wie Multi-Persona, aber fokussiert auf schnelle Iteration in einem einzigen Durchlauf (&quot;Stream of Consciousness&quot;).</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">Wir spielen ein Theaterstück mit einem Schauspieler.
+Rolle 1 (Kritiker): Findet Fehler an Idee X.
+Rolle 2 (Fan): Verteidigt Idee X.
+Gib den Dialog im Wechsel aus, bis ein Konsens erreicht ist.</pre>
+          <h4>Strategie</h4>
+          <p>Gut geeignet für schnelles internes Brainstorming.</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="star-bursting" data-level="Anfänger" data-tags="brainstorming fragen exploration" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#star-bursting">Star-Bursting</a></h3>
+          <span class="level">Anfänger</span>
+        </header>
+        <p class="description" itemprop="description">Fokus nicht auf Antworten, sondern auf das Generieren von Fragen (Wer, Was, Wo, Wann, Warum, Wie).</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">brainstorming</button></li><li><button type="button" class="tag">fragen</button></li><li><button type="button" class="tag">exploration</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>Antworten hemmen die Diskussion. Fragen öffnen sie.</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">Thema: Neues Produkt X.
+Gib keine Lösungen.
+Generiere stattdessen für jeden Zacken des Sterns 10 Fragen:
+- Wer?
+- Was?
+- Wo?
+- Wann?
+- Warum?
+- Wie?</pre>
+          <h4>Strategie</h4>
+          <p>Perfekt für die frühe Phase eines Projekts.</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="step-back" data-level="Fortgeschritten" data-tags="abstraktion wissenschaft prinzipien" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#step-back">Step-Back Prompting</a></h3>
+          <span class="level">Fortgeschritten</span>
+        </header>
+        <p class="description" itemprop="description">Das Modell auffordern, einen Schritt zurückzutreten und abstrakte Konzepte zu identifizieren, bevor es eine konkrete Frage löst.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">abstraktion</button></li><li><button type="button" class="tag">wissenschaft</button></li><li><button type="button" class="tag">prinzipien</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>Manchmal verliert sich das Modell in Details. Mit Step-Back Prompting zwingst du es, erst die zugrundeliegenden Prinzipien oder Konzepte zu abstrahieren.</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">Frage: Warum dehnt sich Wasser aus, wenn es gefriert?
+Schritt 1: Was sind die physikalischen Prinzipien hinter Dichte, Wasserstoffbrückenbindungen und festen Aggregatzuständen? Erkläre diese kurz.
+Schritt 2: Beantworte basierend auf diesen Prinzipien die ursprüngliche Frage.</pre>
+          <h4>Strategie</h4>
+          <p>Besonders nützlich in MINT-Fächern (Mathe, Info, Naturwissenschaft), um Halluzinationen bei komplexen Sachverhalten zu reduzieren.</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="storytelling" data-level="Anfänger" data-tags="lernen erklärung narrativ" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#storytelling">Storytelling (Narrativ)</a></h3>
+          <span class="level">Anfänger</span>
+        </header>
+        <p class="description" itemprop="description">Fakten in eine Geschichte verpacken, um sie verständlicher und merkbarer zu machen.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">lernen</button></li><li><button type="button" class="tag">erklärung</button></li><li><button type="button" class="tag">narrativ</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>Menschen (und Modelle) lernen gut durch Geschichten.</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">Erkläre mir, wie die Blockchain funktioniert.
+Aber tu das nicht technisch. Erzähle mir stattdessen eine Geschichte über ein Dorf, das ein gemeinsames Kassenbuch führt, in dem niemand betrügen kann. Nutze Charaktere.</pre>
+          <h4>Strategie</h4>
+          <p>Nutze Analogien und Narrative, um trockene Themen lebendig zu machen.</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="structure-tagging" data-level="Mittel" data-tags="parsing struktur coding" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#structure-tagging">Structure Tagging (XML)</a></h3>
+          <span class="level">Mittel</span>
+        </header>
+        <p class="description" itemprop="description">Nutzung von XML/HTML Tags, um Input und Output klar zu strukturieren.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">parsing</button></li><li><button type="button" class="tag">struktur</button></li><li><button type="button" class="tag">coding</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>LLMs verstehen XML-ähnliche Strukturen sehr gut. Nutze Tags, um Teile des Prompts klar abzugrenzen.</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">Ich gebe dir zwei Dokumente.
+&lt;dokument_a&gt;
+[Text A]
+&lt;/dokument_a&gt;
+
+&lt;dokument_b&gt;
+[Text B]
+&lt;/dokument_b&gt;
+
+Vergleiche die Argumente in &lt;dokument_a&gt; mit denen in &lt;dokument_b&gt;. Gib das Ergebnis in &lt;analyse&gt;-Tags aus.</pre>
+          <h4>Strategie</h4>
+          <p>Verhindert, dass das Modell Anweisungen mit Inhalt verwechselt (&quot;Prompt Injection&quot; Schutz light) und erleichtert das maschinelle Parsen der Antwort.</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="system-2-attention" data-level="Fortgeschritten" data-tags="aufmerksamkeit fokus cleaning" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#system-2-attention">System 2 Attention</a></h3>
+          <span class="level">Fortgeschritten</span>
+        </header>
+        <p class="description" itemprop="description">Das Modell anweisen, den Kontext erst zu bereinigen und Irrelevantes zu löschen.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">aufmerksamkeit</button></li><li><button type="button" class="tag">fokus</button></li><li><button type="button" class="tag">cleaning</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>LLMs lassen sich leicht durch irrelevante Infos im Prompt ablenken (&quot;sycophancy&quot;).</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">Kontext: [Langer Text mit viel Rauschen und unwichtigen Details]
+Schritt 1: Schreibe den Kontext so um, dass nur noch die Informationen enthalten sind, die für die Beantwortung der Frage [Frage] absolut notwendig sind. Lösche alles andere.
+Schritt 2: Beantworte die Frage basierend auf dem bereinigten Kontext.</pre>
+          <h4>Strategie</h4>
+          <p>Verbessert die Objektivität massiv.</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="tabular-cot" data-level="Fortgeschritten" data-tags="struktur tabelle analyse" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#tabular-cot">Tabular Chain of Thought</a></h3>
+          <span class="level">Fortgeschritten</span>
+        </header>
+        <p class="description" itemprop="description">Denkprozesse in einer Tabelle strukturieren, um Übersichtlichkeit zu wahren.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">struktur</button></li><li><button type="button" class="tag">tabelle</button></li><li><button type="button" class="tag">analyse</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>Komplexe Analysen werden in Textform oft unübersichtlich. Tabellen zwingen das Modell zu Struktur.</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">Analysiere 5 Smartphones.
+Gib das Ergebnis als Markdown-Tabelle aus mit den Spalten:
+| Modell | Hauptvorteil | Größter Nachteil | Preis-Leistung (1-10) | Begründung |</pre>
+          <h4>Strategie</h4>
+          <p>Macht Vergleiche sofort lesbar und zwingt das Modell zu präzisen Aussagen (da Tabellenzellen begrenzt wirken).</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="take-a-deep-breath" data-level="Anfänger" data-tags="optimierung magic-spell reasoning" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#take-a-deep-breath">Take a Deep Breath</a></h3>
+          <span class="level">Anfänger</span>
+        </header>
+        <p class="description" itemprop="description">Die einfache Anweisung 'Atme tief durch' kann die Mathe-Leistung verbessern.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">optimierung</button></li><li><button type="button" class="tag">magic-spell</button></li><li><button type="button" class="tag">reasoning</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>Google DeepMind hat herausgefunden, dass der Prompt &quot;Take a deep breath and work on this step by step&quot; die Performance bei Mathe-Aufgaben signifikant steigern kann.</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">Löse diese Aufgabe.
+Atme tief durch und gehe Schritt für Schritt vor.</pre>
+          <h4>Strategie</h4>
+          <p>Es klingt esoterisch, aber es triggert im statistischen Modell Muster von sorgfältigerer, menschlicher Problemlösung.</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="thread-of-thought" data-level="Fortgeschritten" data-tags="analyse context rag" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#thread-of-thought">Thread of Thought</a></h3>
+          <span class="level">Fortgeschritten</span>
+        </header>
+        <p class="description" itemprop="description">Technik für chaotische Kontexte: Den 'roten Faden' durch riesige Datenmengen ziehen.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">analyse</button></li><li><button type="button" class="tag">context</button></li><li><button type="button" class="tag">rag</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>Optimiert für RAG (Retrieval Augmented Generation) mit vielen Dokumenten.</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">Ich habe dir 10 Dokumente gegeben. Es ist viel Rauschen dabei.
+Gehe Schritt für Schritt vor und extrahiere NUR die Informationen, die logisch aufeinander aufbauen und zur Frage X gehören. Ziehe einen &quot;roten Faden&quot; durch die Daten. Ignoriere alles, was den Faden unterbricht.</pre>
+          <h4>Strategie</h4>
+          <p>Filtert irrelevante &quot;Distractors&quot; besser als Standard-CoT.</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="token-budget" data-level="Anfänger" data-tags="prägnanz kosten kontrolle" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#token-budget">Token Budget</a></h3>
+          <span class="level">Anfänger</span>
+        </header>
+        <p class="description" itemprop="description">Dem Modell ein 'Budget' an Wörtern oder Sätzen geben, um Geschwätzigkeit zu verhindern.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">prägnanz</button></li><li><button type="button" class="tag">kosten</button></li><li><button type="button" class="tag">kontrolle</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>Modelle labern gerne. Setze harte Grenzen.</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">Erkläre die Relativitätstheorie.
+Token Budget: Maximal 50 Wörter.
+Jedes Wort darüber wird bestraft.</pre>
+          <h4>Strategie</h4>
+          <p>Zwingt das Modell, sich auf das Wesentliche zu fokussieren (&quot;Dichte&quot;).</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="tone-modifier" data-level="Anfänger" data-tags="stil writing kreativität" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#tone-modifier">Tone Modifier</a></h3>
+          <span class="level">Anfänger</span>
+        </header>
+        <p class="description" itemprop="description">Einen Text durch extreme Stil-Vorgaben transformieren.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">stil</button></li><li><button type="button" class="tag">writing</button></li><li><button type="button" class="tag">kreativität</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>Modelle tendieren zu einem langweiligen Durchschnittsstil. Zwinge sie zu Extremen.</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">Schreibe diese E-Mail um.
+Version 1: Extrem höflich und viktorianisch.
+Version 2: Wie ein cooler Gen-Z Teenager auf TikTok.
+Version 3: Kurz, knapp, militärisch.</pre>
+          <h4>Strategie</h4>
+          <p>Hilft, den richtigen &quot;Voice&quot; für eine Marke oder Situation zu finden, indem man die Grenzen austestet.</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="tree-of-thoughts" data-level="Fortgeschritten" data-tags="problem-solving planung komplex" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#tree-of-thoughts">Tree of Thoughts (ToT)</a></h3>
+          <span class="level">Fortgeschritten</span>
+        </header>
+        <p class="description" itemprop="description">Erkundung mehrerer Lösungswege parallel, um komplexe Probleme strategisch zu lösen.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">problem-solving</button></li><li><button type="button" class="tag">planung</button></li><li><button type="button" class="tag">komplex</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>ToT erweitert Chain-of-Thought, indem es dem Modell erlaubt, mehrere mögliche Schritte zu &quot;denken&quot;, diese zu bewerten und schlechte Pfade zu verwerfen (ähnlich wie ein Schachspieler, der Züge vorausplant).</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">Stell dir drei verschiedene Experten vor, die diese Frage beantworten.
+Jeder Experte soll einen Schritt der Antwort formulieren und den Schritt des anderen überprüfen.
+Wenn ein Fehler gefunden wird, korrigiert ihn.
+Verdichtet am Ende die Erkenntnisse zu einer finalen Antwort.</pre>
+          <h4>Strategie</h4>
+          <p>Nutze dies für Aufgaben, die Planung oder Kreativität erfordern (z.B. &quot;Schreibe eine Kurzgeschichte&quot; oder &quot;Entwickle einen Businessplan&quot;), wo lineare Gedanken oft in Sackgassen führen.</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="universal-translator" data-level="Mittel" data-tags="sprache übersetzung lokalisierung" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#universal-translator">Universal Translator</a></h3>
+          <span class="level">Mittel</span>
+        </header>
+        <p class="description" itemprop="description">Kontext-sensitive Übersetzung, die Nuancen und kulturelle Unterschiede beachtet.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">sprache</button></li><li><button type="button" class="tag">übersetzung</button></li><li><button type="button" class="tag">lokalisierung</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>Standard-Übersetzung verliert oft den Kontext. Gib dem Modell Kontext mit.</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">Übersetze den folgenden Satz ins Englische.
+Kontext: Ich sage das zu meinem Chef in einem sehr formellen Meeting, nachdem ich einen Fehler gemacht habe.
+Satz: &quot;Das wird nicht wieder vorkommen.&quot;</pre>
+          <h4>Strategie</h4>
+          <p>Kontext ist King bei Übersetzungen.</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="strategy" id="xml-input" data-level="Mittel" data-tags="sicherheit struktur best-practice" itemscope itemtype="https://schema.org/HowTo">
+        <header>
+          <h3 itemprop="name"><a href="#xml-input">XML Input Delimiters</a></h3>
+          <span class="level">Mittel</span>
+        </header>
+        <p class="description" itemprop="description">Input-Daten durch XML-Tags strikt von Instruktionen trennen.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">sicherheit</button></li><li><button type="button" class="tag">struktur</button></li><li><button type="button" class="tag">best-practice</button></li></ul>
+        <details>
+          <summary>Erklärung</summary>
+          <p>Moderne Modelle (wie Claude) lieben XML-Tags, um zu verstehen, was was ist.</p>
+          <h4>Beispiel</h4>
+          <pre class="prompt" tabindex="0">Ich werde dir einen Text geben und dazu Instruktionen.
+&lt;text&gt;
+Hier steht der Text, der analysiert werden soll.
+&lt;/text&gt;
+
+&lt;instructions&gt;
+Fasse den Text zusammen.
+&lt;/instructions&gt;</pre>
+          <h4>Strategie</h4>
+          <p>Verhindert &quot;Prompt Injection&quot; (wenn der Text Instruktionen enthält) und Verwirrung.</p>
+        </details>
+        <button type="button" class="button copy">Prompt kopieren</button>
+      </article>
+
+      <article class="card" data-kind="skill" id="skill-prompt-strategie" data-file="skills/prompt-strategie/SKILL.md" data-tags="strategie auswahl workflow" itemscope itemtype="https://schema.org/SoftwareSourceCode">
+        <header>
+          <h3 itemprop="name"><a href="#skill-prompt-strategie">prompt-strategie</a></h3>
+          <span class="level">Skill</span>
+        </header>
+        <p class="description" itemprop="description">Wählt für eine Aufgabe die passende Prompting-Strategie aus der Sammlung prompts (hundert deutsche Muster, drei Stufen) und formt den Prompt danach. Nutzen, wenn ein Prompt geschrieben oder verbessert werden soll, wenn ein Modell zu flach, zu unsicher oder zu ausschweifend antwortet, oder wenn ein Verhalten gezielt ausgelöst werden soll (Zwischenschritte, Format, Rolle, Selbstprüfung).</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">strategie</button></li><li><button type="button" class="tag">auswahl</button></li><li><button type="button" class="tag">workflow</button></li></ul>
+        <details>
+          <summary>SKILL.md</summary>
+          <p class="caption">Liegt im Repo als <a class="file" href="https://github.com/pajew-ski/prompts/blob/main/skills/prompt-strategie/SKILL.md"><code>skills/prompt-strategie/SKILL.md</code></a>. Kopieren oder als Datei speichern; der Inhalt ist die Datei, byte für byte.</p>
+          <pre class="prompt" tabindex="0">---
+name: prompt-strategie
+description: Wählt für eine Aufgabe die passende Prompting-Strategie aus der Sammlung prompts (hundert deutsche Muster, drei Stufen) und formt den Prompt danach. Nutzen, wenn ein Prompt geschrieben oder verbessert werden soll, wenn ein Modell zu flach, zu unsicher oder zu ausschweifend antwortet, oder wenn ein Verhalten gezielt ausgelöst werden soll (Zwischenschritte, Format, Rolle, Selbstprüfung).
+license: MIT
+metadata:
+  source: https://pajew-ski.github.io/prompts/
+  language: de
+---
+
+# Prompt-Strategie wählen
+
+Eine Prompting-Strategie ist ein wiederverwendbares Muster für die Anweisung an ein Sprachmodell. Die Sammlung unter https://pajew-ski.github.io/prompts/ enthält hundert davon, jede mit Beispiel-Prompt. Dieser Skill wählt eine aus und wendet sie an, statt einen Prompt aus dem Bauch zu schreiben.
+
+## Vorgehen
+
+1. Die Aufgabe einordnen. Was fehlt der bisherigen Antwort, oder was soll die neue leisten? Genau eine Hauptlücke benennen.
+2. Aus der Tabelle die Strategiefamilie wählen und in der Sammlung nach dem Namen oder dem Schlagwort suchen. Die Karte aufklappen, den Beispiel-Prompt lesen.
+3. Den Beispiel-Prompt auf den Fall übertragen. Die Form der Strategie bleibt, der Inhalt wird ersetzt. Nichts aus dem Beispiel stehen lassen, was nicht zum Fall gehört.
+4. Höchstens zwei Strategien kombinieren. Mehr verwässert die Anweisung.
+5. Einmal laufen lassen und prüfen, ob die Hauptlücke geschlossen ist. Wenn nicht, eine Stufe höher gehen (Anfänger zu Mittel zu Fortgeschritten), nicht mehr Text anhängen.
+
+## Lücke und Strategie
+
+| Lücke | Strategien (Schlagwort) |
+| --- | --- |
+| Antwort springt zum Ergebnis, Rechenweg fehlt | Chain of Thought, Least-to-Most, Program-of-Thoughts (reasoning) |
+| Fakten sind unsicher oder erfunden | Chain of Verification, Reference Check, Self-Consistency (wahrheit, fakten) |
+| Format stimmt nicht | Output-Format-Vorgaben, Tabular Chain of Thought, Schema-Prompts (struktur) |
+| Ton oder Perspektive fehlt | Persona, Rollenspiel, Audience Prompting (stil) |
+| Aufgabe zu groß für einen Prompt | Prompt Chaining, Decomposition, Plan-and-Solve (workflow, planung) |
+| Modell rät statt nachzufragen | Clarification, Constraint Listing (dialog, genauigkeit) |
+| Ursache statt Symptom gesucht | 5 Whys, Root Cause Analysis (analyse) |
+| Mehrere Sichten nötig | Debate, Tree of Thoughts, Devil&#x27;s Advocate (diskussion) |
+| Beispiele fehlen oder sind schlecht gewählt | Few-Shot, Active-Prompt, Contrastive Examples (few-shot) |
+
+## Regeln
+
+- Erst die Lücke, dann die Strategie. Eine Strategie ohne benannte Lücke ist Dekoration.
+- Die Stufe der Strategie zur Aufgabe wählen: Anfänger für Einzelanfragen, Mittel für Formate und Rollen, Fortgeschritten für mehrstufige Abläufe.
+- Den fertigen Prompt in der Sprache der Aufgabe schreiben, die Strategie selbst nicht erklären. Das Modell braucht die Anweisung, nicht den Namen des Musters.
+</pre>
+        </details>
+        <div class="actions">
+          <button type="button" class="button copy">SKILL.md kopieren</button>
+          <button type="button" class="button download" data-name="SKILL.md">Als Datei</button>
+        </div>
+      </article>
+
+      <article class="card" data-kind="skill" id="skill-chain-of-verification" data-file="skills/chain-of-verification/SKILL.md" data-tags="wahrheit fakten reasoning" itemscope itemtype="https://schema.org/SoftwareSourceCode">
+        <header>
+          <h3 itemprop="name"><a href="#skill-chain-of-verification">chain-of-verification</a></h3>
+          <span class="level">Skill</span>
+        </header>
+        <p class="description" itemprop="description">Prüft eine faktische Antwort in vier Schritten (Entwurf, Prüffragen, unabhängige Antworten, Revision), bevor sie ausgegeben wird. Nutzen bei Fragen nach Zahlen, Daten, Namen, Zitaten, Versionen und allem, was das Modell aus dem Gedächtnis beantwortet und wo eine falsche Angabe Schaden anrichtet.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">wahrheit</button></li><li><button type="button" class="tag">fakten</button></li><li><button type="button" class="tag">reasoning</button></li></ul>
+        <details>
+          <summary>SKILL.md</summary>
+          <p class="caption">Liegt im Repo als <a class="file" href="https://github.com/pajew-ski/prompts/blob/main/skills/chain-of-verification/SKILL.md"><code>skills/chain-of-verification/SKILL.md</code></a>. Kopieren oder als Datei speichern; der Inhalt ist die Datei, byte für byte.</p>
+          <pre class="prompt" tabindex="0">---
+name: chain-of-verification
+description: Prüft eine faktische Antwort in vier Schritten (Entwurf, Prüffragen, unabhängige Antworten, Revision), bevor sie ausgegeben wird. Nutzen bei Fragen nach Zahlen, Daten, Namen, Zitaten, Versionen und allem, was das Modell aus dem Gedächtnis beantwortet und wo eine falsche Angabe Schaden anrichtet.
+license: MIT
+metadata:
+  source: https://pajew-ski.github.io/prompts/#chain-of-verification
+  language: de
+---
+
+# Chain of Verification
+
+Ein Modell, das seine eigene Antwort noch einmal liest, findet wenig, weil es dieselben Annahmen wiederholt. Chain of Verification trennt das Prüfen vom Antworten: Die Prüffragen werden gestellt, bevor die Antwort feststeht, und jede wird beantwortet, als gäbe es den Entwurf nicht.
+
+## Schritte
+
+1. Entwurf. Die Frage so beantworten, wie es ohne Prüfung geschähe. Kurz halten.
+2. Prüffragen. Jede faktische Behauptung des Entwurfs in eine eigene, geschlossene Frage übersetzen. Zahlen, Daten, Namen, Zuordnungen, Kausalbehauptungen. Drei bis acht Fragen; mehr heißt, der Entwurf ist zu lang.
+3. Unabhängige Antworten. Jede Prüffrage für sich beantworten, ohne den Entwurf anzusehen. Wo die Antwort unsicher ist, steht &quot;unsicher&quot;, nicht die wahrscheinlichste Zahl.
+4. Revision. Den Entwurf mit den Prüfantworten abgleichen. Widersprüche korrigieren, Unsicheres als unsicher markieren oder streichen. Erst diese Fassung ausgeben.
+
+## Ausgabe
+
+Nur die revidierte Antwort, ohne die Zwischenschritte, es sei denn, die Person hat nach dem Prüfweg gefragt. Unsichere Stellen stehen als solche im Text (&quot;Datum nicht gesichert&quot;), nicht in einer Fußnote am Ende.
+
+## Grenzen
+
+Die Prüfung fängt Widersprüche im eigenen Wissen, keine Lücken darin. Was das Modell nicht weiß, wird durch Prüffragen nicht bekannt; dafür braucht es eine Quelle oder ein Werkzeug.
+</pre>
+        </details>
+        <div class="actions">
+          <button type="button" class="button copy">SKILL.md kopieren</button>
+          <button type="button" class="button download" data-name="SKILL.md">Als Datei</button>
+        </div>
+      </article>
+
+      <article class="card" data-kind="skill" id="skill-fuenf-warum" data-file="skills/fuenf-warum/SKILL.md" data-tags="analyse problem-solving debugging" itemscope itemtype="https://schema.org/SoftwareSourceCode">
+        <header>
+          <h3 itemprop="name"><a href="#skill-fuenf-warum">fuenf-warum</a></h3>
+          <span class="level">Skill</span>
+        </header>
+        <p class="description" itemprop="description">Führt von einem Symptom zur Kernursache, indem fünfmal nach dem Warum gefragt wird, mit belegten oder als Annahme markierten Antworten je Stufe. Nutzen bei wiederkehrenden Fehlern, Ausfällen, Konflikten und jeder Situation, in der bisher Symptome behandelt wurden.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">analyse</button></li><li><button type="button" class="tag">problem-solving</button></li><li><button type="button" class="tag">debugging</button></li></ul>
+        <details>
+          <summary>SKILL.md</summary>
+          <p class="caption">Liegt im Repo als <a class="file" href="https://github.com/pajew-ski/prompts/blob/main/skills/fuenf-warum/SKILL.md"><code>skills/fuenf-warum/SKILL.md</code></a>. Kopieren oder als Datei speichern; der Inhalt ist die Datei, byte für byte.</p>
+          <pre class="prompt" tabindex="0">---
+name: fuenf-warum
+description: Führt von einem Symptom zur Kernursache, indem fünfmal nach dem Warum gefragt wird, mit belegten oder als Annahme markierten Antworten je Stufe. Nutzen bei wiederkehrenden Fehlern, Ausfällen, Konflikten und jeder Situation, in der bisher Symptome behandelt wurden.
+license: MIT
+metadata:
+  source: https://pajew-ski.github.io/prompts/#5-whys
+  language: de
+---
+
+# Fünf Warum
+
+Die Methode aus dem Toyota-Produktionssystem: Ein Symptom wird so lange nach seiner Ursache gefragt, bis eine Ursache erreicht ist, die sich beheben lässt und deren Behebung das Symptom nicht wiederkehren lässt. Fünf ist die Faustzahl, nicht die Regel.
+
+## Vorgehen
+
+1. Das Symptom in einem Satz festhalten, mit dem, was beobachtet wurde, ohne Deutung.
+2. Fragen: Warum ist das passiert? Die Antwort muss eine Ursache sein, die dem Symptom zeitlich vorausgeht, kein Umstand, der nur zugleich gilt.
+3. Jede Antwort kennzeichnen: belegt (Log, Messung, Aussage) oder Annahme. Bei Annahmen die Frage nennen, die sie belegen würde.
+4. Die Antwort zum neuen Symptom machen und erneut fragen. Abbrechen, wenn eine Ursache erreicht ist, die im Einflussbereich liegt und deren Behebung die Kette unterbricht, oder wenn die Kette in &quot;so ist die Welt&quot; endet; dann eine Stufe zurück.
+5. Gegenprobe: Von der Kernursache zurück zum Symptom lesen. Jeder Schritt muss mit &quot;und deshalb&quot; tragen.
+
+## Ausgabe
+
+Die Kette als nummerierte Liste, je Stufe Frage, Antwort, Kennzeichen. Darunter die Kernursache in einem Satz und eine Maßnahme, die sie behebt. Wenn zwei Ketten möglich sind, beide zeigen und sagen, welche Beobachtung sie unterscheidet.
+
+## Fehler, die die Methode entwertet
+
+- Eine Person als Ursache. Ursachen sind Bedingungen, unter denen die Person so gehandelt hat.
+- Ein Warum überspringen, weil die Antwort offensichtlich scheint. Die offensichtliche Stufe ist oft die falsche.
+- Bei der ersten behebbaren Ursache stehen bleiben, obwohl darunter eine liegt, die mehrere Symptome erklärt.
+</pre>
+        </details>
+        <div class="actions">
+          <button type="button" class="button copy">SKILL.md kopieren</button>
+          <button type="button" class="button download" data-name="SKILL.md">Als Datei</button>
+        </div>
+      </article>
+
+      <article class="card" data-kind="agent" id="agent-lindy-web-app" data-file="agents/lindy-web-app/AGENTS.md" data-tags="design web lindy agents.md" itemscope itemtype="https://schema.org/TechArticle">
+        <header>
+          <h3 itemprop="name"><a href="#agent-lindy-web-app">lindy-web-app</a></h3>
+          <span class="level">Agent</span>
+        </header>
+        <p class="description" itemprop="description">Anweisung für einen Coding-Agenten, der eine Browser-App als eine index.html im Design der temet-nosce-Familie baut: Nicht-Ziele, Token-Block, Layout, Verhalten, Copy.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">design</button></li><li><button type="button" class="tag">web</button></li><li><button type="button" class="tag">lindy</button></li><li><button type="button" class="tag">agents.md</button></li></ul>
+        <details>
+          <summary>AGENTS.md</summary>
+          <p class="caption">Liegt im Repo als <a class="file" href="https://github.com/pajew-ski/prompts/blob/main/agents/lindy-web-app/AGENTS.md"><code>agents/lindy-web-app/AGENTS.md</code></a>. Kopieren oder als Datei speichern; der Inhalt ist die Datei, byte für byte.</p>
+          <pre class="prompt" tabindex="0"># AGENTS.md
+
+Public GitHub repo, project name **&lt;name&gt;**. Content: &lt;one sentence: what the tool does in the browser&gt;. It is a sibling of **open-entrainer**, **open-desensitizer** and **prompts** and shares its design with **temet-nosce**; the family should look and read as one.
+
+Target audience: &lt;who opens it and what they must be able to do in one read&gt;. The page has to be understood in one screen and trusted in one read.
+
+## Non-Goals
+
+- No framework, no build tool, no bundler, no package manager
+- No second file. The app is `index.html` alone; stylesheet and script are inline so one file can be copied anywhere and run
+- No external resource of any kind: no CDN, no web font, no analytics
+- No service worker, no manifest, no install prompt
+- No accounts, no network requests, no data leaving the page
+- No manual dark/light toggle. Automatic only, via `prefers-color-scheme`
+- No color. The design is achromatic; states are named, never colored
+- No modal, no settings panel. Everything is on the page, every action is a visible control
+
+## Repo Structure
+
+```
+/
+├── AGENTS.md
+├── README.md            (short: what this is, link to the Pages site)
+├── LICENSE
+└── index.html           (the whole app: page, stylesheet and script in one file)
+```
+
+GitHub Pages deploys from the root of `main`. The footer derives its GitHub links from the Pages URL, so a fork needs no edit. The Home Assistant add-on is built from `index.html` by the apps collection; this repo carries no add-on files.
+
+## Design
+
+The inline stylesheet begins with the token block from temet-nosce, verbatim. It stays verbatim in every project of the family; a change to the tokens is a change to all.
+
+```css
+:root {
+  color-scheme: light dark;
+  --bg: oklch(98% 0 0);
+  --surface: oklch(94% 0 0);
+  --border: oklch(85% 0 0);
+  --text: oklch(15% 0 0);
+  --text-muted: oklch(40% 0 0);
+
+  --space-1: 5px;
+  --space-2: 8px;
+  --space-3: 13px;
+  --space-4: 21px;
+  --space-5: 34px;
+  --space-6: 55px;
+  --space-7: 89px;
+  --space-8: 144px;
+  --radius-sm: var(--space-1);
+  --radius-md: var(--space-2);
+  --radius-lg: var(--space-3);
+
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.618rem;
+  --text-xl: 2.618rem;
+  --text-2xl: 4.236rem;
+
+  font-family: system-ui, sans-serif;
+  font-size: var(--text-base);
+  line-height: 1.618;
+  background: var(--bg);
+  color: var(--text);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: oklch(15% 0 0);
+    --surface: oklch(20% 0 0);
+    --border: oklch(30% 0 0);
+    --text: oklch(95% 0 0);
+    --text-muted: oklch(70% 0 0);
+  }
+}
+```
+
+- Color: oklch with chroma 0. Light: bg 98%, surface 94%, border 85%, text 15%, muted 40%. Dark flips the scale. `color-scheme: light dark` on the root so form controls follow.
+- Spacing: Fibonacci in pixels, 5 8 13 21 34 55 89 144, as `--space-1` to `--space-8`. Radii are the same ladder.
+- Type: system-ui. Base 1rem, line-height 1.618, sizes 0.875rem, 1rem, φ, φ², φ³. The hero h1 is `clamp(var(--text-xl), 9vw, var(--text-2xl))`, weight 600, letter-spacing -0.02em.
+- Layout: a `.shell` of 987px max width with 21px side padding. Hero (`padding-block: var(--space-8) var(--space-6)`), sections (`margin-bottom: var(--space-7)`), footer (top border, muted small text). Text columns cap at 42rem. Boxes are golden rectangles or Fibonacci sizes (377, 610, 987).
+- Panels: `1px solid var(--border)`, `border-radius: var(--radius-lg)`, `padding: var(--space-4)`. Surfaces that hold content (canvas, code) sit on `--surface`.
+- Controls: native inputs with `accent-color: var(--text)`. Fields are bordered, transparent, page colors. Labels carry the name on the left and the live value on the right.
+- Buttons: `.button` bordered, transparent, surface on hover, small text, `padding: var(--space-2) var(--space-4)`. The primary button is inverted: text-colored surface, background-colored label, muted on hover. Nothing is colored, nothing glows.
+- Focus: `outline: 2px solid var(--text-muted); outline-offset: 2px`. `[hidden] { display: none !important }`.
+- Canvas: reads its colors from its own computed style (background, color, border color, outline color) so it follows the scheme without a second palette; the returned strings are used as they are, never parsed. Device pixel ratio respected.
+
+## Behavior
+
+&lt;one bullet per feature: defaults, ranges, persistence key in localStorage under the project name, keys, what stops what. State every number.&gt;
+
+## Copy
+
+English throughout. Plain sentences, present tense, no exclamation marks, no emoji, no em dashes. Explain the mechanism, say what the tool does not do. Warnings are stated once, on the page, never in a modal. Product names are lowercase in headings and the footer, as in temet-nosce.
+
+## Files
+
+### `index.html`
+
+One file with three parts: the `&lt;style&gt;` block in the head, the markup, and one `&lt;script type=&quot;module&quot;&gt;` at the end of the body (plus the small footer module before it).
+
+Markup: `&lt;header class=&quot;hero shell&quot;&gt;` with h1 and one sentence. `&lt;main class=&quot;shell&quot;&gt;` with sections: How it works, &lt;the tool&#x27;s sections&gt;, Before you use it. Footer: `&lt;name&gt; · built from &lt;a id=&quot;agents-link&quot;&gt;AGENTS.md&lt;/a&gt; by a coding agent · &lt;a id=&quot;source-link&quot;&gt;source on GitHub&lt;/a&gt;`, followed by the module that rewrites both hrefs from `location.hostname` when it ends in `.github.io` (owner from the host, repo from the first path segment).
+
+Style block: token block, base rules (hero, sections, tables, controls, buttons, footer), then the tool&#x27;s own rules.
+
+Script block: an ES module. No globals beyond what the DOM gives. Named sections, small functions, event wiring at the bottom. Persist settings in `localStorage` under the project name only; never anything else.
+</pre>
+        </details>
+        <div class="actions">
+          <button type="button" class="button copy">AGENTS.md kopieren</button>
+          <button type="button" class="button download" data-name="AGENTS.md">Als Datei</button>
+        </div>
+      </article>
+
+      <article class="card" data-kind="agent" id="agent-home-assistant-addon" data-file="agents/home-assistant-addon/AGENTS.md" data-tags="home-assistant addon workflow agents.md" itemscope itemtype="https://schema.org/TechArticle">
+        <header>
+          <h3 itemprop="name"><a href="#agent-home-assistant-addon">home-assistant-addon</a></h3>
+          <span class="level">Agent</span>
+        </header>
+        <p class="description" itemprop="description">Anweisung für einen Coding-Agenten, der eine Ein-Datei-App als Add-on in die Home Assistant Apps Collection aufnimmt: Registry, config.yaml, Workflow-Block, Icon.</p>
+        <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">home-assistant</button></li><li><button type="button" class="tag">addon</button></li><li><button type="button" class="tag">workflow</button></li><li><button type="button" class="tag">agents.md</button></li></ul>
+        <details>
+          <summary>AGENTS.md</summary>
+          <p class="caption">Liegt im Repo als <a class="file" href="https://github.com/pajew-ski/prompts/blob/main/agents/home-assistant-addon/AGENTS.md"><code>agents/home-assistant-addon/AGENTS.md</code></a>. Kopieren oder als Datei speichern; der Inhalt ist die Datei, byte für byte.</p>
+          <pre class="prompt" tabindex="0"># AGENTS.md
+
+You are packaging a single-file browser app as a Home Assistant add-on in the meta-repository **home-assistant-apps-collection** (`https://github.com/pajew-ski/home-assistant-apps-collection`). The app&#x27;s own repository holds one `index.html` and no add-on files; everything add-on related lives in the collection, and pre-built images are pushed to `ghcr.io/pajew-ski/home-assistant-apps-collection/{arch}-&lt;slug&gt;` by the sync workflow.
+
+## What to produce
+
+1. `addons-registry.json`: an entry with `slug`, `name`, `source` (the upstream repo URL), `branch: &quot;main&quot;`, `sync_files: [&quot;index.html&quot;]`, `image_prefix` and `&quot;static_app&quot;: true`.
+2. `&lt;slug&gt;/config.yaml`, written by hand, never synced from upstream:
+
+   ```yaml
+   name: &quot;&lt;Name&gt;&quot;
+   description: &quot;&lt;one sentence, the app&#x27;s own hero sentence&gt;&quot;
+   version: &quot;0.0.0&quot;
+   slug: &lt;slug&gt;
+   url: &quot;https://github.com/pajew-ski/&lt;slug&gt;&quot;
+   arch:
+       - amd64
+       - aarch64
+       - armv7
+   startup: application
+   boot: auto
+   init: false
+   ingress: true
+   ingress_port: &lt;port&gt;
+   ingress_entry: &quot;/&quot;
+   panel_icon: &quot;mdi:&lt;icon&gt;&quot;
+   panel_title: &quot;&lt;Name&gt;&quot;
+   panel_admin: false
+   image: &quot;ghcr.io/pajew-ski/home-assistant-apps-collection/{arch}-&lt;slug&gt;&quot;
+   ports:
+       &lt;port&gt;/tcp: null
+   ports_description:
+       &lt;port&gt;/tcp: &quot;Web UI&quot;
+   options: {}
+   schema: {}
+   ```
+
+   Pick the next free ingress port (prompts 8099, open-entrainer 8100, open-desensitizer 8101). `version` is a placeholder the first sync replaces.
+3. `&lt;slug&gt;/build.yaml`: the three HA base images for amd64, aarch64, armv7.
+4. `&lt;slug&gt;/icon.png`, 128×128: the family style, a dark rounded square (`#0b0b0b`, radius 21) with a light glyph (`#ececec`), one motif from the app, no color.
+5. A block in `.github/workflows/sync-addons.yml`, duplicated from the `open-entrainer` block between two `# ---` dividers, with the slug, the upstream URL and the port replaced. The block has four steps: check (version = date of the last upstream commit to `index.html`, `YYYY.M.D`, compared with `config.yaml`), build and push (fetch `index.html`, write a four-line nginx Dockerfile, `docker buildx build --push` per arch, then `sed` the version into `config.yaml`), make packages public (unconditional), commit and push.
+6. A row in `README.md` under Included Add-ons: name, description, source. No version column.
+
+## Rules
+
+- Never copy application source into the collection; the image is built from the upstream `index.html` at build time.
+- Never remove the `image:` field from a `config.yaml`; without it Home Assistant tries to build locally and fails.
+- armhf and i386 are not built; the base images and the nginx pattern support them, but the family&#x27;s build loop is amd64, aarch64, armv7.
+- The make-public step runs even when nothing was built, or packages pushed in an earlier run stay private and Home Assistant cannot pull them.
+- Validate the workflow with a YAML parser before committing; a broken workflow stops every add-on&#x27;s sync, not only the new one.
+- Clipboard inside Ingress: the app must fall back to `document.execCommand(&quot;copy&quot;)`, because the Ingress iframe grants no `clipboard-write`. If the app copies anything, check that its `index.html` has the fallback before packaging it.
+</pre>
+        </details>
+        <div class="actions">
+          <button type="button" class="button copy">AGENTS.md kopieren</button>
+          <button type="button" class="button download" data-name="AGENTS.md">Als Datei</button>
+        </div>
+      </article>
+      </div>
+      <p class="empty" id="empty" hidden>Nichts gefunden. Anderes Wort, andere Stufe.</p>
+    </section>
+  </main>
+
+  <footer>
+    <div class="shell">
+      prompts · gebaut aus <a id="agents-link" href="https://github.com/pajew-ski/prompts/blob/main/AGENTS.md">AGENTS.md</a> von einem Coding-Agenten · <a id="source-link" href="https://github.com/pajew-ski/prompts">Quelle auf GitHub</a>
+    </div>
+  </footer>
+
+  <script type="module">
+    // Point the footer at whichever repository this site was deployed from, so a
+    // fork needs no manual edit. On <owner>.github.io/<repo>/ the owner and repo
+    // come straight from the URL; anywhere else (localhost, a custom domain) the
+    // static hrefs above stay as the fallback.
+    const host = location.hostname;
+    if (host.endsWith(".github.io")) {
+      const owner = host.slice(0, -".github.io".length);
+      const repo = location.pathname.split("/").filter(Boolean)[0] || `${owner}.github.io`;
+      const base = `https://github.com/${owner}/${repo}`;
+      document.querySelector("#source-link").href = base;
+      document.querySelector("#agents-link").href = `${base}/blob/main/AGENTS.md`;
+      for (const link of document.querySelectorAll("a.file")) {
+        link.href = `${base}/blob/main/${link.closest(".card").dataset.file}`;
+      }
+    }
+  </script>
+
+  <script type="module">
+    const list = document.querySelector("#list");
+    const search = document.querySelector("#search");
+    const kind = document.querySelector("#kind");
+    const level = document.querySelector("#level");
+    const count = document.querySelector("#count");
+    const empty = document.querySelector("#empty");
+    const COPIED_LABEL = "Kopiert";
+
+    // Index: one entry per card, read once from the markup. The markup is the data.
+    const items = [...list.querySelectorAll(".card")].map((el) => ({
+      el,
+      id: el.id,
+      kind: el.dataset.kind,
+      file: el.dataset.file || "",
+      title: el.querySelector("h3").textContent,
+      tags: el.dataset.tags.split(" ").filter(Boolean),
+      level: el.dataset.level,
+      text: el.textContent.replace(/\s+/g, " ").toLowerCase(),
+    }));
+    items.sort((a, b) => a.title.localeCompare(b.title, "de"));
+    for (const item of items) list.append(item.el);
+
+    // Related: the three cards sharing the most tags, appended to the explanation.
+    for (const item of items) {
+      const related = items
+        .filter((other) => other !== item)
+        .map((other) => ({ other, overlap: other.tags.filter((t) => item.tags.includes(t)).length }))
+        .filter(({ overlap }) => overlap > 0)
+        .sort((a, b) => b.overlap - a.overlap || a.other.title.localeCompare(b.other.title, "de"))
+        .slice(0, 3);
+      if (related.length === 0) continue;
+      const p = document.createElement("p");
+      p.className = "related";
+      p.append("Verwandt: ");
+      related.forEach(({ other }, i) => {
+        if (i > 0) p.append(", ");
+        const a = document.createElement("a");
+        a.href = `#${other.id}`;
+        a.textContent = other.title;
+        p.append(a);
+      });
+      item.el.querySelector("details").append(p);
+    }
+
+    // Search: every term has to match; title beats tag beats text.
+    function termScore(item, term) {
+      if (item.title.toLowerCase().includes(term)) return 100;
+      if (item.tags.some((t) => t === term)) return 60;
+      if (item.tags.some((t) => t.includes(term))) return 40;
+      if (item.text.includes(term)) return 10;
+      return 0;
+    }
+
+    function render() {
+      const terms = search.value.trim().toLowerCase().split(/\s+/).filter(Boolean);
+      const wantedKind = kind.value;
+      const wanted = level.value;
+      const shown = [];
+      for (const item of items) {
+        let score = 0;
+        let ok = (!wantedKind || item.kind === wantedKind) && (!wanted || item.level === wanted);
+        for (const term of terms) {
+          const s = ok ? termScore(item, term) : 0;
+          if (!s) { ok = false; break; }
+          score += s;
+        }
+        item.el.hidden = !ok;
+        if (ok) shown.push({ item, score });
+      }
+      const order = terms.length
+        ? shown.sort((a, b) => b.score - a.score || a.item.title.localeCompare(b.item.title, "de")).map((s) => s.item)
+        : items;
+      for (const item of order) list.append(item.el);
+      count.textContent = shown.length === items.length ? `${items.length} Einträge` : `${shown.length} von ${items.length}`;
+      empty.hidden = shown.length > 0;
+    }
+
+    // Clipboard: the Clipboard API first, execCommand as the fallback for
+    // embedded frames (Home Assistant Ingress grants no clipboard-write).
+    async function copyText(text) {
+      try {
+        await navigator.clipboard.writeText(text);
+        return true;
+      } catch {
+        const area = document.createElement("textarea");
+        area.value = text;
+        area.setAttribute("readonly", "");
+        area.style.position = "fixed";
+        area.style.top = "-100vh";
+        document.body.append(area);
+        area.select();
+        let ok = false;
+        try { ok = document.execCommand("copy"); } catch { ok = false; }
+        area.remove();
+        return ok;
+      }
+    }
+
+    function openCard(id) {
+      const item = items.find((i) => i.id === id);
+      if (!item) return;
+      if (item.el.hidden) {
+        search.value = "";
+        kind.value = "";
+        level.value = "";
+        render();
+      }
+      item.el.querySelector("details").open = true;
+      item.el.scrollIntoView({ block: "start" });
+    }
+
+    list.addEventListener("click", async (event) => {
+      const tag = event.target.closest(".tag");
+      if (tag) {
+        search.value = tag.textContent;
+        render();
+        search.scrollIntoView({ block: "start" });
+        return;
+      }
+      const copy = event.target.closest(".copy");
+      if (copy) {
+        const prompt = copy.closest(".card").querySelector(".prompt");
+        const label = copy.textContent;
+        const ok = await copyText(prompt.textContent);
+        copy.textContent = ok ? COPIED_LABEL : "Nicht kopiert";
+        setTimeout(() => { copy.textContent = label; }, 2000);
+        return;
+      }
+      const download = event.target.closest(".download");
+      if (download) {
+        // Save the file under its standard name. The content is the card's own text,
+        // so the download works from a file:// copy of this page as well.
+        const prompt = download.closest(".card").querySelector(".prompt");
+        const url = URL.createObjectURL(new Blob([prompt.textContent], { type: "text/markdown" }));
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = download.dataset.name;
+        a.click();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+      }
+    });
+
+    search.addEventListener("input", render);
+    kind.addEventListener("change", render);
+    level.addEventListener("change", render);
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "/" && !event.target.closest("input, select, textarea, [contenteditable]")) {
+        event.preventDefault();
+        search.focus();
+        search.select();
+      }
+    });
+
+    window.addEventListener("hashchange", () => openCard(decodeURIComponent(location.hash.slice(1))));
+
+    render();
+    if (location.hash) openCard(decodeURIComponent(location.hash.slice(1)));
+  </script>
+</body>
+</html>
