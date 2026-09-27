@@ -6,15 +6,15 @@ Hundert Prompting-Strategien für Sprachmodelle, auf Deutsch, als eine Seite, da
 
 ## Was drin ist
 
-Eine Prompting-Strategie ist ein wiederverwendbares Muster für die Anweisung an ein Sprachmodell: Chain of Thought lässt es Zwischenschritte ausgeben, Few-Shot zeigt ihm Beispiele, ein Persona-Prompt gibt ihm eine Rolle. Jede Karte auf der Seite ist eine solche Strategie mit einem Satz zum Zweck, Schlagworten, einer Erklärung und einem Beispiel-Prompt, den ein Knopf in die Zwischenablage kopiert.
+Ein Prompt ist eine Anweisung, Frage oder Eingabe an einen Menschen oder eine KI, die eine bestimmte Handlung oder Antwort auslösen soll. Eine Prompting-Strategie ist ein wiederverwendbares Muster dafür: Chain of Thought lässt es Zwischenschritte ausgeben, Few-Shot zeigt ihm Beispiele, ein Persona-Prompt gibt ihm eine Rolle. Jede Karte auf der Seite ist eine solche Strategie mit einem Satz zum Zweck, Schlagworten, einer Erklärung und einem Beispiel-Prompt, den ein Knopf in die Zwischenablage kopiert.
 
 Drei Stufen sagen, wie viel Vorwissen eine Strategie braucht: Anfänger funktioniert mit einem Satz im Prompt, Mittel braucht etwas Struktur, Fortgeschritten setzt auf mehrere Schritte oder mehrere Prompts.
 
-Die Suche läuft im Browser über Titel, Schlagworte und Text. Ein Schlagwort anklicken filtert danach, der Titel einer Karte ist ihr Link. Nichts wird nachgeladen, nichts gesendet.
+Die Suche läuft im Browser über Titel, Schlagworte und Text und steht oben auf der Seite; Enter kopiert den Prompt des ersten Treffers, `/` springt ins Feld, Esc leert es. Ein Schlagwort anklicken filtert danach, der Titel einer Karte ist ihr Link. Nichts wird nachgeladen, nichts gesendet.
 
 ## Skills und Agenten
 
-Zwei weitere Kartenarten sind Dateien in Standardformaten, die Coding-Agenten lesen:
+Zwei weitere Kartenarten sind nach derselben Definition ebenfalls Prompts, nur übergibt sie nicht der Mensch, sondern der Agent liest sie von einem festen Pfad. Es sind Dateien in Standardformaten, die Coding-Agenten lesen:
 
 - **Skills** nach dem [Agent-Skills-Standard](https://agentskills.io): `skills/<name>/SKILL.md` mit `name` und `description` im Kopf und der Anleitung darunter. Claude Code, Codex und andere laden einen Skill, wenn die Beschreibung auf die Aufgabe passt.
 - **Agenten** nach dem [AGENTS.md-Standard](https://agents.md): `agents/<name>/AGENTS.md`, die Anweisung, die im Wurzelverzeichnis eines Repos sagt, wie darin gearbeitet wird.

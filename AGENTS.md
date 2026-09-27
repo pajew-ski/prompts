@@ -14,7 +14,7 @@ Target audience: someone who works with a language model in German and wants a p
 - No accounts, no network requests, no data leaving the page
 - No manual dark/light toggle. Automatic only, via `prefers-color-scheme`
 - No color. The design is achromatic; levels are named, never colored
-- No modal, no settings panel, no multi-click gestures. Everything is on the page, every action is a visible control
+- No modal, no settings panel, no multi-click gestures. Everything is on the page, every action is a visible control. A double click on a card is invisible and needs aim; the copy button on every card and Enter in the search field do the same with neither
 
 ## Repo Structure
 
@@ -50,8 +50,8 @@ The inline stylesheet begins with the token block from temet-nosce, verbatim. It
 - Color: oklch with chroma 0. Light: bg 98%, surface 94%, border 85%, text 15%, muted 40%. Dark flips the scale under `prefers-color-scheme: dark`. `color-scheme: light dark` on the root so form controls follow.
 - Spacing: Fibonacci in pixels, 5 8 13 21 34 55 89 144, as `--space-1` to `--space-8`.
 - Type: system-ui. Base 1rem, line-height 1.618, sizes 0.875rem, 1rem, φ, φ², φ³.
-- Layout: a `.shell` of 987px max width with 21px side padding. Hero, two sections, footer. Text columns cap at 42rem.
-- Controls: one row with the search field (native `type="search"`, grows to fill), the kind select (Alle Arten, Strategien, Skills, Agenten), the level select, and the count on the right. Fields are bordered, transparent, with the page colors.
+- Layout: a `.shell` of 987px max width with 21px side padding. Hero, two sections, footer. Text columns cap at 42rem. `kbd` for the keys in the explanation, styled like inline code with a border.
+- Controls: one row with the search field (native `type="search"`, grows to fill), the kind select (Alle Arten, Strategien, Skills, Agenten), the level select, and the count on the right. Fields are bordered, transparent, with the page colors. The row is the first thing under the hero, so the first screen holds the search and the first cards without scrolling. From 800px up, where it is one line, it is sticky at the top of the viewport on the page background, with a rule line underneath while it is stuck (a `scroll-state` container query; browsers without it show no line). Cards and sections carry a scroll margin of `--space-6` there, so a fragment lands below the bar.
 - Cards: bordered panels (`--radius-lg`, `--space-4` padding) in a grid of `repeat(auto-fill, minmax(min(377px, 100%), 1fr))`, rows aligned at the top so an open card never stretches its neighbour. Header with the title on the left (a link to the card's own anchor) and, on the right in small caps, the level of a strategy or the kind of a skill or agent. Description, tag chips, a `<details>` with the explanation (strategy) or the file (skill, agent), and the buttons: copy for every card, download as well for skills and agents, in an `.actions` row. The card whose anchor is the URL fragment gets a text-colored border.
 - The prompt: a `<pre class="prompt">` on the surface color with a border, monospace at the small size, wrapped. It is the one block the buttons copy or save; for a skill or agent it is the whole file.
 - Buttons and chips: bordered, transparent, surface on hover. Nothing is colored, nothing glows.
@@ -65,11 +65,11 @@ The inline stylesheet begins with the token block from temet-nosce, verbatim. It
 - Fragment: `#<slug>` opens that card's details and scrolls to it, clearing search and level first if the card is hidden. Title links and related links navigate by fragment, so every strategy has a shareable URL.
 - Copy: the button copies the card's `.prompt` text. `navigator.clipboard.writeText` first; if that fails, a hidden textarea and `document.execCommand("copy")`, which is what works inside embedded frames such as Home Assistant Ingress. The label reads "Kopiert" for two seconds, then its own text again, "Nicht kopiert" if both paths fail.
 - Download: on skill and agent cards a second button saves the `.prompt` text as a file named by its `data-name` (`SKILL.md`, `AGENTS.md`) through a Blob URL, so it works from a `file://` copy of the page. The caption above the file links to the file in the repository; the footer module points that link at the deployed fork.
-- Keys: `/` focuses the search field unless a form control has focus.
+- Keys: `/` focuses the search field unless a form control has focus. In the field, Enter copies the prompt of the first visible card when the query is not empty, with the label feedback on that card's copy button, so search, Enter, paste is the whole path; Escape empties the field. On load without a fragment, and only with a fine pointer (`hover: hover` and `pointer: fine`), the field is focused, so typing starts the search; a touch screen would only raise its keyboard.
 
 ## Content
 
-German throughout the page and the strategies; skills in German, agent files in English (see Standards). Plain sentences, present tense, no exclamation marks, no emoji, no em dashes. The hero explains the page in one sentence; "Wie es funktioniert" explains what a strategy is, how to use a card, what the three levels mean, what a skill and an agent file are, and that nothing leaves the page. Product names are lowercase in headings and the footer, as in temet-nosce.
+German throughout the page and the strategies; skills in German, agent files in English (see Standards). Plain sentences, present tense, no exclamation marks, no emoji, no em dashes. The hero opens with the dictionary definition of a prompt (an instruction, question or input given to a person or an AI to trigger a specific action or response), says in one sentence what the page holds, and links to "Wie es funktioniert". That section comes after the grid, so the controls are on the first screen and the explanation is a footnote the link reaches. It repeats the definition, explains what a strategy is, that skills and agent files are prompts by the same definition and differ only in who hands the text over (the user pastes a strategy prompt, the agent reads a skill or AGENTS.md from a fixed path), how to use a card, the keys, what the three levels mean, and that nothing leaves the page. Product names are lowercase in headings and the footer, as in temet-nosce.
 
 Each strategy is one `<article class="card" data-kind="strategy">` inside `#list`:
 
@@ -125,8 +125,8 @@ Rules: the slug is lowercase, hyphenated, unique, and is the fragment. `data-lev
 
 One file with three parts: the `<style>` block in the head, the markup, and one `<script type="module">` at the end of the body (plus the small footer module before it).
 
-Markup: hero with the project name and one sentence. Sections: Wie es funktioniert, Strategien (controls, the grid of articles, the empty-state line). Footer with the AGENTS.md and source links and the module that rewrites them from the Pages URL.
+Markup: hero with the project name, the definition, one sentence and the link to the explanation. Sections in this order: Strategien (controls, the grid of articles, the empty-state line), Wie es funktioniert. Footer with the AGENTS.md and source links and the module that rewrites them from the Pages URL.
 
 Style block: token block, base rules (hero, sections, tables, buttons, footer), then the controls, the grid, the card, the prompt block.
 
-Script block: an ES module. No globals beyond what the DOM gives. Sections: index (read cards, sort), related (tag overlap), search (termScore, render), clipboard (copyText), fragment (openCard), and the event wiring at the bottom, including the download handler.
+Script block: an ES module. No globals beyond what the DOM gives. Sections: index (read cards, sort), related (tag overlap), search (termScore, render, which also keeps the list of visible cards in order), clipboard (copyText, copyCard with the button feedback), fragment (openCard), and the event wiring at the bottom, including the search keys, the download handler and the initial focus.

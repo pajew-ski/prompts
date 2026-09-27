@@ -124,6 +124,15 @@
       font-size: var(--text-sm);
     }
 
+    kbd {
+      font-family: ui-monospace, monospace;
+      font-size: 0.9em;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0 0.3em;
+    }
+
     table {
       border-collapse: collapse;
       font-size: var(--text-sm);
@@ -192,6 +201,35 @@
       margin: 0 0 var(--space-4);
     }
 
+    /* On a wide screen the row is one line and sticks to the top while the grid
+       scrolls under it, so search and filter stay in reach on every card. The
+       rule line appears only while it is stuck, where the browser knows that. */
+
+    @media (min-width: 800px) {
+      .controls {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+        padding-block: var(--space-3);
+        margin: calc(-1 * var(--space-3)) 0 var(--space-2);
+        background: var(--bg);
+        container-type: scroll-state;
+      }
+
+      .controls::after {
+        content: "";
+        position: absolute;
+        inset: auto 0 0;
+        border-top: 1px solid transparent;
+      }
+
+      @container scroll-state(stuck: top) {
+        .controls::after {
+          border-top-color: var(--border);
+        }
+      }
+    }
+
     .controls input,
     .controls select {
       font: inherit;
@@ -243,6 +281,15 @@
 
     .card:target {
       border-color: var(--text);
+    }
+
+    /* Under the sticky controls a fragment has to land below the bar */
+
+    @media (min-width: 800px) {
+      .card,
+      main section {
+        scroll-margin-top: var(--space-6);
+      }
     }
 
     .card header {
@@ -411,23 +458,14 @@
 <body>
   <header class="hero shell">
     <h1>prompts</h1>
-    <p>Hundert Strategien, um mit Sprachmodellen zu arbeiten, dazu Skills und Agenten-Anweisungen im Standardformat. Suchen, aufklappen, kopieren.</p>
+    <p>Ein Prompt ist eine Anweisung, Frage oder Eingabe an einen Menschen oder eine KI, die eine bestimmte Handlung oder Antwort auslösen soll. Hundert Strategien dafür, dazu Skills und Agenten-Anweisungen, im Kern auch Prompts. Suchen, aufklappen, kopieren. <a href="#how">Wie es funktioniert</a></p>
   </header>
 
   <main class="shell">
-    <section id="how">
-      <h2>Wie es funktioniert</h2>
-      <p>Ein Prompt ist die Anweisung an ein Sprachmodell. Eine Prompting-Strategie ist ein wiederverwendbares Muster dafür: eine Form, die das Modell zu einer bestimmten Art von Antwort führt, unabhängig vom Thema. Chain of Thought lässt es Zwischenschritte ausgeben, Few-Shot zeigt ihm Beispiele, ein Persona-Prompt gibt ihm eine Rolle.</p>
-      <p>Jede Karte unten ist eine Strategie: ein Satz, worum es geht, Schlagworte, und aufgeklappt die Erklärung mit einem Beispiel-Prompt. Der Knopf kopiert den Prompt-Text in die Zwischenablage; du passt ihn dann an deinen Fall an. Ein Schlagwort anklicken filtert danach, der Titel einer Karte ist ihr Link.</p>
-      <p>Die Stufe sagt, wie viel Vorwissen eine Strategie braucht. Anfänger funktioniert mit einem Satz im Prompt. Mittel braucht etwas Struktur, etwa ein Format oder eine Rolle. Fortgeschritten setzt auf mehrere Schritte oder auf ein Zusammenspiel mehrerer Prompts.</p>
-      <p>Zwei weitere Arten von Karten sind Dateien in Standardformaten. Ein Skill ist eine Fähigkeit für einen Agenten nach dem Agent-Skills-Standard: eine Datei <code>SKILL.md</code> mit <code>name</code> und <code>description</code> im Kopf und der Anleitung darunter, die ein Agent lädt, wenn die Beschreibung auf seine Aufgabe passt. Ein Agent ist eine Anweisung an einen Coding-Agenten nach dem AGENTS.md-Standard: die Datei, die im Wurzelverzeichnis eines Repos liegt und sagt, wie darin gearbeitet wird. Beide liegen in diesem Repo unter <code>skills/</code> und <code>agents/</code>, wo Werkzeuge sie erwarten; die Karte zeigt die Datei, der Knopf kopiert sie oder speichert sie unter ihrem Namen.</p>
-      <p>Alles steht in dieser einen Seite. Nichts wird nachgeladen, nichts gesendet; die Suche läuft im Browser.</p>
-    </section>
-
     <section id="strategies">
       <h2>Strategien</h2>
       <div class="controls">
-        <input type="search" id="search" placeholder="Suchen, / fokussiert" aria-label="Strategien durchsuchen" autocomplete="off">
+        <input type="search" id="search" placeholder="Suchen und mit Enter kopieren" aria-label="Strategien durchsuchen" autocomplete="off">
         <select id="kind" aria-label="Art">
           <option value="">Alle Arten</option>
           <option value="strategy">Strategien</option>
@@ -2943,6 +2981,16 @@ You are packaging a single-file browser app as a Home Assistant add-on in the me
       </div>
       <p class="empty" id="empty" hidden>Nichts gefunden. Anderes Wort, andere Stufe.</p>
     </section>
+
+    <section id="how">
+      <h2>Wie es funktioniert</h2>
+      <p>Ein Prompt ist eine Anweisung, Frage oder Eingabe an einen Menschen oder eine künstliche Intelligenz, die eine bestimmte Handlung oder Antwort auslösen soll. Eine Prompting-Strategie ist ein wiederverwendbares Muster dafür: eine Form, die das Modell zu einer bestimmten Art von Antwort führt, unabhängig vom Thema. Chain of Thought lässt es Zwischenschritte ausgeben, Few-Shot zeigt ihm Beispiele, ein Persona-Prompt gibt ihm eine Rolle.</p>
+      <p>Skills und Agenten-Anweisungen sind nach dieser Definition ebenfalls Prompts. Der Unterschied liegt nicht im Text, sondern darin, wer ihn übergibt: den Prompt einer Strategie fügst du selbst ein, einen Skill oder eine <code>AGENTS.md</code> liest der Agent von einem festen Pfad. Ein Skill ist eine Datei <code>SKILL.md</code> nach dem Agent-Skills-Standard, mit <code>name</code> und <code>description</code> im Kopf und der Anleitung darunter; der Agent lädt sie, wenn die Beschreibung auf seine Aufgabe passt. Ein Agent ist eine Datei <code>AGENTS.md</code> nach dem gleichnamigen Standard: sie liegt im Wurzelverzeichnis eines Repos und sagt einem Coding-Agenten, wie darin gearbeitet wird. Beide liegen in diesem Repo unter <code>skills/</code> und <code>agents/</code>, wo Werkzeuge sie erwarten; die Karte zeigt die Datei, der Knopf kopiert sie oder speichert sie unter ihrem Namen.</p>
+      <p>Jede Karte ist ein Eintrag: ein Satz, worum es geht, Schlagworte, und aufgeklappt die Erklärung mit einem Beispiel-Prompt oder die Datei selbst. Der Knopf kopiert den Text in die Zwischenablage; du passt ihn dann an deinen Fall an. Ein Schlagwort anklicken filtert danach, der Titel einer Karte ist ihr Link.</p>
+      <p>Die Suche steht oben und bleibt beim Scrollen sichtbar. <kbd>/</kbd> springt ins Suchfeld, <kbd>Enter</kbd> kopiert den Prompt des ersten Treffers, <kbd>Esc</kbd> leert das Feld. Suchen, Enter, einfügen: das ist der kurze Weg.</p>
+      <p>Die Stufe sagt, wie viel Vorwissen eine Strategie braucht. Anfänger funktioniert mit einem Satz im Prompt. Mittel braucht etwas Struktur, etwa ein Format oder eine Rolle. Fortgeschritten setzt auf mehrere Schritte oder auf ein Zusammenspiel mehrerer Prompts.</p>
+      <p>Alles steht in dieser einen Seite. Nichts wird nachgeladen, nichts gesendet; die Suche läuft im Browser.</p>
+    </section>
   </main>
 
   <footer>
@@ -2977,6 +3025,7 @@ You are packaging a single-file browser app as a Home Assistant add-on in the me
     const count = document.querySelector("#count");
     const empty = document.querySelector("#empty");
     const COPIED_LABEL = "Kopiert";
+    let visible = [];
 
     // Index: one entry per card, read once from the markup. The markup is the data.
     const items = [...list.querySelectorAll(".card")].map((el) => ({
@@ -3043,6 +3092,7 @@ You are packaging a single-file browser app as a Home Assistant add-on in the me
         ? shown.sort((a, b) => b.score - a.score || a.item.title.localeCompare(b.item.title, "de")).map((s) => s.item)
         : items;
       for (const item of order) list.append(item.el);
+      visible = order.filter((item) => !item.el.hidden);
       count.textContent = shown.length === items.length ? `${items.length} Einträge` : `${shown.length} von ${items.length}`;
       empty.hidden = shown.length > 0;
     }
@@ -3068,6 +3118,15 @@ You are packaging a single-file browser app as a Home Assistant add-on in the me
       }
     }
 
+    // Copy a card's prompt and say so on its copy button for two seconds.
+    async function copyCard(card) {
+      const button = card.querySelector(".copy");
+      const label = button.textContent;
+      const ok = await copyText(card.querySelector(".prompt").textContent);
+      button.textContent = ok ? COPIED_LABEL : "Nicht kopiert";
+      setTimeout(() => { button.textContent = label; }, 2000);
+    }
+
     function openCard(id) {
       const item = items.find((i) => i.id === id);
       if (!item) return;
@@ -3081,7 +3140,7 @@ You are packaging a single-file browser app as a Home Assistant add-on in the me
       item.el.scrollIntoView({ block: "start" });
     }
 
-    list.addEventListener("click", async (event) => {
+    list.addEventListener("click", (event) => {
       const tag = event.target.closest(".tag");
       if (tag) {
         search.value = tag.textContent;
@@ -3091,11 +3150,7 @@ You are packaging a single-file browser app as a Home Assistant add-on in the me
       }
       const copy = event.target.closest(".copy");
       if (copy) {
-        const prompt = copy.closest(".card").querySelector(".prompt");
-        const label = copy.textContent;
-        const ok = await copyText(prompt.textContent);
-        copy.textContent = ok ? COPIED_LABEL : "Nicht kopiert";
-        setTimeout(() => { copy.textContent = label; }, 2000);
+        copyCard(copy.closest(".card"));
         return;
       }
       const download = event.target.closest(".download");
@@ -3113,6 +3168,20 @@ You are packaging a single-file browser app as a Home Assistant add-on in the me
     });
 
     search.addEventListener("input", render);
+
+    // Enter copies the first hit, so search, Enter, paste is the whole path.
+    // Escape empties the field (Firefox does not do that by itself).
+    search.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" && search.value.trim() && visible.length) {
+        event.preventDefault();
+        // The execCommand fallback selects a textarea; the field keeps the focus.
+        copyCard(visible[0].el).then(() => search.focus());
+      } else if (event.key === "Escape" && search.value) {
+        event.preventDefault();
+        search.value = "";
+        render();
+      }
+    });
     kind.addEventListener("change", render);
     level.addEventListener("change", render);
 
@@ -3128,6 +3197,9 @@ You are packaging a single-file browser app as a Home Assistant add-on in the me
 
     render();
     if (location.hash) openCard(decodeURIComponent(location.hash.slice(1)));
+    // With a keyboard at hand the field is focused on load, so typing starts
+    // the search; on touch screens that would only raise the keyboard.
+    else if (matchMedia("(hover: hover) and (pointer: fine)").matches) search.focus();
   </script>
 </body>
 </html>
