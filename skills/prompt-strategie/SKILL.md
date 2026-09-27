@@ -3,6 +3,7 @@ name: prompt-strategie
 description: Wählt für eine Aufgabe die passende Prompting-Strategie aus der Sammlung prompts (hundert deutsche Muster, drei Stufen) und formt den Prompt danach. Nutzen, wenn ein Prompt geschrieben oder verbessert werden soll, wenn ein Modell zu flach, zu unsicher oder zu ausschweifend antwortet, oder wenn ein Verhalten gezielt ausgelöst werden soll (Zwischenschritte, Format, Rolle, Selbstprüfung).
 license: MIT
 metadata:
+  tags: strategie auswahl workflow
   source: https://pajew-ski.github.io/prompts/
   language: de
 ---

@@ -3,6 +3,7 @@ name: chain-of-verification
 description: Prüft eine faktische Antwort in vier Schritten (Entwurf, Prüffragen, unabhängige Antworten, Revision), bevor sie ausgegeben wird. Nutzen bei Fragen nach Zahlen, Daten, Namen, Zitaten, Versionen und allem, was das Modell aus dem Gedächtnis beantwortet und wo eine falsche Angabe Schaden anrichtet.
 license: MIT
 metadata:
+  tags: wahrheit fakten reasoning
   source: https://pajew-ski.github.io/prompts/#chain-of-verification
   language: de
 ---
