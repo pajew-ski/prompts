@@ -38,7 +38,8 @@ Target audience: someone who works with a language model in English or German an
 ├── agents/<name>/card.md     (the Agent card's description and tags per language, since AGENTS.md has no frontmatter)
 └── .github/workflows/
     ├── deploy.yml       (uploads the checkout to Pages, builds nothing)
-    └── check.yml        (runs `node build.js --check`: sources are valid and index.html is what they give)
+    ├── check.yml        (runs `node build.js --check`: sources are valid and index.html is what they give)
+    └── notify-addon.yml (after each change to index.html on main, asks the Home Assistant Apps Collection to build a new add-on version)
 ```
 
 GitHub Pages serves the repository root of `main`. The deploy workflow only uploads the checkout as the Pages artifact; a repository set to deploy from the branch instead can delete it. The footer derives its GitHub links from the Pages URL, so a fork needs no edit.

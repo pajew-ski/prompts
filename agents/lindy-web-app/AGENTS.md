@@ -23,10 +23,12 @@ Target audience: <who opens it and what they must be able to do in one read>. Th
 ├── AGENTS.md
 ├── README.md            (short: what this is, link to the Pages site)
 ├── LICENSE
-└── index.html           (the whole app: page, stylesheet and script in one file)
+├── index.html           (the whole app: page, stylesheet and script in one file)
+└── .github/workflows/
+    └── notify-addon.yml (asks the Home Assistant Apps Collection to build a new add-on version)
 ```
 
-GitHub Pages deploys from the root of `main`. The footer derives its GitHub links from the Pages URL, so a fork needs no edit. The Home Assistant add-on is built from `index.html` by the apps collection; this repo carries no add-on files.
+GitHub Pages deploys from the root of `main`. The footer derives its GitHub links from the Pages URL, so a fork needs no edit. The Home Assistant add-on is built from `index.html` by the apps collection; this repo carries no add-on files, only `.github/workflows/notify-addon.yml`, which tells the collection to build a new version after each change to `index.html` on `main` (secret `APPS_COLLECTION_TOKEN`; without it the collection's hourly check picks the change up).
 
 ## Design
 

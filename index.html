@@ -6119,23 +6119,25 @@ Eine Prompting-Strategie ist ein wiederverwendbares Muster für die Anweisung an
             <h3 itemprop="name"><a href="#agent-home-assistant-addon">home-assistant-addon</a></h3>
             <span class="level">Agent</span>
           </header>
-          <p class="description" itemprop="description">Anweisung für einen Coding-Agenten, der eine Ein-Datei-App als Add-on in die Home Assistant Apps Collection aufnimmt, mit Registry, config.yaml, Workflow-Block und Icon.</p>
+          <p class="description" itemprop="description">Anweisung für einen Coding-Agenten, der eine Ein-Datei-App als Add-on in die Home Assistant Apps Collection aufnimmt, mit Registry-Eintrag, config.yaml, Icon und dem Notify-Workflow, der jeden Merge zur neuen Version macht.</p>
           <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">home-assistant</button></li><li><button type="button" class="tag">addon</button></li><li><button type="button" class="tag">agents.md</button></li></ul>
           <details>
             <summary>AGENTS.md</summary>
             <p class="caption">Liegt im Repo als <a class="file" href="https://github.com/pajew-ski/prompts/blob/main/agents/home-assistant-addon/AGENTS.md"><code>agents/home-assistant-addon/AGENTS.md</code></a>. Kopieren oder als Datei speichern; der Inhalt ist die Datei, byte für byte. Die Datei ist auf Englisch geschrieben.</p>
             <pre class="prompt" tabindex="0" lang="en"># AGENTS.md
 
-You are packaging a single-file browser app as a Home Assistant add-on in the meta-repository **home-assistant-apps-collection** (`https://github.com/pajew-ski/home-assistant-apps-collection`). The app's own repository holds one `index.html` and no add-on files; everything add-on related lives in the collection, and pre-built images are pushed to `ghcr.io/pajew-ski/home-assistant-apps-collection/{arch}-&lt;slug&gt;` by the sync workflow.
+You are packaging a single-file browser app as a Home Assistant add-on in the meta-repository **home-assistant-apps-collection** (`https://github.com/pajew-ski/home-assistant-apps-collection`). The app's own repository holds one `index.html` and no add-on files; everything add-on related lives in the collection. The collection's sync workflow builds the image from the upstream `index.html` behind nginx (`static-app/Dockerfile`, shared by every static app), pushes it to `ghcr.io/pajew-ski/home-assistant-apps-collection/{arch}-&lt;slug&gt;`, and writes the version. A static app needs no workflow code of its own: the workflow reads `addons-registry.json`.
 
 ## What to produce
 
-1. `addons-registry.json`: an entry with `slug`, `name`, `source` (the upstream repo URL), `branch: &quot;main&quot;`, `sync_files: [&quot;index.html&quot;]`, `image_prefix` and `&quot;static_app&quot;: true`.
+In the collection:
+
+1. `addons-registry.json`: an entry with `slug` (the upstream repository name), `name`, `source` (the upstream repo URL), `branch: &quot;main&quot;`, `sync_files: [&quot;index.html&quot;]`, `image_prefix` and `&quot;static_app&quot;: true`.
 2. `&lt;slug&gt;/config.yaml`, written by hand, never synced from upstream:
 
    ```yaml
    name: &quot;&lt;Name&gt;&quot;
-   description: &quot;&lt;one sentence, the app's own hero sentence&gt;&quot;
+   description: &quot;&lt;one or two sentences in English, after the app's own hero sentence&gt;&quot;
    version: &quot;0.0.0&quot;
    slug: &lt;slug&gt;
    url: &quot;https://github.com/pajew-ski/&lt;slug&gt;&quot;
@@ -6161,19 +6163,25 @@ You are packaging a single-file browser app as a Home Assistant add-on in the me
    schema: {}
    ```
 
-   Pick the next free ingress port (prompts 8099, open-entrainer 8100, open-desensitizer 8101). `version` is a placeholder the first sync replaces.
-3. `&lt;slug&gt;/build.yaml`: the three HA base images for amd64, aarch64, armv7.
-4. `&lt;slug&gt;/icon.png`, 128×128: the family style, a dark rounded square (`#0b0b0b`, radius 21) with a light glyph (`#ececec`), one motif from the app, no color.
-5. A block in `.github/workflows/sync-addons.yml`, duplicated from the `open-entrainer` block between two `# ---` dividers, with the slug, the upstream URL and the port replaced. The block has four steps: check (version = date of the last upstream commit to `index.html`, `YYYY.M.D`, compared with `config.yaml`), build and push (fetch `index.html`, write a four-line nginx Dockerfile, `docker buildx build --push` per arch, then `sed` the version into `config.yaml`), make packages public (unconditional), commit and push.
-6. A row in `README.md` under Included Add-ons: name, description, source. No version column.
+   Pick the next free ingress port (prompts 8099, open-entrainer 8100, open-desensitizer 8101, open-helix 8102). The workflow reads the port and the arch list from this file. `version` is a placeholder the first sync replaces.
+3. `&lt;slug&gt;/icon.png`, 128×128: the family style, a dark rounded square (`#0b0b0b`, radius 21) with a light glyph (`#ececec`), one motif from the app, no color.
+4. A row in `README.md` under Included Add-ons: name, description, source. No version column; the store shows the version.
+
+In the app's own repository:
+
+5. `.github/workflows/notify-addon.yml`, copied from a sibling (open-entrainer has it): on every push to `main` that changes `index.html`, it sends a `repository_dispatch` of type `upstream-changed` with the slug to the collection, so the new version is built within minutes. It needs the repository secret `APPS_COLLECTION_TOKEN` (a fine-grained token with &quot;Contents: Read and write&quot; on the collection); without it the job ends green with a notice and the collection's hourly check picks the change up instead.
+
+## How versions work
+
+The workflow compares the newest upstream commit that touched `index.html` with `&lt;slug&gt;/.upstream-sha`. A new commit gets the version `YYYY.M.D.HHMM` from its commit time (UTC), always higher than the one before, so every merge becomes an update Home Assistant offers. `config.yaml` and `.upstream-sha` are committed only after the images for every arch are pushed.
 
 ## Rules
 
-- Never copy application source into the collection; the image is built from the upstream `index.html` at build time.
+- Never copy application source into the collection; the image is built from the upstream `index.html` of the exact commit at build time.
 - Never remove the `image:` field from a `config.yaml`; without it Home Assistant tries to build locally and fails.
-- armhf and i386 are not built; the base images and the nginx pattern support them, but the family's build loop is amd64, aarch64, armv7.
-- The make-public step runs even when nothing was built, or packages pushed in an earlier run stay private and Home Assistant cannot pull them.
-- Validate the workflow with a YAML parser before committing; a broken workflow stops every add-on's sync, not only the new one.
+- armhf and i386 are not built; the arch list in `config.yaml` is the build list.
+- A package that a workflow pushes for the first time is private, and GitHub has no API to change that. After the first build of a new add-on, set each of its packages to public once in the package settings; the workflow's public check prints the links as warnings until it is done.
+- Validate the workflow and the registry before committing (`actionlint`, a JSON parser); a broken workflow stops every add-on's sync, not only the new one.
 - Clipboard inside Ingress: the app must fall back to `document.execCommand(&quot;copy&quot;)`, because the Ingress iframe grants no `clipboard-write`. If the app copies anything, check that its `index.html` has the fallback before packaging it.
 </pre>
           </details>
@@ -6187,23 +6195,25 @@ You are packaging a single-file browser app as a Home Assistant add-on in the me
             <h3 itemprop="name"><a href="#agent-home-assistant-addon">home-assistant-addon</a></h3>
             <span class="level">Agent</span>
           </header>
-          <p class="description" itemprop="description">Instructions for a coding agent that adds a single-file app to the Home Assistant Apps Collection as an add-on, with registry, config.yaml, workflow block and icon.</p>
+          <p class="description" itemprop="description">Instructions for a coding agent that adds a single-file app to the Home Assistant Apps Collection as an add-on, with registry entry, config.yaml, icon and the notify workflow that turns every merge into a new version.</p>
           <ul class="tags" itemprop="keywords"><li><button type="button" class="tag">home-assistant</button></li><li><button type="button" class="tag">addon</button></li><li><button type="button" class="tag">agents.md</button></li></ul>
           <details>
             <summary>AGENTS.md</summary>
             <p class="caption">Lives in the repository as <a class="file" href="https://github.com/pajew-ski/prompts/blob/main/agents/home-assistant-addon/AGENTS.md"><code>agents/home-assistant-addon/AGENTS.md</code></a>. Copy it or save it as a file; the content is the file, byte for byte.</p>
             <pre class="prompt" tabindex="0"># AGENTS.md
 
-You are packaging a single-file browser app as a Home Assistant add-on in the meta-repository **home-assistant-apps-collection** (`https://github.com/pajew-ski/home-assistant-apps-collection`). The app's own repository holds one `index.html` and no add-on files; everything add-on related lives in the collection, and pre-built images are pushed to `ghcr.io/pajew-ski/home-assistant-apps-collection/{arch}-&lt;slug&gt;` by the sync workflow.
+You are packaging a single-file browser app as a Home Assistant add-on in the meta-repository **home-assistant-apps-collection** (`https://github.com/pajew-ski/home-assistant-apps-collection`). The app's own repository holds one `index.html` and no add-on files; everything add-on related lives in the collection. The collection's sync workflow builds the image from the upstream `index.html` behind nginx (`static-app/Dockerfile`, shared by every static app), pushes it to `ghcr.io/pajew-ski/home-assistant-apps-collection/{arch}-&lt;slug&gt;`, and writes the version. A static app needs no workflow code of its own: the workflow reads `addons-registry.json`.
 
 ## What to produce
 
-1. `addons-registry.json`: an entry with `slug`, `name`, `source` (the upstream repo URL), `branch: &quot;main&quot;`, `sync_files: [&quot;index.html&quot;]`, `image_prefix` and `&quot;static_app&quot;: true`.
+In the collection:
+
+1. `addons-registry.json`: an entry with `slug` (the upstream repository name), `name`, `source` (the upstream repo URL), `branch: &quot;main&quot;`, `sync_files: [&quot;index.html&quot;]`, `image_prefix` and `&quot;static_app&quot;: true`.
 2. `&lt;slug&gt;/config.yaml`, written by hand, never synced from upstream:
 
    ```yaml
    name: &quot;&lt;Name&gt;&quot;
-   description: &quot;&lt;one sentence, the app's own hero sentence&gt;&quot;
+   description: &quot;&lt;one or two sentences in English, after the app's own hero sentence&gt;&quot;
    version: &quot;0.0.0&quot;
    slug: &lt;slug&gt;
    url: &quot;https://github.com/pajew-ski/&lt;slug&gt;&quot;
@@ -6229,19 +6239,25 @@ You are packaging a single-file browser app as a Home Assistant add-on in the me
    schema: {}
    ```
 
-   Pick the next free ingress port (prompts 8099, open-entrainer 8100, open-desensitizer 8101). `version` is a placeholder the first sync replaces.
-3. `&lt;slug&gt;/build.yaml`: the three HA base images for amd64, aarch64, armv7.
-4. `&lt;slug&gt;/icon.png`, 128×128: the family style, a dark rounded square (`#0b0b0b`, radius 21) with a light glyph (`#ececec`), one motif from the app, no color.
-5. A block in `.github/workflows/sync-addons.yml`, duplicated from the `open-entrainer` block between two `# ---` dividers, with the slug, the upstream URL and the port replaced. The block has four steps: check (version = date of the last upstream commit to `index.html`, `YYYY.M.D`, compared with `config.yaml`), build and push (fetch `index.html`, write a four-line nginx Dockerfile, `docker buildx build --push` per arch, then `sed` the version into `config.yaml`), make packages public (unconditional), commit and push.
-6. A row in `README.md` under Included Add-ons: name, description, source. No version column.
+   Pick the next free ingress port (prompts 8099, open-entrainer 8100, open-desensitizer 8101, open-helix 8102). The workflow reads the port and the arch list from this file. `version` is a placeholder the first sync replaces.
+3. `&lt;slug&gt;/icon.png`, 128×128: the family style, a dark rounded square (`#0b0b0b`, radius 21) with a light glyph (`#ececec`), one motif from the app, no color.
+4. A row in `README.md` under Included Add-ons: name, description, source. No version column; the store shows the version.
+
+In the app's own repository:
+
+5. `.github/workflows/notify-addon.yml`, copied from a sibling (open-entrainer has it): on every push to `main` that changes `index.html`, it sends a `repository_dispatch` of type `upstream-changed` with the slug to the collection, so the new version is built within minutes. It needs the repository secret `APPS_COLLECTION_TOKEN` (a fine-grained token with &quot;Contents: Read and write&quot; on the collection); without it the job ends green with a notice and the collection's hourly check picks the change up instead.
+
+## How versions work
+
+The workflow compares the newest upstream commit that touched `index.html` with `&lt;slug&gt;/.upstream-sha`. A new commit gets the version `YYYY.M.D.HHMM` from its commit time (UTC), always higher than the one before, so every merge becomes an update Home Assistant offers. `config.yaml` and `.upstream-sha` are committed only after the images for every arch are pushed.
 
 ## Rules
 
-- Never copy application source into the collection; the image is built from the upstream `index.html` at build time.
+- Never copy application source into the collection; the image is built from the upstream `index.html` of the exact commit at build time.
 - Never remove the `image:` field from a `config.yaml`; without it Home Assistant tries to build locally and fails.
-- armhf and i386 are not built; the base images and the nginx pattern support them, but the family's build loop is amd64, aarch64, armv7.
-- The make-public step runs even when nothing was built, or packages pushed in an earlier run stay private and Home Assistant cannot pull them.
-- Validate the workflow with a YAML parser before committing; a broken workflow stops every add-on's sync, not only the new one.
+- armhf and i386 are not built; the arch list in `config.yaml` is the build list.
+- A package that a workflow pushes for the first time is private, and GitHub has no API to change that. After the first build of a new add-on, set each of its packages to public once in the package settings; the workflow's public check prints the links as warnings until it is done.
+- Validate the workflow and the registry before committing (`actionlint`, a JSON parser); a broken workflow stops every add-on's sync, not only the new one.
 - Clipboard inside Ingress: the app must fall back to `document.execCommand(&quot;copy&quot;)`, because the Ingress iframe grants no `clipboard-write`. If the app copies anything, check that its `index.html` has the fallback before packaging it.
 </pre>
           </details>
@@ -6287,10 +6303,12 @@ Target audience: &lt;who opens it and what they must be able to do in one read&g
 ├── AGENTS.md
 ├── README.md            (short: what this is, link to the Pages site)
 ├── LICENSE
-└── index.html           (the whole app: page, stylesheet and script in one file)
+├── index.html           (the whole app: page, stylesheet and script in one file)
+└── .github/workflows/
+    └── notify-addon.yml (asks the Home Assistant Apps Collection to build a new add-on version)
 ```
 
-GitHub Pages deploys from the root of `main`. The footer derives its GitHub links from the Pages URL, so a fork needs no edit. The Home Assistant add-on is built from `index.html` by the apps collection; this repo carries no add-on files.
+GitHub Pages deploys from the root of `main`. The footer derives its GitHub links from the Pages URL, so a fork needs no edit. The Home Assistant add-on is built from `index.html` by the apps collection; this repo carries no add-on files, only `.github/workflows/notify-addon.yml`, which tells the collection to build a new version after each change to `index.html` on `main` (secret `APPS_COLLECTION_TOKEN`; without it the collection's hourly check picks the change up).
 
 ## Design
 
@@ -6422,10 +6440,12 @@ Target audience: &lt;who opens it and what they must be able to do in one read&g
 ├── AGENTS.md
 ├── README.md            (short: what this is, link to the Pages site)
 ├── LICENSE
-└── index.html           (the whole app: page, stylesheet and script in one file)
+├── index.html           (the whole app: page, stylesheet and script in one file)
+└── .github/workflows/
+    └── notify-addon.yml (asks the Home Assistant Apps Collection to build a new add-on version)
 ```
 
-GitHub Pages deploys from the root of `main`. The footer derives its GitHub links from the Pages URL, so a fork needs no edit. The Home Assistant add-on is built from `index.html` by the apps collection; this repo carries no add-on files.
+GitHub Pages deploys from the root of `main`. The footer derives its GitHub links from the Pages URL, so a fork needs no edit. The Home Assistant add-on is built from `index.html` by the apps collection; this repo carries no add-on files, only `.github/workflows/notify-addon.yml`, which tells the collection to build a new version after each change to `index.html` on `main` (secret `APPS_COLLECTION_TOKEN`; without it the collection's hourly check picks the change up).
 
 ## Design
 
