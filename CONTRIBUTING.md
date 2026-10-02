@@ -1,10 +1,12 @@
-# Mitmachen
+# Contributing
 
-Die Seite ist eine Datei, `index.html`, ihre Karten sind erzeugt. Eine Strategie ist eine Markdown-Datei unter `content/`, ein Skill oder Agent seine Standarddatei unter `skills/` oder `agents/`. `node build.js` schreibt daraus die Karten in die Seite; nur Node, keine Abhängigkeit. Die erzeugte Seite wird mit eingecheckt, damit sie ohne Build läuft. Zwischen den Markern `cards:start` und `cards:end` in `index.html` nichts von Hand ändern; der Check im Repo (`.github/workflows/check.yml`) schlägt fehl, wenn die Seite nicht zu den Quellen passt.
+The page is one file, `index.html`, and its cards are generated. A strategy is two Markdown files under `content/`, one per language; a skill or an agent is its standard file under `skills/` or `agents/`. `node build.js` writes the cards into the page from them; Node only, no dependency. The generated page is committed so it runs without a build. Do not edit anything between the `cards:start` and `cards:end` markers in `index.html` by hand; the check in the repository (`.github/workflows/check.yml`) fails when the page does not match its sources.
 
-## Eine Strategie hinzufügen
+## Adding a strategy
 
-Eine Datei `content/<slug>.md`; der Dateiname ist der Slug und damit der Link zur Karte (`#<slug>`).
+Two files with the same name: `content/de/<slug>.md` and `content/en/<slug>.md`. The file name is the slug and so the link to the card (`#<slug>`).
+
+German:
 
 ````markdown
 ---
@@ -14,33 +16,57 @@ tags: struktur analyse
 description: Ein Satz, was die Strategie bewirkt.
 ---
 
-Worum es geht.
+Worum es geht, woher es kommt, wie es wirkt.
 
 ## Beispiel
 
 ```prompt
-Der Prompt-Text, genau so, wie er eingefügt werden soll.
+Der Prompt-Text, genau so, wie er eingefügt werden soll. Platzhalter in [eckigen Klammern].
 ```
 
-## Strategie
+## Wann es hilft
 
-Wann und warum es funktioniert.
+Wann es hilft, wann nicht, wo die Grenzen liegen.
 ````
 
-Regeln:
+English, the same strategy:
 
-- Der Slug ist klein, mit Bindestrichen, eindeutig.
-- `level` ist eines von `Anfänger`, `Mittel`, `Fortgeschritten`.
-- Schlagworte klein, ohne Leerzeichen, durch Leerzeichen getrennt. Vorhandene Schlagworte wiederverwenden, denn über sie findet die Seite verwandte Strategien.
-- Genau ein Codeblock mit der Sprache `prompt` pro Datei. Er wird zum kopierbaren Block der Karte, wörtlich; nichts darin wird umgeformt.
-- Der Text ist Markdown in dem Umfang, den `build.js` kennt: Absätze, `##` und `###` als Überschriften, Listen mit `-` oder `1.`, Zitate mit `>`, weitere Codeblöcke, und inline `**fett**`, `*kursiv*`, `` `code` `` und `[Links](url)`. Ein Backslash vor `` ` * _ [ ] `` lässt das Zeichen stehen. HTML wird nicht durchgereicht.
-- Deutsch, schlichte Sätze, Präsens, keine Ausrufezeichen, keine Emoji.
+````markdown
+---
+title: Name of the Strategy
+level: Intermediate
+tags: structure analysis
+description: One sentence on what the strategy does.
+---
 
-Dann `node build.js`; die Seite und die neue Datei zusammen committen.
+What it is, where it comes from, how it works.
 
-## Einen Skill hinzufügen
+## Example
 
-Ein Skill folgt dem Agent-Skills-Standard: ein Ordner `skills/<name>/` mit einer Datei `SKILL.md`.
+```prompt
+The prompt text, exactly as it should be pasted. Placeholders in [square brackets].
+```
+
+## When it helps
+
+When it helps, when it does not, where its limits are.
+````
+
+Rules:
+
+- The slug is lowercase, hyphenated and unique.
+- `level` is `Anfänger`, `Mittel` or `Fortgeschritten` in German and `Beginner`, `Intermediate` or `Advanced` in English, and both files name the same level.
+- Tags come from the fixed vocabulary in `build.js` (`TAGS`), two to four per strategy. The German file uses the German words, the English file their translations in the same order. The vocabulary is small on purpose: related cards are found through shared tags.
+- Exactly one fenced block with the info string `prompt` per file. It becomes the card's copyable block, verbatim; nothing in it is transformed.
+- The text is Markdown in the subset `build.js` knows: paragraphs, `##` and `###` headings, `-` or `1.` lists, `>` quotes, other fenced blocks, and inline `**bold**`, `*italic*`, `` `code` `` and `[links](url)`. A backslash before `` ` * _ [ ] `` keeps the character. HTML is not passed through.
+- Plain sentences, present tense, no exclamation marks, no emoji, no em dashes. German uses du, English uses you.
+- Say what the technique does and where it stops helping. Name the paper or person it comes from when there is one, and only then. No model product names, since they date quickly; say "a small, fast model" or "a reasoning model". No ALL-CAPS emphasis in prompts; give the reason for a rule instead.
+
+Then `node build.js`; commit the page together with the new files.
+
+## Adding a skill
+
+A skill follows the Agent Skills format: a folder `skills/<name>/` with a file `SKILL.md`. The skills here are written in German.
 
 ```markdown
 ---
@@ -49,6 +75,8 @@ description: Was der Skill tut und wann ein Agent ihn laden soll, in einem Absat
 license: MIT
 metadata:
   tags: struktur analyse
+  tags-en: structure analysis
+  description-en: What the skill does and when to use it, for the English card.
 ---
 
 # Mein Skill
@@ -56,25 +84,29 @@ metadata:
 Die Anleitung, die der Agent befolgt.
 ```
 
-- `name` ist klein, mit Bindestrichen, höchstens 64 Zeichen, und gleich dem Ordnernamen. `description` höchstens 1024 Zeichen; sie entscheidet, ob ein Agent den Skill lädt, also steht dort der Anlass, nicht nur der Inhalt.
-- `metadata.tags` sind die Schlagworte der Karte; `metadata` ist im Standard der Platz für eigene Schlüssel.
-- Die Karte entsteht aus der Datei: Titel ist der Name, Beschreibung und Schlagworte kommen aus dem Kopf, der kopierbare Block ist die ganze Datei. Nach dem Anlegen `node build.js`.
+- `name` is lowercase with hyphens, at most 64 characters, and equal to the folder name. `description` is at most 1024 characters; it decides whether an agent loads the skill, so it names the occasion, not only the content.
+- `metadata` is the format's place for extra keys. `tags` are the German tags of the card, `tags-en` and `description-en` the English card text. Values must be valid YAML: a colon followed by a space inside a value breaks it.
+- The card is made from the file: the title is the name, description and tags come from the header, the copyable block is the whole file. After adding it, `node build.js`.
 
-## Einen Agenten hinzufügen
+## Adding an agent
 
-Ein Agent folgt dem AGENTS.md-Standard: ein Ordner `agents/<name>/` mit einer Datei `AGENTS.md`, reines Markdown ohne Kopf, so, wie sie später im Wurzelverzeichnis eines Repos liegen soll. Weil sie keinen Kopf hat, liegt daneben eine Datei `card.md` nur mit dem Kopf für die Karte:
+An agent follows the AGENTS.md format: a folder `agents/<name>/` with a file `AGENTS.md`, plain Markdown without a header, exactly as it will later sit at the root of a repository. Agent files are written in English. Since the file has no header, a `card.md` next to it holds the card text in both languages:
 
 ```markdown
 ---
-description: Ein Satz, wofür die Anweisung ist.
-tags: design web agents.md
+de:
+  description: Ein Satz, wofür die Anweisung ist.
+  tags: design web agents.md
+en:
+  description: One sentence on what the instructions are for.
+  tags: design web agents.md
 ---
 ```
 
-Dann `node build.js`.
+Then `node build.js`.
 
-## Prüfen
+## Checking
 
-`node build.js` läuft ohne Meldung durch, `node build.js --check` bestätigt, dass `index.html` zu den Quellen passt. `index.html` im Browser öffnen: die Zahl neben der Suche muss um eins gestiegen sein, die neue Karte muss über Titel, Schlagwort, Art und Stufe zu finden sein, und der Kopierknopf muss den Text liefern. Bei Skills und Agenten zusätzlich: der Knopf „Als Datei" speichert die Datei unter ihrem Namen. Dann ein Pull Request.
+`node build.js` runs through without a message, and `node build.js --check` confirms that `index.html` matches its sources. Open `index.html` in a browser, once as it is and once with `?lang=de` (or `?lang=en`): the count next to the search must have gone up by one, the new card must be found by title, tag, kind and level in both languages, and the copy button must deliver the text. For skills and agents, also: the "Save as file" button saves the file under its name. Then open a pull request.
 
-Keine urheberrechtlich geschützten Texte. Danke.
+No copyrighted texts. Thank you.

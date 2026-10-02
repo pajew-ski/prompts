@@ -1,6 +1,6 @@
 # AGENTS.md
 
-Public GitHub repo, project name **<name>**. Content: <one sentence: what the tool does in the browser>. It is a sibling of **open-entrainer**, **open-desensitizer** and **prompts** and shares its design with **temet-nosce**; the family should look and read as one.
+Public GitHub repo, project name **<name>**. Content: <one sentence: what the tool does in the browser>. It is a sibling of **open-entrainer**, **open-desensitizer**, **open-helix** and **prompts** and shares its design with **temet-nosce**; the family should look and read as one.
 
 Target audience: <who opens it and what they must be able to do in one read>. The page has to be understood in one screen and trusted in one read.
 
@@ -12,6 +12,7 @@ Target audience: <who opens it and what they must be able to do in one read>. Th
 - No service worker, no manifest, no install prompt
 - No accounts, no network requests, no data leaving the page
 - No manual dark/light toggle. Automatic only, via `prefers-color-scheme`
+- No manual language switch. Automatic only, via the browser's language, with a URL override
 - No color. The design is achromatic; states are named, never colored
 - No modal, no settings panel. Everything is on the page, every action is a visible control
 
@@ -86,21 +87,31 @@ The inline stylesheet begins with the token block from temet-nosce, verbatim. It
 - Focus: `outline: 2px solid var(--text-muted); outline-offset: 2px`. `[hidden] { display: none !important }`.
 - Canvas: reads its colors from its own computed style (background, color, border color, outline color) so it follows the scheme without a second palette; the returned strings are used as they are, never parsed. Device pixel ratio respected.
 
+## Language
+
+The page ships in English and German in the same file.
+
+- A classic script in the head, before the stylesheet, sets `<html lang>` before the first paint: `?lang=de` or `?lang=en` if given, otherwise German when `navigator.languages[0]` (or `navigator.language`) starts with `de`, English for everything else. The markup's own `<html lang="en">` is the fallback without script.
+- Prose exists once per language as sibling elements with `lang="en"` and `lang="de"` (`<p lang="en">…</p><p lang="de">…</p>`, or sibling spans for short labels). One rule after `[hidden]` hides the other language: `html[lang="de"] [lang="en"], html[lang="en"] [lang="de"] { display: none !important; }`.
+- Strings the script writes come from a small table per language, or from `L(english, german)` in place. Numbers use a decimal point in English and a decimal comma in German. Canvas aria labels are set from the script.
+- Text inside form controls (placeholders, options) cannot switch through CSS; set it from a script that runs before the first paint.
+- The German copy follows the same rules as the English one and avoids direct address where an infinitive does the job.
+
 ## Behavior
 
 <one bullet per feature: defaults, ranges, persistence key in localStorage under the project name, keys, what stops what. State every number.>
 
 ## Copy
 
-English throughout. Plain sentences, present tense, no exclamation marks, no emoji, no em dashes. Explain the mechanism, say what the tool does not do. Warnings are stated once, on the page, never in a modal. Product names are lowercase in headings and the footer, as in temet-nosce.
+English and German, both complete. Plain sentences, present tense, no exclamation marks, no emoji, no em dashes, in both languages. README, AGENTS.md and commit messages are English. Explain the mechanism, say what the tool does not do. Warnings are stated once, on the page, never in a modal. Product names are lowercase in headings and the footer, as in temet-nosce.
 
 ## Files
 
 ### `index.html`
 
-One file with three parts: the `<style>` block in the head, the markup, and one `<script type="module">` at the end of the body (plus the small footer module before it).
+One file with four parts: the language script and the `<style>` block in the head, the markup, and one `<script type="module">` at the end of the body (plus the small footer module before it).
 
-Markup: `<header class="hero shell">` with h1 and one sentence. `<main class="shell">` with sections: How it works, <the tool's sections>, Before you use it. Footer: `<name> · built from <a id="agents-link">AGENTS.md</a> by a coding agent · <a id="source-link">source on GitHub</a>`, followed by the module that rewrites both hrefs from `location.hostname` when it ends in `.github.io` (owner from the host, repo from the first path segment).
+Markup: `<header class="hero shell">` with h1 and one sentence. `<main class="shell">` with sections: How it works, <the tool's sections>, Before you use it. Footer: `<name> · built from <a id="agents-link">AGENTS.md</a> by a coding agent · <a id="source-link">source on GitHub</a>` with the German words as sibling spans, followed by the module that rewrites both hrefs from `location.hostname` when it ends in `.github.io` (owner from the host, repo from the first path segment).
 
 Style block: token block, base rules (hero, sections, tables, controls, buttons, footer), then the tool's own rules.
 

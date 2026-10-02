@@ -3,7 +3,9 @@ name: fuenf-warum
 description: Führt von einem Symptom zur Kernursache, indem fünfmal nach dem Warum gefragt wird, mit belegten oder als Annahme markierten Antworten je Stufe. Nutzen bei wiederkehrenden Fehlern, Ausfällen, Konflikten und jeder Situation, in der bisher Symptome behandelt wurden.
 license: MIT
 metadata:
-  tags: analyse problem-solving debugging
+  tags: analyse zerlegung
+  tags-en: analysis decomposition
+  description-en: Leads from a symptom to the root cause by asking why five times, each answer backed by evidence or marked as an assumption. For recurring failures, outages and conflicts.
   source: https://pajew-ski.github.io/prompts/#5-whys
   language: de
 ---
