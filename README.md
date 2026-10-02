@@ -39,7 +39,7 @@ The whole app is `index.html`; copy that one file anywhere and it runs. Any stat
 
 The cards in the page are generated: `node build.js` writes them from `content/`, `skills/` and `agents/` into `index.html`, with no dependency beyond Node. The generated page is committed; `node build.js --check` verifies in CI that it matches its sources.
 
-As a Home Assistant add-on, the page ships through the [Home Assistant Apps Collection](https://github.com/pajew-ski/home-assistant-apps-collection), together with its sibling apps.
+As a Home Assistant add-on, the page ships through the [Home Assistant Apps Collection](https://github.com/pajew-ski/home-assistant-apps-collection), together with its sibling apps. Every change to `index.html` on `main` becomes a new add-on version automatically.
 
 ## Contributing
 
