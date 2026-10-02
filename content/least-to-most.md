@@ -1,18 +1,15 @@
 ---
-title: "Least-to-Most Prompting"
-description: "Komplexe Probleme in Teilprobleme zerlegen und diese nacheinander lösen."
-tags: ["zerlegung", "komplexität", "struktur"]
-difficulty: "Fortgeschritten"
+title: Least-to-Most Prompting
+level: Fortgeschritten
+tags: zerlegung komplexität struktur
+description: Komplexe Probleme in Teilprobleme zerlegen und diese nacheinander lösen.
 ---
-
-# Least-to-Most Prompting
 
 Ähnlich wie Chain-of-Thought, aber expliziter in der Zerlegung. Du bittest das Modell zuerst, das Problem in Unterfragen zu zerlegen, und löst diese dann sequenziell.
 
 ## Beispiel
 
-**Prompt:**
-```text
+```prompt
 Frage: Wie viele Schritte sind nötig, um einen Turm von Hanoi mit 4 Scheiben zu lösen?
 Antwort: Lassen Sie uns das Problem in einfachere Probleme zerlegen:
 1. Wie viele Schritte für 1 Scheibe?

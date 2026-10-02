@@ -3,6 +3,7 @@ name: fuenf-warum
 description: Führt von einem Symptom zur Kernursache, indem fünfmal nach dem Warum gefragt wird, mit belegten oder als Annahme markierten Antworten je Stufe. Nutzen bei wiederkehrenden Fehlern, Ausfällen, Konflikten und jeder Situation, in der bisher Symptome behandelt wurden.
 license: MIT
 metadata:
+  tags: analyse problem-solving debugging
   source: https://pajew-ski.github.io/prompts/#5-whys
   language: de
 ---

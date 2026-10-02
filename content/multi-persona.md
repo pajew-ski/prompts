@@ -1,18 +1,15 @@
 ---
-title: "Multi-Persona Debate"
-description: "Mehrere simulierte Experten diskutieren lassen, um zur besten Lösung zu kommen."
-tags: ["diskussion", "konsens", "vielfalt"]
-difficulty: "Fortgeschritten"
+title: Multi-Persona Debate
+level: Fortgeschritten
+tags: diskussion konsens vielfalt
+description: Mehrere simulierte Experten diskutieren lassen, um zur besten Lösung zu kommen.
 ---
-
-# Multi-Persona Debate
 
 Wenn du EINE Antwort willst, ist das Modell oft voreingenommen. Lass es diskutieren.
 
 ## Beispiel
 
-**Prompt:**
-```text
+```prompt
 Simuliere eine Diskussion zwischen drei Personen:
 A: Ein konservativer Risiko-Manager.
 B: Ein visionärer Tech-Optimist.

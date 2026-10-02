@@ -1,18 +1,15 @@
 ---
-title: "Simulated RAG"
-description: "Manuelles Bereitstellen von Kontext-Chunks, um Retrieval-Augmented Generation zu simulieren."
-tags: ["kontext", "dokumente", "analyse"]
-difficulty: "Mittel"
+title: Simulated RAG
+level: Mittel
+tags: kontext dokumente analyse
+description: Manuelles Bereitstellen von Kontext-Chunks, um Retrieval-Augmented Generation zu simulieren.
 ---
-
-# Simulated RAG
 
 Wenn du kein echtes Vektor-Datenbank-System hast, kannst du RAG simulieren, indem du relevante Textabschnitte ("Chunks") manuell in den Prompt lädst.
 
 ## Beispiel
 
-**Prompt:**
-```text
+```prompt
 Nutze AUSSCHLIESSLICH die folgenden Informationen, um die Frage zu beantworten. Wenn die Antwort nicht im Text steht, sag "Weiß ich nicht".
 --- KONTEXT ANFANG ---
 [Auszug aus Handbuch Seite 5]

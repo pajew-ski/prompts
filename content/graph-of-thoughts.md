@@ -1,18 +1,15 @@
 ---
-title: "Graph of Thoughts (GoT)"
-description: "Gedanken nicht linear (Kette) oder als Baum (Tree) modellieren, sondern als Netzwerk, das Konvergenz und Schleifen erlaubt."
-tags: ["reasoning", "komplexität", "struktur"]
-difficulty: "Fortgeschritten"
+title: Graph of Thoughts (GoT)
+level: Fortgeschritten
+tags: reasoning komplexität struktur
+description: Gedanken nicht linear (Kette) oder als Baum (Tree) modellieren, sondern als Netzwerk, das Konvergenz und Schleifen erlaubt.
 ---
-
-# Graph of Thoughts (GoT)
 
 Das menschliche Gehirn arbeitet nicht linear. GoT erlaubt es, Gedanken zu kombinieren, zu aggregieren und im Kreis zu führen.
 
 ## Beispiel
 
-**Prompt:**
-```text
+```prompt
 Aufgabe: Schreibe einen Roman.
 1. Generiere 3 Ideen für Charaktere (Knoten A, B, C).
 2. Generiere 3 Ideen für den Plot (Knoten D, E, F).

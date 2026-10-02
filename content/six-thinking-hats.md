@@ -1,18 +1,15 @@
 ---
-title: "Six Thinking Hats"
-description: "Ein Problem nacheinander aus sechs spezifischen emotionalen/kognitiven Perspektiven beleuchten."
-tags: ["analyse", "diskussion", "perspektiven"]
-difficulty: "Fortgeschritten"
+title: Six Thinking Hats
+level: Fortgeschritten
+tags: analyse diskussion perspektiven
+description: Ein Problem nacheinander aus sechs spezifischen emotionalen/kognitiven Perspektiven beleuchten.
 ---
-
-# Six Thinking Hats
 
 Ähnlich wie Multi-Persona, aber strikter codiert.
 
 ## Beispiel
 
-**Prompt:**
-```text
+```prompt
 Thema: Einführung der 4-Tage-Woche.
 Analysiere das thema nacheinander mit diesen Hüten:
 ⚪️ Weiß (Fakten, Zahlen)

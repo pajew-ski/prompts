@@ -1,18 +1,15 @@
 ---
-title: "OODA Loop"
-description: "Entscheidungsmodell für dynamische Situationen: Observe, Orient, Decide, Act."
-tags: ["entscheidung", "strategie", "militär"]
-difficulty: "Mittel"
+title: OODA Loop
+level: Mittel
+tags: entscheidung strategie militär
+description: Entscheidungsmodell für dynamische Situationen: Observe, Orient, Decide, Act.
 ---
-
-# OODA Loop
 
 Ursprünglich für Dogfights entwickelt, heute für Business genutzt.
 
 ## Beispiel
 
-**Prompt:**
-```text
+```prompt
 Situation: Ein Konkurrent hat gerade seine Preise halbiert.
 Führe mich durch den OODA Loop:
 1. Observe: Was sehen wir genau?

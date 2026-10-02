@@ -1,18 +1,15 @@
 ---
-title: "Sandwich Prompting"
-description: "Den Kern-Input zwischen Kontext und Format-Anweisungen 'einklemmen'."
-tags: ["struktur", "robustheit", "formatting"]
-difficulty: "Anfänger"
+title: Sandwich Prompting
+level: Anfänger
+tags: struktur robustheit formatting
+description: Den Kern-Input zwischen Kontext und Format-Anweisungen 'einklemmen'.
 ---
-
-# Sandwich Prompting
 
 Lange Prompts verlieren am Ende oft an Kraft. Sandwiching hilft.
 
 ## Beispiel
 
-**Prompt:**
-```text
+```prompt
 [Header: Rolle & Kontext]
 Du bist ein SQL-Experte.
 [Data: Das Fleisch]

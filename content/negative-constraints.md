@@ -1,18 +1,15 @@
 ---
-title: "Negative Constraints"
-description: "Explizit definieren, was das Modell NICHT tun soll."
-tags: ["kontrolle", "stil", "grenzen"]
-difficulty: "Anfänger"
+title: Negative Constraints
+level: Anfänger
+tags: kontrolle stil grenzen
+description: Explizit definieren, was das Modell NICHT tun soll.
 ---
-
-# Negative Constraints
 
 Oft ist es leichter zu sagen, was man nicht will.
 
 ## Beispiel
 
-**Prompt:**
-```text
+```prompt
 Erstelle einen Reiseplan für Paris.
 Negative Constraints:
 - Keine Museen.

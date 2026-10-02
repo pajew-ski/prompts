@@ -1,18 +1,15 @@
 ---
-title: "Constitutional AI (Regel-basiert)"
-description: "Dem Modell explizite ethische oder stilistische 'Gesetze' geben, an die es sich halten muss."
-tags: ["sicherheit", "compliance", "regeln"]
-difficulty: "Mittel"
+title: Constitutional AI (Regel-basiert)
+level: Mittel
+tags: sicherheit compliance regeln
+description: Dem Modell explizite ethische oder stilistische 'Gesetze' geben, an die es sich halten muss.
 ---
-
-# Constitutional AI
 
 Inspirerit von Anthropic's Ansatz. Du definierst eine "Verfassung" (Liste von Regeln), die über allem steht.
 
 ## Beispiel
 
-**Prompt:**
-```text
+```prompt
 Du bist ein hilfreicher Assistent.
 VERFASSUNG:
 1. Sei immer höflich, aber nie unterwürfig.

@@ -1,18 +1,15 @@
 ---
-title: "Perspective Taking"
-description: "Ein Thema aus den Augen verschiedener Personen oder Gruppen betrachten."
-tags: ["kreativität", "empathie", "diskussion"]
-difficulty: "Mittel"
+title: Perspective Taking
+level: Mittel
+tags: kreativität empathie diskussion
+description: Ein Thema aus den Augen verschiedener Personen oder Gruppen betrachten.
 ---
-
-# Perspective Taking
 
 Hilft, blinde Flecken zu finden oder Argumente zu schärfen.
 
 ## Beispiel
 
-**Prompt:**
-```text
+```prompt
 Thema: Bedingungsloses Grundeinkommen.
 Diskutiere das Thema aus der Sicht von:
 1. Einem alleinerziehenden Vater

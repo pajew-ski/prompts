@@ -1,18 +1,15 @@
 ---
-title: "Metacognitive Prompting"
-description: "Das Modell auffordern, über seinen eigenen Denkprozess nachzudenken ('Thinking about thinking')."
-tags: ["reflexion", "bewusstsein", "analyse"]
-difficulty: "Fortgeschritten"
+title: Metacognitive Prompting
+level: Fortgeschritten
+tags: reflexion bewusstsein analyse
+description: Das Modell auffordern, über seinen eigenen Denkprozess nachzudenken ('Thinking about thinking').
 ---
-
-# Metacognitive Prompting
 
 Hilft dem Modell, Verständnisprobleme zu erkennen.
 
 ## Beispiel
 
-**Prompt:**
-```text
+```prompt
 Interpretiere diesen Text.
 Bevor du antwortest:
 1. Was ist an diesem Text mehrdeutig?
@@ -20,6 +17,7 @@ Bevor du antwortest:
 3. Was ist deine "Confidence" (Sicherheit)?
 Dann antworte.
 ```
+
 ## Strategie
 
 Schaltet den "Autopiloten" aus.

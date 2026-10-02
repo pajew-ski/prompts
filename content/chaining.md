@@ -1,18 +1,17 @@
 ---
-title: "Prompt Chaining"
-description: "Aufteilung einer großen Aufgabe in mehrere, voneinander abhängige Prompts."
-tags: ["workflow", "automatisierung", "komplexität"]
-difficulty: "Mittel"
+title: Prompt Chaining
+level: Mittel
+tags: workflow automatisierung komplexität
+description: Aufteilung einer großen Aufgabe in mehrere, voneinander abhängige Prompts.
 ---
-
-# Prompt Chaining
 
 Manche Aufgaben sind zu komplex für einen einzigen Prompt (Kontext-Limit oder Verwirrung). Bei Chaining nimmst du den Output von Prompt A und nutzt ihn als Input für Prompt B.
 
 ## Beispiel
 
 **Workflow:**
-```text
+
+```prompt
 Prompt 1: Extrahiere alle E-Mail-Adressen aus diesem Text.
 Output 1: [Liste]
 

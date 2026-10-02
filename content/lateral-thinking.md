@@ -1,18 +1,15 @@
 ---
-title: "Lateral Thinking"
-description: "Probleme durch indirekte und unkonventionelle Ansätze lösen (Edward de Bono)."
-tags: ["kreativität", "problem-solving", "querdenken"]
-difficulty: "Fortgeschritten"
+title: Lateral Thinking
+level: Fortgeschritten
+tags: kreativität problem-solving querdenken
+description: Probleme durch indirekte und unkonventionelle Ansätze lösen (Edward de Bono).
 ---
-
-# Lateral Thinking
 
 Logik (vertikales Denken) vertieft das Loch. Laterales Denken gräbt ein neues Loch.
 
 ## Beispiel
 
-**Prompt:**
-```text
+```prompt
 Problem: Wir haben nicht genug Parkplätze im Büro.
 Logische Lösung: Mehr Parkplätze bauen.
 

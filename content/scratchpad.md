@@ -1,18 +1,15 @@
 ---
-title: "Scratchpad"
-description: "Einen expliziten Bereich für Notizen und Zwischenrechnungen definieren, bevor die Antwort gegeben wird."
-tags: ["reasoning", "struktur", "code"]
-difficulty: "Fortgeschritten"
+title: Scratchpad
+level: Fortgeschritten
+tags: reasoning struktur code
+description: Einen expliziten Bereich für Notizen und Zwischenrechnungen definieren, bevor die Antwort gegeben wird.
 ---
-
-# Scratchpad
 
 Besonders nützlich bei Code-Generierung oder Mathe.
 
 ## Beispiel
 
-**Prompt:**
-```text
+```prompt
 Aufgabe: [Komplexe Logik]
 Nutze einen <scratchpad> Block, um Zwischenergebnisse, Variablenzustände oder Logikschritte festzuhalten.
 Gib erst danach die finale Antwort aus.

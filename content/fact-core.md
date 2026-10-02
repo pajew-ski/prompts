@@ -1,18 +1,15 @@
 ---
-title: "Fact-Core Prompting"
-description: "Das Modell bitten, erst eine Liste von unbestreitbaren Fakten zu erstellen, bevor es eine Meinung äußert."
-tags: ["objektivität", "fakten", "analyse"]
-difficulty: "Mittel"
+title: Fact-Core Prompting
+level: Mittel
+tags: objektivität fakten analyse
+description: Das Modell bitten, erst eine Liste von unbestreitbaren Fakten zu erstellen, bevor es eine Meinung äußert.
 ---
-
-# Fact-Core Prompting
 
 Hilft gegen Meinungs-Bias.
 
 ## Beispiel
 
-**Prompt:**
-```text
+```prompt
 Thema: Atomkraft.
 Liste 5 physikalische Fakten auf.
 Liste 5 wirtschaftliche Fakten auf.

@@ -1,18 +1,15 @@
 ---
-title: "ReAct (Reasoning + Acting)"
-description: "Kombination aus logischem Denken und Handlungen (z.B. API-Aufrufe), um Fakten zu prüfen."
-tags: ["agenten", "tools", "fakten"]
-difficulty: "Fortgeschritten"
+title: ReAct (Reasoning + Acting)
+level: Fortgeschritten
+tags: agenten tools fakten
+description: Kombination aus logischem Denken und Handlungen (z.B. API-Aufrufe), um Fakten zu prüfen.
 ---
-
-# ReAct
 
 ReAct ist das fundamentale Muster für KI-Agenten. Es fordert das Modell auf, abwechselnd zu denken ("Thought"), eine Handlung auszuführen ("Action", z.B. eine Suche), das Ergebnis zu beobachten ("Observation") und dann weiterzudenken.
 
 ## Beispiel
 
-**Prompt:**
-```text
+```prompt
 Frage: Wer ist der aktuelle Kanzler von Deutschland und wie alt ist er?
 Thought: Ich muss zuerst herausfinden, wer der Kanzler ist.
 Action: Search[Kanzler Deutschland aktuell]

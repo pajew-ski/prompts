@@ -1,18 +1,15 @@
 ---
-title: "Automatic Prompt Engineer (APE)"
-description: "Das Modell generiert und testet seine eigenen Prompts."
-tags: ["meta", "optimierung", "training"]
-difficulty: "Fortgeschritten"
+title: Automatic Prompt Engineer (APE)
+level: Fortgeschritten
+tags: meta optimierung training
+description: Das Modell generiert und testet seine eigenen Prompts.
 ---
-
-# APE
 
 Lass die KI die Arbeit machen.
 
 ## Beispiel
 
-**Prompt:**
-```text
+```prompt
 Ich habe diese Input-Output-Paare:
 [Beispiele]
 Generiere 5 verschiedene Prompts, die diese Transformation bewirken können.

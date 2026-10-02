@@ -1,18 +1,15 @@
 ---
-title: "Socratic CoT"
-description: "Kombination aus Chain-of-Thought und Sokratischer Methode: Das Modell stellt sich selbst Fragen und beantwortet sie."
-tags: ["reasoning", "selbstgespräch", "tiefe"]
-difficulty: "Fortgeschritten"
+title: Socratic CoT
+level: Fortgeschritten
+tags: reasoning selbstgespräch tiefe
+description: Kombination aus Chain-of-Thought und Sokratischer Methode: Das Modell stellt sich selbst Fragen und beantwortet sie.
 ---
-
-# Socratic CoT
 
 Statt nur Schritte aufzulisten (CoT), führt das Modell einen inneren Dialog.
 
 ## Beispiel
 
-**Prompt:**
-```text
+```prompt
 Löse das Problem, indem du einen Dialog mit dir selbst führst.
 Form:
 Q: Was ist der erste Schritt?
@@ -22,6 +19,7 @@ A: Weil...
 Q: Was folgt daraus?
 ...
 ```
+
 ## Strategie
 
 Dieser selbstreferenzielle Frage-Antwort-Zyklus ist oft robuster als linearer Text.

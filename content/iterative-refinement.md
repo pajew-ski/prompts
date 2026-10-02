@@ -1,18 +1,15 @@
 ---
-title: "Iterative Refinement"
-description: "Den Output in mehreren Durchgängen verfeinern lassen."
-tags: ["qualität", "redaktion", "loop"]
-difficulty: "Mittel"
+title: Iterative Refinement
+level: Mittel
+tags: qualität redaktion loop
+description: Den Output in mehreren Durchgängen verfeinern lassen.
 ---
-
-# Iterative Refinement
 
 Gib dich nicht mit dem ersten Entwurf zufrieden. Instruiere das Modell, seinen eigenen Entwurf zu verbessern.
 
 ## Beispiel
 
-**Prompt:**
-```text
+```prompt
 Schreibe einen Artikel über X.
 [Output]
 Mache ihn prägnanter.

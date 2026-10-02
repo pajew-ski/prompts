@@ -1,18 +1,15 @@
 ---
-title: "Context Warming"
-description: "Das Modell mit thematisch relevanten, aber nicht instruktiven Texten 'aufwärmen'."
-tags: ["priming", "kontext", "wissen"]
-difficulty: "Mittel"
+title: Context Warming
+level: Mittel
+tags: priming kontext wissen
+description: Das Modell mit thematisch relevanten, aber nicht instruktiven Texten 'aufwärmen'.
 ---
-
-# Context Warming
 
 Ähnlich wie Priming, aber breiter. Man "lädt" den Kontext in den RAM.
 
 ## Beispiel
 
-**Prompt:**
-```text
+```prompt
 [Kopiere 3 Absätze aus einem Wikipedia-Artikel über Quantenphysik]
 [Kopiere 3 Zitate von berühmten Physikern]
 (Das Modell ist jetzt im "Physik-Modus")

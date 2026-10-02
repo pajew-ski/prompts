@@ -1,18 +1,15 @@
 ---
-title: "Star-Bursting"
-description: "Fokus nicht auf Antworten, sondern auf das Generieren von Fragen (Wer, Was, Wo, Wann, Warum, Wie)."
-tags: ["brainstorming", "fragen", "exploration"]
-difficulty: "Anfänger"
+title: Star-Bursting
+level: Anfänger
+tags: brainstorming fragen exploration
+description: Fokus nicht auf Antworten, sondern auf das Generieren von Fragen (Wer, Was, Wo, Wann, Warum, Wie).
 ---
-
-# Star-Bursting
 
 Antworten hemmen die Diskussion. Fragen öffnen sie.
 
 ## Beispiel
 
-**Prompt:**
-```text
+```prompt
 Thema: Neues Produkt X.
 Gib keine Lösungen.
 Generiere stattdessen für jeden Zacken des Sterns 10 Fragen:

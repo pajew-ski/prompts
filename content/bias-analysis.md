@@ -1,18 +1,15 @@
 ---
-title: "Bias und Fehlschlüsse analysieren"
-description: "Identifiziere logische Fehlschlüsse und kognitive Verzerrungen in Argumentationen."
-tags: ["analyse", "logik", "bias", "kritisches-denken"]
-difficulty: "Fortgeschritten"
+title: Bias und Fehlschlüsse analysieren
+level: Fortgeschritten
+tags: analyse logik bias kritisches-denken
+description: Identifiziere logische Fehlschlüsse und kognitive Verzerrungen in Argumentationen.
 ---
-
-# Bias und Fehlschlüsse analysieren
 
 Diese Strategie hilft dabei, Texte kritisch zu hinterfragen und subtile Manipulationen oder Denkfehler aufzudecken.
 
 ## Beispiel
 
-**Prompt:**
-```text
+```prompt
 Analysiere den folgenden Text auf logische Fehlschlüsse (wie Ad Hominem, Strohmann-Argument) und kognitive Verzerrungen (wie Confirmation Bias). Gib für jeden Fund eine kurze Erklärung und ein Zitat aus dem Text an.
 Text: "[Hier Text einfügen]"
 ```

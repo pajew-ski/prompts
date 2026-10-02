@@ -1,18 +1,15 @@
 ---
-title: "Tone Modifier"
-description: "Einen Text durch extreme Stil-Vorgaben transformieren."
-tags: ["stil", "writing", "kreativität"]
-difficulty: "Anfänger"
+title: Tone Modifier
+level: Anfänger
+tags: stil writing kreativität
+description: Einen Text durch extreme Stil-Vorgaben transformieren.
 ---
-
-# Tone Modifier
 
 Modelle tendieren zu einem langweiligen Durchschnittsstil. Zwinge sie zu Extremen.
 
 ## Beispiel
 
-**Prompt:**
-```text
+```prompt
 Schreibe diese E-Mail um.
 Version 1: Extrem höflich und viktorianisch.
 Version 2: Wie ein cooler Gen-Z Teenager auf TikTok.

@@ -1,18 +1,15 @@
 ---
-title: "Inner Monologue"
-description: "Einen 'privaten' Gedankenstrom simulieren, der dem User nicht gezeigt werden soll (außer zum Debuggen)."
-tags: ["agentic", "reasoning", "simulation"]
-difficulty: "Mittel"
+title: Inner Monologue
+level: Mittel
+tags: agentic reasoning simulation
+description: Einen 'privaten' Gedankenstrom simulieren, der dem User nicht gezeigt werden soll (außer zum Debuggen).
 ---
-
-# Inner Monologue
 
 Wichtig für Chatbots, die "menschlich" wirken sollen, aber trotzdem "nachdenken" müssen.
 
 ## Beispiel
 
-**Prompt:**
-```text
+```prompt
 Du bist ein hilfsbereiter Assistent.
 Bei jeder Antwort:
 1. Führe einen inneren Monolog (in Klammern), wo du die Absicht des Users analysierst und deine Antwortstrategie festlegst.

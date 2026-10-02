@@ -1,18 +1,15 @@
 ---
-title: "Program-of-Thoughts (PoT)"
-description: "Das Modell schreibt Code (z.B. Python), um Rechenaufgaben oder Logik zu lösen, statt Text zu generieren."
-tags: ["code", "mathematik", "präzision"]
-difficulty: "Fortgeschritten"
+title: Program-of-Thoughts (PoT)
+level: Fortgeschritten
+tags: code mathematik präzision
+description: Das Modell schreibt Code (z.B. Python), um Rechenaufgaben oder Logik zu lösen, statt Text zu generieren.
 ---
-
-# Program-of-Thoughts (PoT)
 
 LLMs sind oft schlecht im Kopfrechnen, aber gut im Coden. PoT lagert die Berechnung an einen (hypothetischen oder echten) Code-Interpreter aus.
 
 ## Beispiel
 
-**Prompt:**
-```text
+```prompt
 Frage: Berechne die Wurzel aus der Summe der ersten 50 Primzahlen.
 Schreibe ein Python-Programm, das dies berechnet. Führe den Code gedanklich aus und gib das Ergebnis.
 ```

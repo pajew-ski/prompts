@@ -1,18 +1,15 @@
 ---
-title: "Few-Shot Prompting"
-description: "Dem Modell Beispiele geben, um das gewünschte Format oder Verhalten zu demonstrieren."
-tags: ["beispiele", "muster", "grundlagen"]
-difficulty: "Anfänger"
+title: Few-Shot Prompting
+level: Anfänger
+tags: beispiele muster grundlagen
+description: Dem Modell Beispiele geben, um das gewünschte Format oder Verhalten zu demonstrieren.
 ---
-
-# Few-Shot Prompting
 
 Anstatt das Modell nur anzuweisen, was es tun soll (Zero-Shot), gibst du ihm Beispiele (Shots), wie die Aufgabe gelöst werden soll. Dies verbessert die Genauigkeit drastisch, besonders bei spezifischen Formaten.
 
 ## Beispiel
 
-**Prompt:**
-```text
+```prompt
 Bestimme die Stimmung der folgenden Tweets:
 Tweet: "Ich liebe das neue Design!"
 Stimmung: Positiv
@@ -25,6 +22,7 @@ Stimmung:
 ```
 
 **Erwartete Antwort:**
+
 > Neutral
 
 ## Strategie

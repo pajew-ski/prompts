@@ -1,18 +1,15 @@
 ---
-title: "Pre-Mortem"
-description: "Sich vorstellen, das Projekt sei bereits gescheitert, und rückblickend erklären warum."
-tags: ["risiko", "planung", "management"]
-difficulty: "Mittel"
+title: Pre-Mortem
+level: Mittel
+tags: risiko planung management
+description: Sich vorstellen, das Projekt sei bereits gescheitert, und rückblickend erklären warum.
 ---
-
-# Pre-Mortem
 
 Die meisten Leute machen Post-Mortems (Leichenschau). Pre-Mortem ist besser.
 
 ## Beispiel
 
-**Prompt:**
-```text
+```prompt
 Wir sind im Jahr 2030. Unser Projekt ist grandios gescheitert.
 Schreib einen Zeitungsartikel, der analysiert, woran es lag. Sei brutal ehrlich über unsere aktuellen Schwachstellen.
 ```

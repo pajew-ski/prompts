@@ -1,18 +1,15 @@
 ---
-title: "Chain of Verification (CoVe)"
-description: "Vier-Schritte-Prozess zur Halluzinationsvermeidung: Entwurf, Faktencheck-Fragen, Antworten, Korrektur."
-tags: ["sicherheit", "fakten", "anti-hallucination"]
-difficulty: "Fortgeschritten"
+title: Chain of Verification (CoVe)
+level: Fortgeschritten
+tags: sicherheit fakten anti-hallucination
+description: Vier-Schritte-Prozess zur Halluzinationsvermeidung: Entwurf, Faktencheck-Fragen, Antworten, Korrektur.
 ---
-
-# Chain of Verification (CoVe)
 
 Einer der besten Ansätze gegen Halluzinationen.
 
 ## Beispiel
 
-**Prompt:**
-```text
+```prompt
 Frage: [Frage]
 1. Erstelle einen ersten Entwurf der Antwort.
 2. Identifiziere Fakten im Entwurf, die verifiziert werden müssen.

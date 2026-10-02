@@ -1,18 +1,15 @@
 ---
-title: "Selection-Inference"
-description: "Denkprozess in zwei Schritte teilen: Fakten auswählen und daraus Schlüsse ziehen."
-tags: ["logik", "reasoning", "struktur"]
-difficulty: "Fortgeschritten"
+title: Selection-Inference
+level: Fortgeschritten
+tags: logik reasoning struktur
+description: Denkprozess in zwei Schritte teilen: Fakten auswählen und daraus Schlüsse ziehen.
 ---
-
-# Selection-Inference
 
 Dieses Framework zerlegt logisches Denken in zwei explizite Module, um Fehler zu minimieren.
 
 ## Beispiel
 
-**Prompt:**
-```text
+```prompt
 Kontext: [Langer Text]
 Frage: [Frage]
 Schritt 1 (Selection): Listet alle Fakten aus dem Text auf, die für die Beantwortung der Frage relevant sind.

@@ -1,18 +1,15 @@
 ---
-title: "Echo Prompting"
-description: "Das Modell bitten, die Anweisung zu wiederholen, um Verständnis zu bestätigen."
-tags: ["sicherheit", "verständnis", "kontrolle"]
-difficulty: "Anfänger"
+title: Echo Prompting
+level: Anfänger
+tags: sicherheit verständnis kontrolle
+description: Das Modell bitten, die Anweisung zu wiederholen, um Verständnis zu bestätigen.
 ---
-
-# Echo Prompting
 
 Einfach aber effektiv.
 
 ## Beispiel
 
-**Prompt:**
-```text
+```prompt
 Aufgabe: [Komplexe Anweisung]
 Bevor du startest: Wiederhole die Aufgabe mit deinen eigenen Worten und bestätige, dass du alle Einschränkungen verstanden hast.
 ```

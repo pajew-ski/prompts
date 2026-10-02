@@ -1,18 +1,15 @@
 ---
-title: "Plan-and-Solve"
-description: "Ein expliziter Planungs-Schritt vor der Ausführung, um Flüchtigkeitsfehler zu vermeiden."
-tags: ["planung", "struktur", "math"]
-difficulty: "Fortgeschritten"
+title: Plan-and-Solve
+level: Fortgeschritten
+tags: planung struktur math
+description: Ein expliziter Planungs-Schritt vor der Ausführung, um Flüchtigkeitsfehler zu vermeiden.
 ---
-
-# Plan-and-Solve
 
 Ersatz für "Let's think step by step" mit Fokus auf Planung. Du forderst das Modell auf, erst einen Plan zu entwickeln und ihn dann auszuführen.
 
 ## Beispiel
 
-**Prompt:**
-```text
+```prompt
 Frage: [Komplexe Matheaufgabe]
 Entwickle zuerst einen Plan, wie du die Aufgabe lösen willst, ohne zu rechnen.
 Führe danach den Plan aus, um die Lösung zu finden.

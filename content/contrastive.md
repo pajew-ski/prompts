@@ -1,18 +1,15 @@
 ---
-title: "Contrastive Prompting"
-description: "Dem Modell zeigen, was man NICHT will, um Fehler zu vermeiden."
-tags: ["beispiele", "negativ-beispiele", "fehlervermeidung"]
-difficulty: "Mittel"
+title: Contrastive Prompting
+level: Mittel
+tags: beispiele negativ-beispiele fehlervermeidung
+description: Dem Modell zeigen, was man NICHT will, um Fehler zu vermeiden.
 ---
-
-# Contrastive Prompting
 
 Oft hilft es dem Modell mehr zu sehen, was *falsch* ist, als nur zu sehen, was *richtig* ist. Du gibst also sowohl positive als auch negative Beispiele.
 
 ## Beispiel
 
-**Prompt:**
-```text
+```prompt
 Schreibe einen Produkttext für Kopfhörer.
 Negatives Beispiel (So NICHT): "Diese Kopfhörer sind gut und laut. Kaufen Sie sie."
 

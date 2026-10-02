@@ -1,18 +1,15 @@
 ---
-title: "Structure Tagging (XML)"
-description: "Nutzung von XML/HTML Tags, um Input und Output klar zu strukturieren."
-tags: ["parsing", "struktur", "coding"]
-difficulty: "Mittel"
+title: Structure Tagging (XML)
+level: Mittel
+tags: parsing struktur coding
+description: Nutzung von XML/HTML Tags, um Input und Output klar zu strukturieren.
 ---
-
-# Structure Tagging
 
 LLMs verstehen XML-ähnliche Strukturen sehr gut. Nutze Tags, um Teile des Prompts klar abzugrenzen.
 
 ## Beispiel
 
-**Prompt:**
-```text
+```prompt
 Ich gebe dir zwei Dokumente.
 <dokument_a>
 [Text A]

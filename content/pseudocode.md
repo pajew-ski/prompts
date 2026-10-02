@@ -1,18 +1,15 @@
 ---
-title: "Pseudocode Prompting"
-description: "Logik in Pseudocode beschreiben lassen, um Präzision zu erhöhen."
-tags: ["logik", "code", "struktur"]
-difficulty: "Fortgeschritten"
+title: Pseudocode Prompting
+level: Fortgeschritten
+tags: logik code struktur
+description: Logik in Pseudocode beschreiben lassen, um Präzision zu erhöhen.
 ---
-
-# Pseudocode Prompting
 
 Natürliche Sprache ist mehrdeutig. Code ist eindeutig.
 
 ## Beispiel
 
-**Prompt:**
-```text
+```prompt
 Beschreibe den Prozess der Photosynthese.
 Tu dies aber nicht als Text, sondern als Pseudocode-Funktion.
 `function photosynthese(licht, wasser, co2):`

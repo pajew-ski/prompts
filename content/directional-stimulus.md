@@ -1,18 +1,15 @@
 ---
-title: "Directional Stimulus Prompting"
-description: "Dem Modell spezifische Hinweise oder Keywords geben, um die Generierung in eine bestimmte Richtung zu lenken."
-tags: ["steuerung", "keywords", "zusammenfassung"]
-difficulty: "Mittel"
+title: Directional Stimulus Prompting
+level: Mittel
+tags: steuerung keywords zusammenfassung
+description: Dem Modell spezifische Hinweise oder Keywords geben, um die Generierung in eine bestimmte Richtung zu lenken.
 ---
-
-# Directional Stimulus Prompting
 
 Anstatt das Modell nur mit "Fasse zusammen" loszuschicken, gibst du ihm "Richtungs-Stimuli" (z.B. Keywords oder Aspekte), die in der Ausgabe enthalten sein müssen. Das verbessert die Relevanz der Antwort drastisch.
 
 ## Beispiel
 
-**Prompt:**
-```text
+```prompt
 Artikel: [Langer Text über KI-Sicherheit]
 Hinweise: Ausrichtungsproblem, Black Box, interpretierbar.
 

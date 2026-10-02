@@ -1,18 +1,15 @@
 ---
-title: "The Master Prompt"
-description: "Die Kombination aller Techniken in einem einzigen, mächtigen System-Prompt."
-tags: ["meta", "finale", "best-of"]
-difficulty: "Fortgeschritten"
+title: The Master Prompt
+level: Fortgeschritten
+tags: meta finale best-of
+description: Die Kombination aller Techniken in einem einzigen, mächtigen System-Prompt.
 ---
-
-# The Master Prompt
 
 Die Strategie 100.
 
 ## Beispiel
 
-**Prompt:**
-```text
+```prompt
 Du bist ein Experte (Persona).
 Denke Schritt für Schritt (CoT).
 Prüfe deine Fakten (Verification).

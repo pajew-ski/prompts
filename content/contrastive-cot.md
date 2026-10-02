@@ -1,18 +1,15 @@
 ---
-title: "Contrastive Chain of Thought"
-description: "Nicht nur erklären, warum die Lösung richtig ist, sondern auch, warum plausible falsche Lösungen falsch sind."
-tags: ["reasoning", "fehleranalyse", "robustheit"]
-difficulty: "Fortgeschritten"
+title: Contrastive Chain of Thought
+level: Fortgeschritten
+tags: reasoning fehleranalyse robustheit
+description: Nicht nur erklären, warum die Lösung richtig ist, sondern auch, warum plausible falsche Lösungen falsch sind.
 ---
-
-# Contrastive Chain of Thought
 
 Stärkt die Argumentation durch Abgrenzung.
 
 ## Beispiel
 
-**Prompt:**
-```text
+```prompt
 Übersetze "Bank" (Finanzinstitut) ins Deutsche.
 Richtig: Bank.
 Falsch: Ufer (weil das "river bank" wäre).

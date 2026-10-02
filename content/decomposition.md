@@ -1,18 +1,15 @@
 ---
-title: "Decomposition"
-description: "Explizite Aufforderung, ein Problem in Teilprobleme zu zerlegen (Top-Down)."
-tags: ["struktur", "problem-solving", "planung"]
-difficulty: "Anfänger"
+title: Decomposition
+level: Anfänger
+tags: struktur problem-solving planung
+description: Explizite Aufforderung, ein Problem in Teilprobleme zu zerlegen (Top-Down).
 ---
-
-# Decomposition
 
 Der wichtigste Skill im Software-Engineering, angewandt auf Prompts.
 
 ## Beispiel
 
-**Prompt:**
-```text
+```prompt
 Frage: Wie baue ich ein Haus?
 Zerlege dieses massive Problem in 5 Hauptkategorien.
 Zerlege jede Kategorie in 3 Unterschritte.

@@ -1,18 +1,15 @@
 ---
-title: "Seed Word Prompting"
-description: "Das erste Wort der Antwort erzwingen, um die Richtung ('Direction') festzulegen."
-tags: ["steering", "kontrolle", "subtil"]
-difficulty: "Anfänger"
+title: Seed Word Prompting
+level: Anfänger
+tags: steering kontrolle subtil
+description: Das erste Wort der Antwort erzwingen, um die Richtung ('Direction') festzulegen.
 ---
-
-# Seed Word Prompting
 
 Ein subtiler Trick, um die Antwort in eine Richtung zu lenken (ähnlich Output Priming, aber minimalistischer).
 
 ## Beispiel
 
-**Prompt:**
-```text
+```prompt
 Wie findest du meinen neuen Haarschnitt?
 [Willst du Ehrlichkeit?] Seed: "Ehrlich..."
 [Willst du Trost?] Seed: "Naja..."
