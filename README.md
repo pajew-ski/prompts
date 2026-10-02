@@ -1,27 +1,33 @@
 # prompts
 
-Hundert Prompting-Strategien für Sprachmodelle, auf Deutsch, als eine Seite, dazu Skills und Agenten-Anweisungen in den Standardformaten `SKILL.md` und `AGENTS.md`. Suchen, aufklappen, kopieren. Eine HTML-Datei mit allem darin; die Quellen sind Markdown-Dateien, aus denen `build.js` die Karten in die Seite schreibt, und die Standarddateien liegen daneben, wo Werkzeuge sie erwarten.
+A hundred prompting strategies for language models, in English and German, as one page, plus skills and agent instructions in the standard formats `SKILL.md` and `AGENTS.md`. Search, unfold, copy. One HTML file with everything in it; the sources are Markdown files from which `build.js` writes the cards into the page, and the standard files sit next to them where tools expect them.
 
-**Seite**: [pajew-ski.github.io/prompts](https://pajew-ski.github.io/prompts/)
+**Site**: [pajew-ski.github.io/prompts](https://pajew-ski.github.io/prompts/)
 
-## Was drin ist
+## What is in it
 
-Ein Prompt ist eine Anweisung, Frage oder Eingabe an einen Menschen oder eine KI, die eine bestimmte Handlung oder Antwort auslösen soll. Eine Prompting-Strategie ist ein wiederverwendbares Muster dafür: Chain of Thought lässt es Zwischenschritte ausgeben, Few-Shot zeigt ihm Beispiele, ein Persona-Prompt gibt ihm eine Rolle. Jede Karte auf der Seite ist eine solche Strategie mit einem Satz zum Zweck, Schlagworten, einer Erklärung und einem Beispiel-Prompt, den ein Knopf in die Zwischenablage kopiert.
+A prompt is an instruction, question or input given to a person or an AI to trigger a specific action or response. A prompting strategy is a reusable pattern for one: Chain of Thought has the model write out intermediate steps, Few-Shot shows it examples, a role prompt gives it a perspective. Each card on the page is one such strategy with a sentence on what it does, tags, an explanation of where it comes from and when it helps, and an example prompt that a button copies to the clipboard.
 
-Drei Stufen sagen, wie viel Vorwissen eine Strategie braucht: Anfänger funktioniert mit einem Satz im Prompt, Mittel braucht etwas Struktur, Fortgeschritten setzt auf mehrere Schritte oder mehrere Prompts.
+The explanations say what a technique does and where it stops helping, including what current models change: models with built-in reasoning no longer need "think step by step", promised tips and emotional pressure are not a reliable lever, delimiters reduce prompt injection but do not prevent it. Where a technique comes from a paper, the card names it.
 
-Die Suche läuft im Browser über Titel, Schlagworte und Text und steht oben auf der Seite; Enter kopiert den Prompt des ersten Treffers, `/` springt ins Feld, Esc leert es. Ein Schlagwort anklicken filtert danach, der Titel einer Karte ist ihr Link. Nichts wird nachgeladen, nichts gesendet.
+Three levels say how much groundwork a strategy needs: Beginner works with one sentence in the prompt, Intermediate needs some structure, Advanced relies on several steps or several prompts.
 
-## Skills und Agenten
+The search runs in the browser over titles, tags and text and sits at the top of the page; Enter copies the prompt of the first hit, `/` jumps into the field, Esc clears it. Clicking a tag filters by it, and a card's title is its link. Nothing is loaded later, nothing is sent.
 
-Zwei weitere Kartenarten sind nach derselben Definition ebenfalls Prompts, nur übergibt sie nicht der Mensch, sondern der Agent liest sie von einem festen Pfad. Es sind Dateien in Standardformaten, die Coding-Agenten lesen:
+## Skills and agents
 
-- **Skills** nach dem [Agent-Skills-Standard](https://agentskills.io): `skills/<name>/SKILL.md` mit `name` und `description` im Kopf und der Anleitung darunter. Claude Code, Codex und andere laden einen Skill, wenn die Beschreibung auf die Aufgabe passt.
-- **Agenten** nach dem [AGENTS.md-Standard](https://agents.md): `agents/<name>/AGENTS.md`, die Anweisung, die im Wurzelverzeichnis eines Repos sagt, wie darin gearbeitet wird.
+Two more kinds of cards are prompts by the same definition, except that the agent reads them from a fixed path instead of a person pasting them. They are files in standard formats that coding agents read:
 
-Die Karte zeigt die Datei, ein Knopf kopiert sie, einer speichert sie unter ihrem Namen. Die Dateien liegen im Repo, damit Werkzeuge sie an ihrem Pfad finden; die Karte wird aus der Datei erzeugt. Eigene Skills und Agenten kommen als Datei dazu, siehe [CONTRIBUTING.md](CONTRIBUTING.md).
+- **Skills** in the [Agent Skills format](https://agentskills.io): `skills/<name>/SKILL.md` with `name` and `description` at the top and the instructions below. Claude Code, Codex and other agents load a skill when its description matches the task. The skills here are written in German.
+- **Agents** in the [AGENTS.md format](https://agents.md): `agents/<name>/AGENTS.md`, the instructions that tell a coding agent, from the root of a repository, how to work in it. They are written in English.
 
-## Lokal ausführen
+The card shows the file; one button copies it, another saves it under its name. The files live in the repository so tools find them at their path; the card is generated from the file. New skills and agents are added as files, see [CONTRIBUTING.md](CONTRIBUTING.md).
+
+## Languages
+
+The page speaks English and German. It shows German when the browser's first language is German and English otherwise; `?lang=de` or `?lang=en` overrides that. Every strategy exists as `content/de/<slug>.md` and `content/en/<slug>.md`, and the build refuses a strategy that is missing in one language or whose level or tags differ between the two.
+
+## Running it locally
 
 ```bash
 git clone https://github.com/pajew-ski/prompts.git
@@ -29,16 +35,16 @@ cd prompts
 open index.html
 ```
 
-Die ganze App ist `index.html`; diese eine Datei läuft überall, wohin man sie kopiert. Jeder statische Host liefert sie so aus, wie sie ist; auf GitHub Pages aus dem Root von `main`. Die Footer-Links passen sich einem Fork von selbst an.
+The whole app is `index.html`; copy that one file anywhere and it runs. Any static host serves it as is; on GitHub Pages, from the root of `main`. The footer links adapt to a fork automatically.
 
-Die Karten in der Seite sind erzeugt: `node build.js` schreibt sie aus `content/`, `skills/` und `agents/` in `index.html`, ohne Abhängigkeit, nur mit Node. Die erzeugte Seite ist eingecheckt; `node build.js --check` prüft in CI, dass sie zu den Quellen passt.
+The cards in the page are generated: `node build.js` writes them from `content/`, `skills/` and `agents/` into `index.html`, with no dependency beyond Node. The generated page is committed; `node build.js --check` verifies in CI that it matches its sources.
 
-Als Home-Assistant-Add-on kommt die Seite über die [Home Assistant Apps Collection](https://github.com/pajew-ski/home-assistant-apps-collection), zusammen mit den Geschwister-Apps.
+As a Home Assistant add-on, the page ships through the [Home Assistant Apps Collection](https://github.com/pajew-ski/home-assistant-apps-collection), together with its sibling apps.
 
-## Mitmachen
+## Contributing
 
-Eine Strategie ist eine Markdown-Datei unter `content/`, ein Skill oder Agent seine Standarddatei; [CONTRIBUTING.md](CONTRIBUTING.md) zeigt alle drei. Alles hier wurde von einem Coding-Agenten aus [AGENTS.md](AGENTS.md) gebaut, der Design- und Verhaltensspezifikation der Seite.
+A strategy is two Markdown files under `content/`, a skill or an agent its standard file; [CONTRIBUTING.md](CONTRIBUTING.md) shows all three. Everything here was built by a coding agent from [AGENTS.md](AGENTS.md), the design and behavior spec of the page. It is a sibling of [open entrainer](https://github.com/pajew-ski/open-entrainer), [open desensitizer](https://github.com/pajew-ski/open-desensitizer) and [open helix](https://github.com/pajew-ski/open-helix).
 
-## Lizenz
+## License
 
 [MIT](LICENSE).
